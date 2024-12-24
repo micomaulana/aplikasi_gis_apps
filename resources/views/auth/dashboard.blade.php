@@ -29,7 +29,7 @@
                     </div>
                     <div class="status-card">
                         <h5>Update terakhir</h5>
-                        <div class="value blue">{{ $last_updated_times->updated_at }}</div>
+                        <div class="value blue">{{ $last_updated_times->updated_at ?? "N\A"}}</div>
                         {{-- <div class="value blue">12/1/2024, 1:16:12 PM</div> --}}
                     </div>
                 </div>

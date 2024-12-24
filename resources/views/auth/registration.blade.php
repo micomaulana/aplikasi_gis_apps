@@ -1,48 +1,100 @@
-@extends('auth.layout') 
+@extends('auth.layout')
 @section('content')
     <main class="login-form">
-        <div class="cotainer">
+        <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">Register</div>
                         <div class="card-body">
-                            <form action="{{ route('register.post') }}" method="POST"> @csrf <div class="form-group row">
-                                    <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
-                                    <div class="col-md-6"> <input type="text" id="name" class="form-control"
-                                            name="name" required autofocus>
-                                        @if ($errors->has('name'))
-                                            <span class="text-danger">{{ $errors->first('name') }}</span>
-                                            @endif
-                                    </div>
+                            <form action="{{ route('register.post') }}" method="POST">
+                                @csrf
+                                <!-- Nama -->
+                                <div class="mb-3">
+                                    <label for="nama" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="nama" name="nama" required>
                                 </div>
-                                <div class="form-group row"> <label for="email_address"
-                                        class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
-                                    <div class="col-md-6"> <input type="text" id="email_address" class="form-control"
-                                            name="email" required autofocus>
-                                        @if ($errors->has('email'))
-                                            <span class="text-danger">{{ $errors->first('email') }}</span>
-                                            @endif
-                                    </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">E-Mail Address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    @if ($errors->has('email'))
+                                        <span class="text-danger">{{ $errors->first('email') }}</span>
+                                    @endif
                                 </div>
-                                <div class="form-group row"> <label for="password"
-                                        class="col-md-4 col-form-label text-md-right">Password</label>
-                                    <div class="col-md-6"> <input type="password" id="password" class="form-control"
-                                            name="password" required>
-                                        @if ($errors->has('password'))
-                                            <span class="text-danger">{{ $errors->first('password') }}</span>
-                                        @endif
-                                    </div>
+
+                                <!-- Password -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    @if ($errors->has('password'))
+                                        <span class="text-danger">{{ $errors->first('password') }}</span>
+                                    @endif
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-md-6 offset-md-4">
-                                        <div class="checkbox">
-                                            <label> <input type="checkbox" name="remember"> Remember Me </label>
-                                        </div>
-                                    </div>
+
+                                <!-- Alamat -->
+                                <div class="mb-3">
+                                    <label for="alamat" class="form-label">Alamat</label>
+                                    <input type="text" class="form-control" id="alamat" name="alamat">
                                 </div>
-                                <div class="col-md-6 offset-md-4"> <button type="submit" class="btn btn-primary"> Register
-                                    </button> </div>
+
+                                <!-- Usia -->
+                                <div class="mb-3">
+                                    <label for="usia" class="form-label">Usia</label>
+                                    <input type="number" class="form-control" id="usia" name="usia">
+                                </div>
+
+                                <!-- Nama Desa -->
+                                <div class="mb-3">
+                                    <label for="id_desa" class="form-label">Nama Desa</label>
+                                    <select name="id_desa" class="form-control" id="id_desa">
+                                        @foreach ($data_desas as $desa)
+                                            <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Provinsi -->
+                                <div class="mb-3">
+                                    <label for="provinsi" class="form-label">Provinsi</label>
+                                    <input type="text" class="form-control" id="provinsi" name="provinsi">
+                                </div>
+
+                                <!-- Kab/Kota -->
+                                <div class="mb-3">
+                                    <label for="kab_kota" class="form-label">Kabupaten/Kota</label>
+                                    <input type="text" class="form-control" id="kab_kota" name="kab_kota">
+                                </div>
+
+                                <!-- Tempat Lahir -->
+                                <div class="mb-3">
+                                    <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                                    <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="no_hp" class="form-label">Nomor HP</label>
+                                    <input type="text" class="form-control" id="no_hp" name="no_hp">
+                                </div>
+
+                                <!-- Tanggal Lahir -->
+                                <div class="mb-3">
+                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir">
+                                </div>
+
+                                <!-- Jenis Kelamin -->
+                                <div class="mb-3">
+                                    <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control">
+                                        <option value="laki-laki">Laki-Laki</option>
+                                        <option value="perempuan">Perempuan</option>
+                                    </select>
+                                </div>
+                                <!-- Submit Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                </div>
                             </form>
                         </div>
                     </div>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("nama");
             $table->string("alamat");
+            $table->string("email")->unique();
             $table->integer("usia");
             $table->string("id_desa");
             $table->string("provinsi");
@@ -22,9 +23,10 @@ return new class extends Migration
             $table->string("tempat_lahir");
             $table->string("tanggal_lahir");
             $table->string("jenis_kelamin");
-            $table->string("Diagnosis_lab");
-            $table->string("Diagnosis_klinis");
-            $table->string("Status_akhir");
+            $table->string("diagnosis_lab")->nullable();
+            $table->string("diagnosis_klinis")->nullable();
+            $table->string("status_akhir")->nullable();
+            $table->string("no_hp");
             $table->string('tahun_terdata')->nullable();
             $table->timestamps();
         });

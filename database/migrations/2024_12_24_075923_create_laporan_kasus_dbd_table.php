@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("gejala_yang_dialami");
             $table->string("gejala_lain");
             $table->string("file_hasil_lab");
+            $table->string("status");
             $table->timestamps();
         });
     }

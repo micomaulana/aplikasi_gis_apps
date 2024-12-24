@@ -48,6 +48,8 @@ Route::resource('publish_overview_statistiks', OverviewStatistikPublishControlle
 Route::get('get-jumlah-pasien-perdesa/{id}',[DesaController::class,'hitung_kasus_dari_id_desa'])->name('hitung_kasus_dari_id_desa');
 Route::resource('laporan-foggings',LaporanFoggingController::class);
 Route::get('/generate-pdf/{id}', [LaporanFoggingController::class, 'generatePDF']);
-Route::get('validasi_admin', [DesaController::class, 'validasi_pasien_admin_view'])->name('validasi_admin');;
-Route::get('laporan_masyarakat', [DesaController::class, 'laporan_masyarakat_view'])->name('laporan_masyarakat');;
+Route::get('validasi_admin', [DesaController::class, 'validasi_pasien_admin_view'])->name('validasi_admin');
+Route::get('laporan_masyarakat', [DesaController::class, 'laporan_masyarakat_view'])->name('laporan_masyarakat');
 Route::get('tambah_laporan', [DesaController::class, 'tambah_laporan'])->name('tambah_laporan');
+Route::post('simpan_laporan',[DesaController::class,'simpan_laporan_masyarakat'])->name('simpan_laporan_masyarakat');
+Route::get('get_laporan_dbd_by_id_pasien/{id}',[DesaController::class,'get_laporan_dbd_by_id_pasien'])->name('get_laporan_dbd_by_id_pasien');

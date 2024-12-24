@@ -292,6 +292,10 @@
         .me-2 {
             margin-right: 10px;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
