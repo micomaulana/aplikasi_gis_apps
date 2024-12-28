@@ -31,12 +31,20 @@
                 <input type="text" class="form-control" id="alamat" value="{{$pasien->alamat}}" name="alamat">
             </div>
             <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" value="{{$pasien->email}}" name="email">
+            </div>
+            <div class="mb-3">
                 <label for="usia" class="form-label">Usia</label>
                 <input type="text" class="form-control" id="usia" value="{{$pasien->usia}}" name="usia">
             </div>
             <div class="mb-3">
                 <label for="id_desa" class="form-label">Id_desa </label>
-                <input type="text" class="form-control" id="id_desa" value="{{$pasien->id_desa}}" name="id_desa">
+                <select name="id_desa" class="form-control" id="id_desa">
+                    @foreach ($data_desas as $desa)
+                        <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="mb-3">
                 <label for="provinsi" class="form-label">Provinsi</label>
@@ -59,16 +67,20 @@
                 <input type="text" class="form-control" id="jenis_kelamin" value="{{$pasien->jenis_kelamin}}" name="jenis_kelamin">
             </div>
             <div class="mb-3">
-                <label for="Diagnosis_lab" class="form-label">Diagnosis lab</label>
-                <input type="text" class="form-control" id="Diagnosis_lab" value="{{$pasien->Diagnosis_lab}}" name="Diagnosis_lab">
+                <label for="diagnosis_lab" class="form-label">Diagnosis lab</label>
+                <input type="text" class="form-control" id="diagnosis_lab" value="{{$pasien->diagnosis_lab}}" name="diagnosis_lab">
             </div>
             <div class="mb-3">
-                <label for="Diagnosis_klinis" class="form-label">Diagnosis klinis</label>
-                <input type="text" class="form-control" id="Diagnosis_klinis" value="{{$pasien->Diagnosis_klinis}}" name="Diagnosis_klinis">
+                <label for="diagnosis_klinis" class="form-label">Diagnosis klinis</label>
+                <input type="text" class="form-control" id="diagnosis_klinis" value="{{$pasien->diagnosis_klinis}}" name="diagnosis_klinis">
             </div>
             <div class="mb-3">
-                <label for="Status_akhir" class="form-label">Status akhir</label>
-                <input type="text" class="form-control" id="Status_akhir" value="{{$pasien->Status_akhir}}" name="Status_akhir">
+                <label for="status_akhir" class="form-label">Status akhir</label>
+                <input type="text" class="form-control" id="status_akhir" value="{{$pasien->status_akhir}}" name="status_akhir">
+            </div>
+            <div class="mb-3">
+                <label for="no_hp" class="form-label">No hp</label>
+                <input type="text" class="form-control" id="no_hp" value="{{$pasien->no_hp}}" name="no_hp">
             </div>
             <div class="mb-3">
                 <label for="tahun_terdata" class="form-label">Tahun terdata</label>

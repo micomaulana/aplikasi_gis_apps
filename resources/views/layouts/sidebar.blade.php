@@ -45,6 +45,14 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('dokters.index') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">Dokter</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('maps') }}" aria-expanded="false">
                         <span>
                             <iconify-icon icon="solar:bookmark-square-minimalistic-bold-duotone"

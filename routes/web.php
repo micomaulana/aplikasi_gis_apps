@@ -4,7 +4,9 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\DesaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DokterController;
 use App\Http\Controllers\LaporanFoggingController;
+use App\Http\Controllers\LaporanKasusDBDController;
 use App\Http\Controllers\OverviewStatistikPublishController;
 use App\Http\Controllers\StatistikController;
 
@@ -26,6 +28,7 @@ Route::get('/', function () {
 
 Route::resource('pasiens', PasienController::class);
 Route::resource('desas', DesaController::class);
+Route::resource('dokters', DokterController::class);
 Route::get('maps', [DesaController::class, 'maps'])->name('maps');
 
 Route::get('login', [AuthController::class, 'index'])->name('login');
@@ -53,3 +56,7 @@ Route::get('laporan_masyarakat', [DesaController::class, 'laporan_masyarakat_vie
 Route::get('tambah_laporan', [DesaController::class, 'tambah_laporan'])->name('tambah_laporan');
 Route::post('simpan_laporan',[DesaController::class,'simpan_laporan_masyarakat'])->name('simpan_laporan_masyarakat');
 Route::get('get_laporan_dbd_by_id_pasien/{id}',[DesaController::class,'get_laporan_dbd_by_id_pasien'])->name('get_laporan_dbd_by_id_pasien');
+
+Route::put('update-laporan/{id}',[LaporanKasusDBDController::class,'update'])->name('update.laporan');
+Route::put('/laporan-tolak/{id}', [DesaController::class, 'tolakLaporan'])->name('laporan.tolak');
+// Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

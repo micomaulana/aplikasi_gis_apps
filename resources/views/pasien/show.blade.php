@@ -58,16 +58,20 @@
                 <input type="text" class="form-control" id="jenis_kelamin" value="{{$pasien->jenis_kelamin}}" name="jenis_kelamin" readonly>
             </div>
             <div class="mb-3">
-                <label for="Diagnosis_lab" class="form-label">Diagnosis_lab</label>
-                <input type="text" class="form-control" id="Diagnosis_lab" value="{{$pasien->Diagnosis_lab}}" name="Diagnosis_lab" readonly>
+                <label for="diagnosis_lab" class="form-label">Diagnosis_lab</label>
+                <input type="text" class="form-control" id="diagnosis_lab" value="{{$pasien->diagnosis_lab ?? "Belum Dilakukan Analisis LAB"}}" name="diagnosis_lab" readonly>
             </div>
             <div class="mb-3">
-                <label for="Diagnosis_klinis" class="form-label">Diagnosis_klinis</label>
-                <input type="text" class="form-control" id="Diagnosis_klinis" value="{{$pasien->Diagnosis_klinis}}" name="Diagnosis_klinis" readonly>
+                <label for="diagnosis_klinis" class="form-label">diagnosis_klinis</label>
+                <input type="text" class="form-control" id="diagnosis_klinis" value="{{$pasien->diagnosis_klinis ?? "Belum Dilakukan Analisis klinis"}}" name="diagnosis_klinis" readonly>
+            </div> 
+            <div class="mb-3">
+                <label for="status_akhir" class="form-label">Status_akhir</label>
+                <input type="text" class="form-control" id="status_akhir" value="{{$pasien->status_akhir}}" name="status_akhir" readonly>
             </div>
             <div class="mb-3">
-                <label for="Status_akhir" class="form-label">Status_akhir</label>
-                <input type="text" class="form-control" id="Status_akhir" value="{{$pasien->Status_akhir}}" name="Status_akhir" readonly>
+                <label for="no_hp" class="form-label">no hp</label>
+                <input type="text" class="form-control" id="no_hp" value="{{$pasien->no_hp}}" name="no_hp" readonly>
             </div>
             <div class="mb-3">
                 <label for="tahun_terdata" class="form-label">tahun_terdata</label>

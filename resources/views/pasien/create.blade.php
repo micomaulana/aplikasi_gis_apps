@@ -30,6 +30,10 @@
                     <input type="text" class="form-control" id="alamat" name="alamat">
                 </div>
                 <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" name="email">
+                </div>
+                <div class="mb-3">
                     <label for="usia" class="form-label">Usia</label>
                     <input type="text" class="form-control" id="usia" name="usia">
                 </div>
@@ -65,18 +69,22 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="Diagnosis_lab" class="form-label">Diagnosis lab</label>
-                    <input type="text" class="form-control" id="Diagnosis_lab" name="Diagnosis_lab">
+                    <label for="diagnosis_lab" class="form-label">Diagnosis lab</label>
+                    <input type="text" class="form-control" id="diagnosis_lab" name="diagnosis_lab">
                 </div>
 
                 <div class="mb-3">
-                    <label for="Diagnosis_klinis" class="form-label">Diagnosis klinis</label>
-                    <input type="text" class="form-control" id="Diagnosis_klinis" name="Diagnosis_klinis">
+                    <label for="diagnosis_klinis" class="form-label">Diagnosis klinis</label>
+                    <input type="text" class="form-control" id="diagnosis_klinis" name="diagnosis_klinis">
                 </div>
 
                 <div class="mb-3">
-                    <label for="Status_akhir" class="form-label">Status akhir</label>
-                    <input type="text" class="form-control" id="Status_akhir" name="Status_akhir">
+                    <label for="status_akhir" class="form-label">Status akhir</label>
+                    <input type="text" class="form-control" id="status_akhir" name="status_akhir">
+                </div>
+                <div class="mb-3">
+                    <label for="no_hp" class="form-label">no hp</label>
+                    <input type="text" class="form-control" id="no_hp" name="no_hp">
                 </div>
                 <div class="mb-3">
                     <label for="tahun_terdata" class="form-label">Tahun terdata</label>

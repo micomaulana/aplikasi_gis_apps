@@ -296,6 +296,27 @@
         .hidden {
             display: none;
         }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 50px auto;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #4a4aff;
+            border: none;
+        }
     </style>
 </head>
 

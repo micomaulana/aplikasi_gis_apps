@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Desa;
+use App\Models\Dokter;
 use App\Models\LaporaKasusDbd;
 use App\Models\LaporanFogging;
 use App\Models\Pasien;
 use App\Models\Statistik;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -128,8 +130,52 @@ class DesaController extends Controller
     }
     public function validasi_pasien_admin_view()
     {
-        return view('validasi_pasien_admin.index');
+        $dokters = Dokter::all();
+        $jumlah_laporan = DB::table('laporan_kasus_dbd')
+            ->distinct('id_pasien')
+            ->count('id_pasien');
+        $jumlah_laporan_menunggu_validasi = DB::table('laporan_kasus_dbd')
+            ->distinct('id_pasien')
+            ->where('status', 'waiting')
+            ->count('id_pasien');
+        $jumlah_laporan_terkonfirmasi = DB::table('laporan_kasus_dbd')
+            ->distinct('id_pasien')
+            ->where('status', '!=', 'waiting')
+            ->where('status', '!=', 'rejected')  // Menambahkan kondisi status = 'waiting'
+            ->count('id_pasien');
+        $jumlah_laporan_rejected = DB::table('laporan_kasus_dbd')
+            ->distinct('id_pasien')
+            ->where('status', '=', 'rejected')
+            ->count('id_pasien');
+
+
+
+        // Mendapatkan laporan kasus DBD dan mengelompokkan berdasarkan id_pasien
+        $laporandbd = LaporaKasusDbd::with('pasien')
+            ->get()
+            ->groupBy('id_pasien');
+
+        // Memetakan data ke format yang lebih terstruktur
+        $groupedData = $laporandbd->map(function ($laporans) {
+            return $laporans->map(function ($laporan) {
+                return [
+                    'no_tiket' => $laporan->no_tiket,
+                    'tanggal' => $laporan->created_at->format('d M Y'),
+                    'status' => ucfirst($laporan->status),
+                    'pasien' => $laporan->pasien, // Menyertakan data pasien
+                    'gejala' => $laporan->gejala_yang_dialami,
+                    'gejala_lain' => $laporan->gejala_lain,
+                    'file_hasil_lab' => $laporan->file_hasil_lab
+                ];
+            });
+        });
+
+        // dd($groupedData);
+        return view('validasi_pasien_admin.index', compact('dokters', 'groupedData', 'jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
     }
+
+
+
     public function laporan_masyarakat_view()
     {
         $laporan_dbd = LaporaKasusDbd::select(
@@ -159,6 +205,7 @@ class DesaController extends Controller
         ]);
 
         $pasien = Pasien::where('email', '=', Auth::user()->email)->first();
+        $tahunSekarang = Carbon::now()->year;
 
         if ($pasien) {
             // Tangani file hasil lab
@@ -168,13 +215,27 @@ class DesaController extends Controller
                 $destinationPath = public_path('uploads/laporan'); // Path penyimpanan
                 $file->move($destinationPath, $fileName); // Pindahkan file
 
+                $nomorTerakhir = DB::table('laporan_kasus_dbd')
+                    ->where('no_tiket', 'like', "DBD-$tahunSekarang-%")
+                    ->orderBy('no_tiket', 'desc')
+                    ->value('no_tiket');
+
+                if ($nomorTerakhir) {
+                    $angkaTerakhir = (int) substr($nomorTerakhir, strrpos($nomorTerakhir, '-') + 1);
+                    $angkaBaru = $angkaTerakhir + 1;
+                } else {
+                    $angkaBaru = 1;
+                }
+                $nomorUrutBaru = sprintf("DBD-%s-%03d", $tahunSekarang, $angkaBaru);
+
                 for ($i = 0; $i < count($validated['gejala_yang_dialami']); $i++) {
                     LaporaKasusDbd::create([
                         'id_pasien' => $pasien->id,
                         'gejala_yang_dialami' => $validated['gejala_yang_dialami'][$i],
                         'gejala_lain' => $validated['gejala_lain'],
                         'file_hasil_lab' => $fileName,
-                        'status' => 'waiting'
+                        'status' => 'waiting',
+                        'no_tiket' => $nomorUrutBaru
                     ]);
                 }
                 return redirect()->route('laporan_masyarakat')->with('success', 'Create data success');
@@ -186,13 +247,32 @@ class DesaController extends Controller
         return redirect()->route('tambah_laporan')->with('fails', 'Create data fails');
     }
 
-    public function get_laporan_dbd_by_id_pasien($id){
-        $laporan_dbd = LaporaKasusDbd::where('id_pasien','=',$id)->with('pasien')->first();
+    public function get_laporan_dbd_by_id_pasien($id)
+    {
+        $laporan_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->with('pasien')->first();
 
         return response()->json([
             'status' => true,
             'message' => 'success',
-            'data' => $laporan_dbd 
-        ],200);
+            'data' => $laporan_dbd
+        ], 200);
+    }
+    public function tolakLaporan(Request $request, $id)
+    {
+        // Find the report by ID
+        $laporan_dbd = LaporaKasusDbd::where("id_pasien",'=',$id)->get();
+
+
+        foreach ($laporan_dbd as $key => $laporan) {
+            $laporan->update([
+                'status' => "rejected"
+            ]);
+        }
+
+        // Update the status to 'rejected'
+        // $laporan_dbd->status = 'rejected';
+        // $laporan_dbd->save();
+
+        return response()->json(['message' => 'Laporan berhasil ditolak.']);
     }
 }

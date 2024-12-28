@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string("gejala_yang_dialami");
             $table->string("gejala_lain");
             $table->string("file_hasil_lab");
+            $table->string("jadwal_control")->nullable();
+            $table->string("dokter_pj")->nullable();
+            $table->string("no_tiket")->nullable();
             $table->string("status");
             $table->timestamps();
         });

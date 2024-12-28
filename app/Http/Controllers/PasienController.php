@@ -28,6 +28,7 @@ class PasienController extends Controller
                 $query_data = $query_data->where(function ($query) use ($search_value) {
                     $query->where('nama', 'like', $search_value)
                         ->orWhere('alamat', 'like', $search_value)
+                        ->orWhere('email', 'like', $search_value)
                         ->orWhere('usia', 'like', $search_value)
                         ->orWhere('id_desa', 'like', $search_value)
                         ->orWhere('provinsi', 'like', $search_value)
@@ -35,9 +36,10 @@ class PasienController extends Controller
                         ->orWhere('tempat_lahir', 'like', $search_value)
                         ->orWhere('tanggal_lahir', 'like', $search_value)
                         ->orWhere('jenis_kelamin', 'like', $search_value)
-                        ->orWhere('Diagnosis_lab', 'like', $search_value)
-                        ->orWhere('Diagnosis_klinis', 'like', $search_value)
-                        ->orWhere('Status_akhir', 'like', $search_value)
+                        ->orWhere('diagnosis_lab', 'like', $search_value)
+                        ->orWhere('diagnosis_klinis', 'like', $search_value)
+                        ->orWhere('status_akhir', 'like', $search_value)
+                        ->orWhere('no_hp', 'like', $search_value)
                         ->orWhere('tahun_terdata', 'like', $search_value);
                 });
             }
@@ -88,6 +90,7 @@ class PasienController extends Controller
         $request->validate([
             'nama' => 'required',
             'alamat' => 'required',
+            'email' => 'required',
             'usia' => 'required',
             'id_desa' => 'required',
             'provinsi' => 'required',
@@ -95,9 +98,10 @@ class PasienController extends Controller
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required',
             'jenis_kelamin' => 'required',
-            'Diagnosis_lab' => 'required',
-            'Diagnosis_klinis' => 'required',
-            'Status_akhir' => 'required',
+            'diagnosis_lab' => 'required',
+            'diagnosis_klinis' => 'required',
+            'status_akhir' => 'required',
+            'no_hp' => 'required',
             'tahun_terdata' => 'required',
         ]);
         Pasien::create($request->all());
@@ -117,7 +121,8 @@ class PasienController extends Controller
      */
     public function edit(Pasien $pasien)
     {
-        return view('pasien.edit', compact('pasien'));
+        $data_desas = Desa::all();
+        return view('pasien.create', compact('data_desas'));
     }
 
     /**

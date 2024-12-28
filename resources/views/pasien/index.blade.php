@@ -16,6 +16,7 @@
                     <th>No</th>
                     <th>nama</th>
                     <th>alamat</th>
+                    <th>email</th>
                     <th>usia</th>
                     <th>Nama Desa</th>
                     <th>provinsi</th>
@@ -23,9 +24,11 @@
                     <th>tempat_lahir</th>
                     {{-- <th>tanggal_lahir</th> --}}
                     {{-- <th>jenis_kelamin</th> --}}
-                    {{-- <th>Diagnosis_lab</th> --}}
-                    {{-- <th>Diagnosis_klinis</th> --}}
-                    {{-- <th>Status_akhir</th> --}}
+                    {{-- <th>diagnosis_lab</th> --}}
+                    {{-- <th>diagnosis_klinis</th> --}}
+                    {{-- <th>status_akhir</th> --}}
+                       {{-- <th>no_hp</th> --}}
+                    {{-- <th>tahun_terdata</th> --}}
                     <th width="280px">Action</th>
                 </tr>
             </thead>
@@ -52,6 +55,10 @@
                     {
                         data: 'alamat',
                         name: 'alamat'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
                     },
                     {
 
@@ -87,18 +94,22 @@
                     // },
                     // {
 
-                    //     data: 'Diagnosis_lab',
-                    //     name: 'Diagnosis_lab'
+                    //     data: 'diagnosis_lab',
+                    //     name: 'diagnosis_lab'
                     // },
                     // {
 
-                    //     data: 'Diagnosis_klinis',
-                    //     name: 'Diagnosis_klinis'
+                    //     data: 'diagnosis_klinis',
+                    //     name: 'diagnosis_klinis'
                     // },
                     // {
 
-                    //     data: 'Status_akhir',
-                    //     name: 'Status_akhir'
+                    //     data: 'status_akhir',
+                    //     name: 'status_akhir'
+                    // },
+                    // {
+                    //     data: 'no_hp',
+                    //     name: 'no_hp'
                     // },
                     // {
                     //     data: 'tahun_terdata',
