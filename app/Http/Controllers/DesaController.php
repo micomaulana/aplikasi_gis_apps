@@ -178,13 +178,15 @@ class DesaController extends Controller
 
     public function laporan_masyarakat_view()
     {
+        $pasien = Pasien::where('email','=',Auth::user()->email)->first();
+
         $laporan_dbd = LaporaKasusDbd::select(
             'id_pasien',
             DB::raw('GROUP_CONCAT(gejala_yang_dialami) as gejala_yang_dialami'),
             DB::raw('GROUP_CONCAT(gejala_lain) as gejala_lain'),
             DB::raw('GROUP_CONCAT(file_hasil_lab) as file_hasil_lab'),
             DB::raw('GROUP_CONCAT(status) as status')
-        )
+        )->where('id_pasien','=',$pasien->id)
             ->groupBy('id_pasien')
             ->get();
 
@@ -249,7 +251,7 @@ class DesaController extends Controller
 
     public function get_laporan_dbd_by_id_pasien($id)
     {
-        $laporan_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->with('pasien')->first();
+        $laporan_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->with('pasien')->with('dokter')->first();
 
         return response()->json([
             'status' => true,

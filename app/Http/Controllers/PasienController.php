@@ -122,7 +122,7 @@ class PasienController extends Controller
     public function edit(Pasien $pasien)
     {
         $data_desas = Desa::all();
-        return view('pasien.create', compact('data_desas'));
+        return view('pasien.edit', compact('data_desas','pasien'));
     }
 
     /**

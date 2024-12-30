@@ -39,7 +39,7 @@
                 <input type="text" class="form-control" id="usia" value="{{$pasien->usia}}" name="usia">
             </div>
             <div class="mb-3">
-                <label for="id_desa" class="form-label">Id_desa </label>
+                <label for="id_desa" class="form-label">Nama Desa </label>
                 <select name="id_desa" class="form-control" id="id_desa">
                     @foreach ($data_desas as $desa)
                         <option value="{{ $desa->id }}">{{ $desa->nama }}</option>

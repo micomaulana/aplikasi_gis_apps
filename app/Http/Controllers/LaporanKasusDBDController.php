@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaporaKasusDbd;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class LaporanKasusDBDController extends Controller
@@ -20,7 +21,7 @@ class LaporanKasusDBDController extends Controller
                 'id_dokter' => 'required',
                 'catatan' => 'string|nullable'
             ]);
-            
+
 
             $laporan_kasus_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->get();
             $jadwalControl = $request->tanggal_control . '-' . $request->waktu_control;
@@ -60,5 +61,11 @@ class LaporanKasusDBDController extends Controller
             'message' => 'Laporan berhasil diterima!',
             'data' => $data,
         ]);
+    }
+    public function generatePDF($id)
+    {
+        $laporan_kasus_dbd = LaporaKasusDbd::findOrFail($id);
+        $pdf = Pdf::loadView('laporan_masyarakat.lapordbdpdf', compact('laporan_kasus_dbd'));  // Load a Blade view
+        return $pdf->stream('laporanDBD.pdf'); // Download the PDF
     }
 }

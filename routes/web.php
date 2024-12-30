@@ -59,4 +59,5 @@ Route::get('get_laporan_dbd_by_id_pasien/{id}',[DesaController::class,'get_lapor
 
 Route::put('update-laporan/{id}',[LaporanKasusDBDController::class,'update'])->name('update.laporan');
 Route::put('/laporan-tolak/{id}', [DesaController::class, 'tolakLaporan'])->name('laporan.tolak');
+Route::get("generatePDFLaporan/{id}",[LaporanKasusDBDController::class,'generatePDF']);
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

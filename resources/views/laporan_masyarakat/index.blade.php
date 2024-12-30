@@ -25,7 +25,6 @@
                     <tbody>
                         @foreach ($laporan_dbd as $ldbd)
                             <tr>
-                                <input type="text" value="{{$ldbd->pasien->id}}" id="id_pasien" hidden>
                                 <td>{{ $ldbd->pasien->nama }}</td>
                                 <?php
                                 $status = explode(',', $ldbd->status);
@@ -42,10 +41,12 @@
                                 </td>
                                 <td>
                                     <!-- Tombol untuk melihat detail dan menyembunyikan -->
-                                    <button class="btn btn-outline-primary btn-sm" id="btn-lihat" onclick="">
+                                    <button class="btn btn-outline-primary btn-sm btn-lihat"
+                                        data-id="{{ $ldbd->pasien->id }}">
                                         <i class="fas fa-eye"></i> Lihat
                                     </button>
-                                    <button class="btn btn-outline-danger btn-sm" id="btn-hide" onclick="">
+                                    <button class="btn btn-outline-danger btn-sm btn-hide" data-id="{{ $ldbd->pasien->id }}"
+                                        style="display: none;">
                                         <i class="fas fa-eye-slash"></i> Hide
                                     </button>
                                     <a href="" class="text-primary">
@@ -65,16 +66,17 @@
                 <h6 class="mb-0">Preview laporan</h6>
                 <div>
                     <button class="btn btn-outline-primary me-2"><i class="fas fa-print"></i> Cetak</button>
-                    <button class="btn btn-outline-primary"><i class="fas fa-file-pdf"></i> Unduh pdf</button>
+                    <button class="btn btn-outline-primary unduh"><i class="fas fa-file-pdf"></i> Unduh pdf</button>
                 </div>
             </div>
             <div class="card-body">
-                <h6>Laporan #DBD-2024-001</h6>
-                <p>Status: <strong class="text-danger">Positif DBD</strong></p>
+                <input type="text" id="id_laporan" hidden>
+                <h6>Laporan #<span id="no_tiket"></span></h6>
+                <p>Status: <strong class="text-danger" id="status">Positif DBD</strong></p>
                 <h6>Jadwal Kontrol</h6>
-                <p><i class="fas fa-calendar-alt"></i> Tanggal Dan Waktu<br><strong>24 Maret 2024, 09:00 WIB</strong></p>
+                <p><i class="fas fa-calendar-alt"></i> Tanggal Dan Waktu<br><strong id="jadwal_control">24 Maret 2024, 09:00 WIB</strong></p>
                 <p><i class="fas fa-calendar-alt"></i> Nama<br><strong id="nama_pasien"></strong></p>
-                <p><i class="fas fa-user-md"></i> Dokter Penanggung Jawab<br><strong>Dr. Syarief Ananta</strong></p>
+                <p><i class="fas fa-user-md"></i> Dokter Penanggung Jawab<br><strong id="dokter_pj">Dr. Syarief Ananta</strong></p>
                 <p><i class="fas fa-map-marker-alt"></i> Lokasi<br><strong>Puskesmas Karya Maju<br>Jl. Nusantara, Desa Karya
                         Maju</strong></p>
                 <h6>Persiapan Kontrol</h6>
@@ -93,33 +95,47 @@
     <script>
         $(document).ready(function() {
             $('#preview-laporan').hide();
-            $('#btn-hide').hide();
 
-            $('#btn-lihat').click(function() {
-                $(this).hide();
-                $('#btn-hide').show();
+            $('.btn-lihat').click(function() {
+                let id_pasien = $(this).data('id');
+                let btnHide = $(this).siblings('.btn-hide');
+                let btnLihat = $(this);
+
+                btnLihat.hide();
+                btnHide.show();
                 $('#preview-laporan').show();
 
-                let id_pasien = $("#id_pasien").val();
-
                 $.ajax({
-                    url: '/get_laporan_dbd_by_id_pasien/'+id_pasien,
+                    url: '/get_laporan_dbd_by_id_pasien/' + id_pasien,
                     type: 'GET',
                     success: function(response) {
+                        console.log(response);
+                        $("#id_laporan").val(response.data.id);
                         $("#nama_pasien").html(response.data.pasien.nama);
+                        $("#no_tiket").html(response.data.no_tiket);
+                        $("#status").html(response.data.status).css("text-transform", "uppercase");
+                        $("#jadwal_control").html(response.data.jadwal_control);
+                        $("#dokter_pj").html(response.data.dokter.nama);
                     },
                     error: function(xhr, status, error) {
                         console.error('Terjadi kesalahan:', error);
                     }
                 });
-
             });
-            $('#btn-hide').click(function() {
-                $(this).hide();
-                $('#btn-lihat').show();
+
+            $('.btn-hide').click(function() {
+                let btnLihat = $(this).siblings('.btn-lihat');
+                let btnHide = $(this);
+
+                btnHide.hide();
+                btnLihat.show();
                 $('#preview-laporan').hide();
             });
 
+            $(".unduh").click(function(){
+                let id_laporan = $("#id_laporan").val();
+                window.location.href = "/generatePDFLaporan/" + id_laporan;
+            });
         });
     </script>
 @endsection

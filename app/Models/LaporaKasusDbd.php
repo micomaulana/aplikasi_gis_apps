@@ -14,4 +14,7 @@ class LaporaKasusDbd extends Model
     public function pasien(){
         return $this->hasOne(Pasien::class,'id','id_pasien');
     }
+    public function dokter(){
+        return $this->hasOne(Dokter::class,'id','dokter_pj');
+    }
 }
