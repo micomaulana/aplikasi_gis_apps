@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('jumlah_kasus');
             $table->string('jumlah_penduduk');
             $table->string('tanggal_fogging');
+            $table->string('status_publish');
             $table->timestamps();
         });
     }

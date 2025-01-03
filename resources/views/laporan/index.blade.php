@@ -73,8 +73,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <input type="text" id="id_laporan_fogging" value="{{ $laporan_fogging->id }}" hidden>
-                                    <button class="btn btn-outline-primary btn-sm lihat-preview">
+
+                                    <button class="btn btn-outline-primary btn-sm lihat-preview"
+                                        data-id="{{ $laporan_fogging->id }}">
                                         <i class="fas fa-eye"></i> Lihat
                                     </button>
                                     <button class="btn btn-outline-primary btn-sm hide-preview">
@@ -158,23 +159,27 @@
                 $("#preview-section").show();
                 $(".hide-preview").show();
                 $(".lihat-preview").hide();
-                let id_foggings = $('#id_laporan_fogging').val();
+                let id_foggings = $(this).data('id');
                 let url = "{{ route('laporan-foggings.show', ':id') }}".replace(':id', id_foggings);
                 $.ajax({
                     url: url, // Endpoint untuk mengambil data
                     type: 'GET',
                     success: function(response) {
                         console.log(response);
+                        const tanggal_persetujuan = formatDate(response.data
+                        .tanggal_persetujuan); 
+                        const tanggal_pengajuan_laporan = formatDate(response.data
+                        .tanggal_pengajuan);  
                         $('#desa_laporan').text(response.data.desa.nama);
                         $('#jumlah_kasus_laporan').text(response.data.jumlah_kasus);
-                        $('#tanggal_pengajuan_laporan').text(response.data.tanggal_pengajuan);
+                        $('#tanggal_pengajuan_laporan').text(tanggal_pengajuan_laporan);
                         $('#status_laporan').text(response.data.status_pengajuan);
                         $('#id_fogging').val(response.data.id);
                         if (response.data.tanggal_persetujuan == null) {
                             $('#tanggal_disetujui_laporan').text("Belum Disetujui");
                         } else {
-                            $('#tanggal_disetujui_laporan').text(response.data
-                                .tanggal_persetujuan);
+                            $('#tanggal_disetujui_laporan').text(tanggal_persetujuan)
+
                         }
                     },
                     error: function(xhr) {
@@ -193,6 +198,18 @@
                 let id_fogging = $("#id_fogging").val();
                 window.location.href = "/generate-pdf/" + id_fogging;
             });
+
+            // Fungsi untuk format tanggal menjadi 'd m y'
+            function formatDate(dateString) {
+                if (!dateString) return ''; // Jika tidak ada tanggal
+                const date = new Date(dateString);
+                const day = String(date.getDate()).padStart(2, '0'); // Menambahkan 0 di depan jika kurang dari 10
+                const month = String(date.getMonth() + 1).padStart(2,
+                    '0'); // Bulan dimulai dari 0, jadi kita tambahkan 1
+                const year = date.getFullYear(); // Mendapatkan tahun
+
+                return `${day} ${month} ${year}`;
+            }
 
 
         });

@@ -91,4 +91,23 @@ class LaporanFoggingController extends Controller
         $pdf = Pdf::loadView('laporan.laporanfoggingpdf', compact('data'));  // Load a Blade view
         return $pdf->stream('laporanfogging.pdf'); // Download the PDF
     }
+
+    public function update_status_pengajuan_fogging($id,$status){
+        $laporanFogging = LaporanFogging::where('id','=',$id)->first();
+        $laporanFogging->update([
+            'tanggal_persetujuan' => now(),
+            'status_pengajuan' => $status
+        ]);
+        // foreach ($laporanFogging as $key => $laporan) {
+        // }
+        return redirect()->back()->with('success','status pengajuan berhasil di update');
+    }
+
+    public function lihat_detail_foggings($id){
+        $desa_foggings = LaporanFogging::where('id','=',$id)->with('desa.pasien')->get();
+        return response()->json([
+            'message' => 'success',
+            'data' => $desa_foggings
+        ],200);
+    }
 }

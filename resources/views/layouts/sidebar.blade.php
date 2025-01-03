@@ -70,6 +70,22 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('data_informasi_views') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">lihat data dan informasi</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('validasi_kapus') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">validasi kapus</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('validasi_admin') }}" aria-expanded="false">
                         <span>
                             <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>

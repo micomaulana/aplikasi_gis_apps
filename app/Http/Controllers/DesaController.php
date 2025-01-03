@@ -178,7 +178,7 @@ class DesaController extends Controller
 
     public function laporan_masyarakat_view()
     {
-        $pasien = Pasien::where('email','=',Auth::user()->email)->first();
+        $pasien = Pasien::where('email', '=', Auth::user()->email)->first();
 
         $laporan_dbd = LaporaKasusDbd::select(
             'id_pasien',
@@ -186,7 +186,7 @@ class DesaController extends Controller
             DB::raw('GROUP_CONCAT(gejala_lain) as gejala_lain'),
             DB::raw('GROUP_CONCAT(file_hasil_lab) as file_hasil_lab'),
             DB::raw('GROUP_CONCAT(status) as status')
-        )->where('id_pasien','=',$pasien->id)
+        )->where('id_pasien', '=', $pasien->id)
             ->groupBy('id_pasien')
             ->get();
 
@@ -262,7 +262,7 @@ class DesaController extends Controller
     public function tolakLaporan(Request $request, $id)
     {
         // Find the report by ID
-        $laporan_dbd = LaporaKasusDbd::where("id_pasien",'=',$id)->get();
+        $laporan_dbd = LaporaKasusDbd::where("id_pasien", '=', $id)->get();
 
 
         foreach ($laporan_dbd as $key => $laporan) {
@@ -276,5 +276,38 @@ class DesaController extends Controller
         // $laporan_dbd->save();
 
         return response()->json(['message' => 'Laporan berhasil ditolak.']);
+    }
+    public function validasi_kapus()
+    {
+        $dokters = Dokter::all();
+        $jumlah_laporan = DB::table('laporan_foggings')
+            ->count('id_desa');
+        $jumlah_laporan_menunggu_validasi = DB::table('laporan_foggings')
+            ->distinct('id_desa')
+            ->where('status_pengajuan', 'waiting')
+            ->count('id_desa');
+        $jumlah_laporan_terkonfirmasi = DB::table('laporan_foggings')
+            ->where('status_pengajuan', '!=', 'waiting')
+            ->where('status_pengajuan', '!=', 'rejected')  // Menambahkan kondisi status = 'waiting'
+            ->count('id_desa');
+        $jumlah_laporan_rejected = DB::table('laporan_foggings')
+            ->distinct('id_desa')
+            ->where('status_pengajuan', '=', 'rejected')
+            ->count('id_desa');
+
+
+
+        // Mendapatkan laporan kasus DBD dan mengelompokkan berdasarkan id_pasien
+        $laporanfoggings = LaporanFogging::all();
+
+        $jumlah_kasus = LaporanFogging::select('id_desa', DB::raw('COUNT(*) as jumlah_kasus'))
+            ->groupBy('id_desa')
+            ->pluck('jumlah_kasus', 'id_desa');
+
+        // Memetakan data ke format yang lebih terstruktur
+
+
+        // dd($groupedData);
+        return view('validasi_kapus.index', compact('dokters', 'laporanfoggings','jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
     }
 }

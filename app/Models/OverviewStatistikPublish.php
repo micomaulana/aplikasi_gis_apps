@@ -10,4 +10,7 @@ class OverviewStatistikPublish extends Model
     use HasFactory;
     protected $table = "overview_statistik_publishes";
     protected $guarded = ['id'];
+    public function desa(){
+        return $this->hasOne(Desa::class,'id','id_desa');
+    }
 }

@@ -29,15 +29,23 @@ class OverviewStatistikPublishController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'id_desa' => 'required',
             'total_kasus' => 'required',
             'total_penduduk' => 'required',
             'total_desa_rawan' => 'required',
             'jumlah_desa' => 'required',
         ]);
         OverviewStatistikPublish::create($request->all());
-        return redirect()->route('data_informasi_view')->with('success','overview success to published');
+        return redirect()->route('data_informasi_view')->with('success', 'overview success to published');
     }
-
+    public function data_informasi_views()
+    {
+        $totalkasus = OverviewStatistikPublish::count();
+        $jumlah_keseluruhan_desa_rawan = OverviewStatistikPublish::sum('total_desa_rawan');
+        $jumlah_keseluruhan_penduduk_terdampak = OverviewStatistikPublish::distinct('id_desa')->sum('total_penduduk');
+        $jumlah_desa_terdampak = OverviewStatistikPublish::distinct('id_desa')->count();
+        return view('data_informasi_views.index',compact('totalkasus','jumlah_keseluruhan_desa_rawan','jumlah_keseluruhan_penduduk_terdampak','jumlah_desa_terdampak'));
+    }
     /**
      * Display the specified resource.
      */

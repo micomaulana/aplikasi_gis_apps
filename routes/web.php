@@ -48,16 +48,20 @@ Route::get('edit-data-statistic/{id}', [StatistikController::class, 'edit'])->na
 Route::put('update-data-statistik/{id}', [StatistikController::class, 'update'])->name('update-data-statistik');
 Route::delete('delete-data-statistik/{id}', [StatistikController::class, 'destroy'])->name('delete-data-statistik');
 Route::resource('publish_overview_statistiks', OverviewStatistikPublishController::class);
-Route::get('get-jumlah-pasien-perdesa/{id}',[DesaController::class,'hitung_kasus_dari_id_desa'])->name('hitung_kasus_dari_id_desa');
-Route::resource('laporan-foggings',LaporanFoggingController::class);
+Route::get('get-jumlah-pasien-perdesa/{id}', [DesaController::class, 'hitung_kasus_dari_id_desa'])->name('hitung_kasus_dari_id_desa');
+Route::resource('laporan-foggings', LaporanFoggingController::class);
 Route::get('/generate-pdf/{id}', [LaporanFoggingController::class, 'generatePDF']);
 Route::get('validasi_admin', [DesaController::class, 'validasi_pasien_admin_view'])->name('validasi_admin');
 Route::get('laporan_masyarakat', [DesaController::class, 'laporan_masyarakat_view'])->name('laporan_masyarakat');
 Route::get('tambah_laporan', [DesaController::class, 'tambah_laporan'])->name('tambah_laporan');
-Route::post('simpan_laporan',[DesaController::class,'simpan_laporan_masyarakat'])->name('simpan_laporan_masyarakat');
-Route::get('get_laporan_dbd_by_id_pasien/{id}',[DesaController::class,'get_laporan_dbd_by_id_pasien'])->name('get_laporan_dbd_by_id_pasien');
+Route::post('simpan_laporan', [DesaController::class, 'simpan_laporan_masyarakat'])->name('simpan_laporan_masyarakat');
+Route::get('get_laporan_dbd_by_id_pasien/{id}', [DesaController::class, 'get_laporan_dbd_by_id_pasien'])->name('get_laporan_dbd_by_id_pasien');
 
-Route::put('update-laporan/{id}',[LaporanKasusDBDController::class,'update'])->name('update.laporan');
+Route::put('update-laporan/{id}', [LaporanKasusDBDController::class, 'update'])->name('update.laporan');
 Route::put('/laporan-tolak/{id}', [DesaController::class, 'tolakLaporan'])->name('laporan.tolak');
-Route::get("generatePDFLaporan/{id}",[LaporanKasusDBDController::class,'generatePDF']);
+Route::get("generatePDFLaporan/{id}", [LaporanKasusDBDController::class, 'generatePDF']);
+Route::get("validasi_kapus", [DesaController::class, 'validasi_kapus'])->name('validasi_kapus');
+Route::get("update_foggings_status/{id}/{status}", [LaporanFoggingController::class, 'update_status_pengajuan_fogging'])->name("update_status_pengajuan_fogging");
+Route::get('lihat_detail_foggings/{id}', [LaporanFoggingController::class, 'lihat_detail_foggings'])->name('lihat_detail_foggings');
+route::get("data_informasi_views", [OverviewStatistikPublishController::class, 'data_informasi_views'])->name('data_informasi_views');
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

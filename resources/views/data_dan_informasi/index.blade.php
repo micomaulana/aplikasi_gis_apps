@@ -6,9 +6,7 @@
             <i class="fas fa-info-circle"></i> Data dan Informasi
         </div>
         <div class="mb-3">
-            <select class="form-select">
-                <option selected>2024</option>
-                <!-- Add other years as needed -->
+            <select class="form-select" aria-label="Select year" id="yearSelect">
             </select>
         </div>
         <div class="card p-4 mb-4">
@@ -84,6 +82,8 @@
                                 <form action="{{ route('delete-data-statistik', $statistik->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
+                                    <a class="btn btn-success publish_data"
+                                        data-id_desa="{{ $statistik->desa->id }}">Publish Data</a>
                                     <a href="{{ route('edit_data_statistik', $statistik->id) }}"
                                         class="btn btn-secondary">Edit</a>
                                     <button type="submit" class="btn btn-danger">Hapus</a>
@@ -94,7 +94,7 @@
                 </tbody>
             </table>
         </div>
-        <form action="{{ route('publish_overview_statistiks.store') }}" method="POST">
+        <form action="{{ route('publish_overview_statistiks.store') }}" method="POST" id="form-publish">
             @csrf
             <div class="card p-4 mb-4">
                 <h5 class="card-title">Overview statistik</h5>
@@ -102,6 +102,7 @@
                     <div class="col-md-6">
                         <div class="overview-card">
                             <label for="total" class="form-label">total kasus</label>
+                            <input type="number" name="id_desa" id="id_desa" hidden>
                             <input type="number" name="total_kasus" id="kasus" class="form-control"
                                 placeholder="Masukkan jumlah kasus">
                         </div>
@@ -135,6 +136,7 @@
 
     <script>
         $(document).ready(function() {
+            $("#form-publish").hide();
             $("#form_data_statistic").submit(function(e) {
                 e.preventDefault();
                 console.log("submit...");
@@ -159,9 +161,9 @@
                                 if (result.isConfirmed) {
                                     console.log(
                                         "OK button clicked, you can reload the page or navigate."
-                                        );
+                                    );
                                     location
-                                .reload();
+                                        .reload();
                                 }
                             });
                             $('#form_data_statistic')[0].reset();
@@ -172,6 +174,19 @@
                     }
                 });
             });
+
+            $('.publish_data').click(function() {
+                const id_desa = $(this).data('id_desa');
+                $("#id_desa").val(id_desa);
+                $("#form-publish").show();
+            });
+
+            var currentYear = new Date().getFullYear(); // Mendapatkan tahun sekarang
+            var startYear = 2000; // Tahun mulai
+            var yearSelect = $('#yearSelect');
+            for (var year = currentYear; year >= startYear; year--) {
+                yearSelect.append(new Option(year, year));
+            }
         });
     </script>
 @endsection

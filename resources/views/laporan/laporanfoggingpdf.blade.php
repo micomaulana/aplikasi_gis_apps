@@ -162,8 +162,9 @@
 
                     <div class="row">
                         <div class="col-4">
-                            Tanggal pengajuan: <span
-                                id="tanggal_pengajuan_laporan">{{ $data->tanggal_pengajuan }}</span>
+                            Tanggal pengajuan: <span id="tanggal_pengajuan_laporan">
+                                {{ date('d m Y', strtotime($data->tanggal_pengajuan)) }}
+                            </span>
                         </div>
                     </div>
 
@@ -175,8 +176,9 @@
 
                     <div class="row">
                         <div class="col-4">
-                            Tanggal Persetujuan: <span
-                                id="tanggal_disetujui_laporan">{{ $data->tanggal_persetujuan }}</span>
+                            Tanggal Persetujuan: <span id="tanggal_disetujui_laporan">
+                                {{ $data->tanggal_persetujuan ? date('d m Y', strtotime($data->tanggal_persetujuan)) : 'Belum Disetujui' }}
+                            </span>
                         </div>
 
                     </div>

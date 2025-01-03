@@ -317,6 +317,102 @@
             background-color: #4a4aff;
             border: none;
         }
+
+        #button-setuju {
+            background: #70FE85;
+            color: black;
+            font-weight: bold;
+        }
+
+        #button-tolak {
+            background: #EF0B0B;
+            color: black;
+            font-weight: bold;
+        }
+
+
+        .card {
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            font-weight: normal;
+            font-size: 0.8rem;
+            padding: 0.3rem;
+            border-bottom: none;
+            background: transparent;
+        }
+
+        .card-body {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+        }
+
+        /* Untuk angka-angka yang ditampilkan */
+        .card-body div:nth-child(2) {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 0.2rem 0;
+        }
+
+        /* Untuk teks di bawah angka */
+        .card-body div:nth-child(3) {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 0.1rem;
+        }
+
+        .status-tinggi {
+            background-color: #fff5f5;
+            border: 1px solid #ffe6e6;
+        }
+
+        .status-rendah {
+            background-color: #f5fff5;
+            border: 1px solid #e6ffe6;
+        }
+
+        .status-sedang {
+            background-color: #fffff5;
+            border: 1px solid #ffffe6;
+        }
+
+        .status-tinggi-text {
+            color: #dc3545;
+        }
+
+        .status-rendah-text {
+            color: #28a745;
+        }
+
+        .status-sedang-text {
+            color: #ffc107;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+        }
+
+        /* Container untuk card */
+        .card .card-body {
+            min-height: 80px;
+        }
+
+        /* Tambahan untuk mengatur jarak antar card */
+        .col-3 {
+            padding: 0.3rem;
+        }
+
+        /* Optional: atur max-width untuk container card */
+        .row {
+            max-width: 1200px;
+            margin-left: 0;
+        }
     </style>
 </head>
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('overview_statistik_publishes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_desa');
             $table->integer("total_kasus");
             $table->integer("total_penduduk");
             $table->integer("total_desa_rawan");
