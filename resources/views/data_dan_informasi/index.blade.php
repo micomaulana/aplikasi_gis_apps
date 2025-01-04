@@ -57,8 +57,11 @@
         </div>
 
 
-        <div class="card p-4 mb-4">
-            <h5 class="card-title">Preview data</h5>
+        <<div class="card p-4 mb-4">
+            <h5 class="card-title d-flex justify-content-between align-items-center">
+                <span>Preview data</span>
+                <a class="btn btn-success publish_data" style="margin-right: 10px;">Publish Data</a>
+            </h5>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -82,64 +85,63 @@
                                 <form action="{{ route('delete-data-statistik', $statistik->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <a class="btn btn-success publish_data"
-                                        data-id_desa="{{ $statistik->desa->id }}">Publish Data</a>
                                     <a href="{{ route('edit_data_statistik', $statistik->id) }}"
                                         class="btn btn-secondary">Edit</a>
-                                    <button type="submit" class="btn btn-danger">Hapus</a>
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        </div>
-        <form action="{{ route('publish_overview_statistiks.store') }}" method="POST" id="form-publish">
-            @csrf
-            <div class="card p-4 mb-4">
-                <h5 class="card-title">Overview statistik</h5>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="overview-card">
-                            <label for="total" class="form-label">total kasus</label>
-                            <input type="number" name="id_desa" id="id_desa" hidden>
-                            <input type="number" name="total_kasus" id="kasus" class="form-control"
-                                placeholder="Masukkan jumlah kasus">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-card">
-                            <label for="desa_rawan" class="form-label">desa rawan</label>
-                            <input type="number" name="total_desa_rawan" id="desa_rawan" class="form-control"
-                                placeholder="Masukkan jumlah desa">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-card">
-                            <label for="total" class="form-label">total penduduk</label>
-                            <input type="number" name="total_penduduk" id="total" class="form-control"
-                                placeholder="Masukkan jumlah total">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-card">
-                            <label for="jumlah" class="form-label">jumlah desa</label>
-                            <input type="number" name="jumlah_desa" id="jumlah" class="form-control"
-                                placeholder="Masukkan jumlah desa">
-                        </div>
+    </div>
+
+    <form action="{{ route('publish_overview_statistiks.store') }}" method="POST" id="form-publish">
+        @csrf
+        <div class="card p-4 mb-4">
+            <h5 class="card-title">Overview statistik</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="overview-card">
+                        <label for="total" class="form-label">total kasus</label>
+                        <input type="number" name="total_kasus" id="kasus" class="form-control"
+                            placeholder="Masukkan jumlah kasus">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary d-flex ms-auto">publikasikan data</button>
+                <div class="col-md-6">
+                    <div class="overview-card">
+                        <label for="desa_rawan" class="form-label">desa rawan</label>
+                        <input type="number" name="total_desa_rawan" id="desa_rawan" class="form-control"
+                            placeholder="Masukkan jumlah desa">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="overview-card">
+                        <label for="total" class="form-label">total penduduk</label>
+                        <input type="number" name="total_penduduk" id="total" class="form-control"
+                            placeholder="Masukkan jumlah total">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="overview-card">
+                        <label for="jumlah" class="form-label">jumlah desa</label>
+                        <input type="number" name="jumlah_desa" id="jumlah" class="form-control"
+                            placeholder="Masukkan jumlah desa">
+                    </div>
+                </div>
             </div>
-        </form>
+            <button type="submit" class="btn btn-primary d-flex ms-auto">publikasikan data</button>
+        </div>
+    </form>
     </div>
 
     <script>
         $(document).ready(function() {
             $("#form-publish").hide();
+
+            // Form submission for statistics data
             $("#form_data_statistic").submit(function(e) {
                 e.preventDefault();
-                console.log("submit...");
 
                 let formData = $(this).serialize();
 
@@ -159,34 +161,95 @@
                                 icon: "success"
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    console.log(
-                                        "OK button clicked, you can reload the page or navigate."
-                                    );
-                                    location
-                                        .reload();
+                                    location.reload();
                                 }
                             });
                             $('#form_data_statistic')[0].reset();
                         }
                     },
                     error: function(xhr) {
-                        alert('Terjadi kesalahan. Silakan coba lagi.');
+                        Swal.fire({
+                            title: "Error",
+                            text: "Terjadi kesalahan. Silakan coba lagi.",
+                            icon: "error"
+                        });
                     }
                 });
             });
 
+            // Overview calculation
             $('.publish_data').click(function() {
-                const id_desa = $(this).data('id_desa');
-                $("#id_desa").val(id_desa);
                 $("#form-publish").show();
+
+                let totalKasus = 0;
+                let totalPenduduk = 0;
+                let totalDesaRawan = 0;
+                let jumlahDesa = 0;
+
+                const rows = $('.table tbody tr');
+                jumlahDesa = rows.length;
+
+                rows.each(function() {
+                    const columns = $(this).find('td');
+
+                    const kasus = parseInt(columns.eq(1).text()) || 0;
+                    const penduduk = parseInt(columns.eq(3).text()) || 0;
+
+                    totalKasus += kasus;
+                    totalPenduduk += penduduk;
+
+                    if (columns.eq(2).text().trim().toLowerCase() === 'tinggi') {
+                        totalDesaRawan++;
+                    }
+                });
+
+                // Set values to overview form
+                $('input[name="total_kasus"]').val(totalKasus);
+                $('input[name="total_penduduk"]').val(totalPenduduk);
+                $('input[name="total_desa_rawan"]').val(totalDesaRawan);
+                $('input[name="jumlah_desa"]').val(jumlahDesa);
             });
 
-            var currentYear = new Date().getFullYear(); // Mendapatkan tahun sekarang
-            var startYear = 2000; // Tahun mulai
+            // Year selection setup
+            var currentYear = new Date().getFullYear();
+            var startYear = 2000;
             var yearSelect = $('#yearSelect');
+
             for (var year = currentYear; year >= startYear; year--) {
                 yearSelect.append(new Option(year, year));
             }
+
+            // Form publish submission - Modified version
+            $("#form-publish").on('submit', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: "Data Overview Berhasil Dipublikasikan",
+                            icon: "success"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Terjadi kesalahan saat publikasi overview. Silakan coba lagi.",
+                            icon: "error"
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endsection
