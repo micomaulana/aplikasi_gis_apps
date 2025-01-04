@@ -18,7 +18,7 @@
                                 <div class="card-header">Σ</div>
                                 <div class="card-body">
                                     <div>Total kasus</div>
-                                    <div class="text-primary">{{$totalkasus}}</div>
+                                    <div class="text-primary">{{ $totalkasus }}</div>
                                     <div>Seluruh wilayah</div>
                                 </div>
                             </div>
@@ -30,7 +30,7 @@
                                 <div class="card-header">⚠️</div>
                                 <div class="card-body">
                                     <div>Desa rawan</div>
-                                    <div class="status-tinggi-text">{{$jumlah_keseluruhan_desa_rawan}}</div>
+                                    <div class="status-tinggi-text">{{ $jumlah_keseluruhan_desa_rawan }}</div>
                                     <div>Status tinggi</div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                 <div class="card-header">👥</div>
                                 <div class="card-body">
                                     <div>Total penduduk Terdampak</div>
-                                    <div class="status-rendah-text">{{$jumlah_keseluruhan_penduduk_terdampak}}</div>
+                                    <div class="status-rendah-text">{{ $jumlah_keseluruhan_penduduk_terdampak }}</div>
                                     <div>Jiwa</div>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                                 <div class="card-header">🏠</div>
                                 <div class="card-body">
                                     <div>Jumlah desa</div>
-                                    <div class="status-sedang-text">{{$jumlah_desa_terdampak}}</div>
+                                    <div class="status-sedang-text">{{ $jumlah_desa_terdampak }}</div>
                                     <div>Wilayah</div>
                                 </div>
                             </div>
@@ -137,6 +137,22 @@
     </div>
     <script>
         $(document).ready(function() {
+            $('#yearSelect').change(function() {
+                var selectedValue = $(this).val();
+                $.ajax({
+                    url: '/get-data-tanggal/'+selectedValue, // The route where you want to send the GET request
+                    type: 'GET',
+                    success: function(response) {
+                        // Handle success
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.log(error);
+                    }
+                });
+            });
+
             var currentYear = new Date().getFullYear(); // Mendapatkan tahun sekarang
             var startYear = 2000; // Tahun mulai
             var yearSelect = $('#yearSelect');

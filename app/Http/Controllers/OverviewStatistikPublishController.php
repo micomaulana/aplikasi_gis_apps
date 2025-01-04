@@ -67,4 +67,12 @@ class OverviewStatistikPublishController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
+
+    public function getDataByYear($year){
+        $overviewStatistik = OverviewStatistikPublish::whereYear('created_at','=',$year)->get();
+        return response()->json([
+            'success' => true,
+            'data' => $overviewStatistik
+        ],200);
+    }
 }
