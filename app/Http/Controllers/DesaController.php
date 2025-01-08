@@ -310,4 +310,13 @@ class DesaController extends Controller
         // dd($groupedData);
         return view('validasi_kapus.index', compact('dokters', 'laporanfoggings','jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
     }
+    public function landing_page() 
+    {
+        return view ('Landing_page.index');
+    }
+    public function dashboard_masyarakat() 
+    {
+        return view ('Dashboard_masyarakat.index');
+    }
+    
 }

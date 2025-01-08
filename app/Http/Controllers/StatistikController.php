@@ -38,6 +38,7 @@ class StatistikController extends Controller
                 'jumlah_penduduk' => 'required',
                 'tanggal_fogging' => 'required',
             ]);
+ 
 
             Statistik::create($request->all());
             return response()->json([

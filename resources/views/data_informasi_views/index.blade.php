@@ -18,7 +18,7 @@
                                 <div class="card-header">Σ</div>
                                 <div class="card-body">
                                     <div>Total kasus</div>
-                                    <div class="text-primary">{{ $totalkasus }}</div>
+                                    <div class="text-primary" id="total_kasus">{{ $totalkasus }}</div>
                                     <div>Seluruh wilayah</div>
                                 </div>
                             </div>
@@ -30,7 +30,8 @@
                                 <div class="card-header">⚠️</div>
                                 <div class="card-body">
                                     <div>Desa rawan</div>
-                                    <div class="status-tinggi-text">{{ $jumlah_keseluruhan_desa_rawan }}</div>
+                                    <div class="status-tinggi-text" id="jumlah_keseluruhan_desa_rawan">
+                                        {{ $jumlah_keseluruhan_desa_rawan }}</div>
                                     <div>Status tinggi</div>
                                 </div>
                             </div>
@@ -42,7 +43,8 @@
                                 <div class="card-header">👥</div>
                                 <div class="card-body">
                                     <div>Total penduduk Terdampak</div>
-                                    <div class="status-rendah-text">{{ $jumlah_keseluruhan_penduduk_terdampak }}</div>
+                                    <div class="status-rendah-text" id="jumlah_keseluruhan_penduduk_terdampak">
+                                        {{ $jumlah_keseluruhan_penduduk_terdampak }}</div>
                                     <div>Jiwa</div>
                                 </div>
                             </div>
@@ -54,7 +56,8 @@
                                 <div class="card-header">🏠</div>
                                 <div class="card-body">
                                     <div>Jumlah desa</div>
-                                    <div class="status-sedang-text">{{ $jumlah_desa_terdampak }}</div>
+                                    <div class="status-sedang-text" id="jumlah_desa_terdampak">{{ $jumlah_desa_terdampak }}
+                                    </div>
                                     <div>Wilayah</div>
                                 </div>
                             </div>
@@ -72,66 +75,31 @@
                     <th>Status</th>
                     <th>Penduduk</th>
                     <th>Fogging terakhir</th>
-                    <th>Detail</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Karya maju</td>
-                    <td>8</td>
-                    <td class="status-sedang-text">Sedang</td>
-                    <td>4804</td>
-                    <td>11 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Tenggoro</td>
-                    <td>3</td>
-                    <td class="status-sedang-text">Sedang</td>
-                    <td>1990</td>
-                    <td>7 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Tanjung Dalam</td>
-                    <td>1</td>
-                    <td class="status-rendah-text">Rendah</td>
-                    <td>1143</td>
-                    <td>-</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Dawas</td>
-                    <td>0</td>
-                    <td class="status-rendah-text">Rendah</td>
-                    <td>4548</td>
-                    <td>13 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Sumber Agung</td>
-                    <td>1</td>
-                    <td class="status-rendah-text">Rendah</td>
-                    <td>2588</td>
-                    <td>11 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Tegal Mulyo</td>
-                    <td>1</td>
-                    <td class="status-rendah-text">Rendah</td>
-                    <td>2255</td>
-                    <td>6 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
-                <tr>
-                    <td>Mulyo Asih</td>
-                    <td>16</td>
-                    <td class="status-tinggi-text">Tinggi</td>
-                    <td>2605</td>
-                    <td>11 Jan 2024</td>
-                    <td><a href="#">Detail</a></td>
-                </tr>
+                @foreach ($statistik as $stat)
+                    <tr>
+                        <td>{{ $stat->desa->nama }}</td>
+                        <td>{{ $stat->jumlah_kasus }}</td>
+                        {{-- <td class="@class([
+                            'status-tinggi-text' => strtolower($stat->status) == 'tinggi',
+                            'status-sedang-text' => strtolower($stat->status) == 'sedang',
+                            'status-rendah-text' => strtolower($stat->status) == 'rendah',
+                        ])"> --}}
+
+                        @if ($stat->status == 'tinggi')
+                            <td class="text-danger">{{ $stat->status }}</td>
+                        @elseif($stat->status == 'rendah')
+                            <td class="text-success">{{ $stat->status }}</td>
+                        @elseif($stat->status == 'sedang')
+                            <td class="text-warning">{{ $stat->status }}</td>
+                        @endif
+                        <td>{{ $stat->jumlah_penduduk }}</td>
+                        <td>{{ $stat->tanggal_fogging }}</td>
+                    </tr>
+                @endforeach
+
             </tbody>
         </table>
     </div>
@@ -140,10 +108,18 @@
             $('#yearSelect').change(function() {
                 var selectedValue = $(this).val();
                 $.ajax({
-                    url: '/get-data-tanggal/'+selectedValue, // The route where you want to send the GET request
+                    url: '/get-data-by-year/' +
+                        selectedValue, // The route where you want to send the GET request
                     type: 'GET',
                     success: function(response) {
                         // Handle success
+                        $('#total_kasus').text(response.data.total_kasus);
+                        $('#jumlah_keseluruhan_desa_rawan').text(response.data
+                            .jumlah_keseluruhan_desa_rawan);
+                        $('#jumlah_keseluruhan_penduduk_terdampak').text(response.data
+                            .jumlah_keseluruhan_penduduk_terdampak);
+                        $('#jumlah_desa_terdampak').text(response.data.jumlah_desa_terdampak);
+
                         console.log(response);
                     },
                     error: function(xhr, status, error) {
@@ -151,6 +127,46 @@
                         console.log(error);
                     }
                 });
+
+                $.ajax({
+                    url: '/get-data-statistik-by-year/' + selectedValue, // Endpoint
+                    type: 'GET',
+                    success: function(response) {
+                        // Pastikan response.data adalah array
+                        const statistikData = response.data;
+
+                        // Bersihkan tabel sebelum menambahkan data baru
+                        const tbody = $('table.table-bordered tbody');
+                        tbody.empty();
+
+                        // Iterasi setiap item dalam array data
+                        statistikData.forEach(stat => {
+                            const statusClass = stat.status.toLowerCase() === 'tinggi' ?
+                                'text-danger' :
+                                stat.status.toLowerCase() === 'rendah' ?
+                                'text-success' :
+                                stat.status.toLowerCase() === 'sedang' ?
+                                'text-warning' : '';
+
+                            const row = `
+                <tr>
+                    <td>${stat.desa.nama}</td>
+                    <td>${stat.jumlah_kasus}</td>
+                    <td class="${statusClass}">${stat.status}</td>
+                    <td>${stat.jumlah_penduduk}</td>
+                    <td>${stat.tanggal_fogging ?? '-'}</td>
+                </tr>
+            `;
+                            tbody.append(row); // Tambahkan row ke tabel
+                        });
+
+                        console.log(response); // Debugging, pastikan data benar
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error); // Debugging error
+                    }
+                });
+
             });
 
             var currentYear = new Date().getFullYear(); // Mendapatkan tahun sekarang

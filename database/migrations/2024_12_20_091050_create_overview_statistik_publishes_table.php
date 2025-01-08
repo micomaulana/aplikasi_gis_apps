@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer("total_penduduk");
             $table->integer("total_desa_rawan");
             $table->integer("jumlah_desa");
+            $table->string("tahun");
             $table->timestamps();
         });
     }

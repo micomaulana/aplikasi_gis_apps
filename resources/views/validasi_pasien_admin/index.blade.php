@@ -67,6 +67,10 @@
                                 data-id="{{ $idPasien }}">
                                 <i class="fas fa-times"></i> Tolak
                             </button>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailPasienModal"
+                                data-id="{{ $idPasien }}" id="btnLihatPasien">
+                                <i class="bi bi-eye"></i> Lihat Detail
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -114,6 +118,69 @@
             </div>
         </div>
     </div>
+
+    {{-- detail pasien --}}
+    <div class="modal fade" id="detailPasienModal" tabindex="-1" aria-labelledby="detailPasienModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailPasienModalLabel">Detail Pasien</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="lihatdetailnama" class="form-label">Nama</label>
+                        <input type="text" class="form-control" id="lihatdetailnama" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatdetailalamat" class="form-label">Alamat</label>
+                        <textarea class="form-control" id="lihatdetailalamat" rows="2" readonly></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="lihatEmail" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatdetailusia" class="form-label">Usia</label>
+                        <input type="text" class="form-control" id="lihatdetailusia" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatNamaDesa" class="form-label">Nama Desa</label>
+                        <input type="text" class="form-control" id="lihatNamaDesa" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatProvinsi" class="form-label">Provinsi</label>
+                        <input type="text" class="form-control" id="lihatProvinsi" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatKabKota" class="form-label">Kabupaten/Kota</label>
+                        <input type="text" class="form-control" id="lihatKabKota" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatTempatLahir" class="form-label">Tempat Lahir</label>
+                        <input type="text" class="form-control" id="lihatTempatLahir" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatTanggalLahir" class="form-label">Tanggal Lahir</label>
+                        <input type="date" class="form-control" id="lihatTanggalLahir" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatJenisKelamin" class="form-label">Jenis Kelamin</label>
+                        <input type="text" class="form-control" id="lihatJenisKelamin" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lihatNoHp" class="form-label">No. HP</label>
+                        <input type="text" class="form-control" id="lihatNoHp" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {{-- modal form --}}
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -312,6 +379,43 @@
                     error: function(xhr, status, error) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
                         console.error(xhr, status, error);
+                    }
+                });
+            });
+
+            $("#btnLihatPasien").click(function() {
+                // Ambil ID pasien dari atribut data-id
+                var pasienId = $(this).data('id');
+
+                // Melakukan request Ajax untuk mendapatkan data pasien berdasarkan ID
+                $.ajax({
+                    url: '/get-pasien-detail/' + pasienId, // Ganti dengan URL yang sesuai
+                    type: 'GET',
+                    success: function(response) {
+                        // Pastikan response berisi data yang diperlukan
+                        console.log(response);
+                        
+                        $('#lihatdetailnama').val(response.data.nama);
+                        $('#lihatdetailalamat').val(response.data.alamat);
+                        $('#lihatEmail').val(response.data.email);
+                        $('#lihatdetailusia').val(response.data.usia);
+                        $('#lihatNamaDesa').val(response.data.desa.nama);
+                        $('#lihatProvinsi').val(response.data.provinsi);
+                        $('#lihatKabKota').val(response.data.kab_kota);
+                        $('#lihatTempatLahir').val(response.data.tempat_lahir);
+                        $('#lihatTanggalLahir').val(response.data.tanggal_lahir);
+                        $('#lihatJenisKelamin').val(response.data.jenis_kelamin);
+                        $('#lihatNoHp').val(response.data.no_hp);
+
+                        // Menampilkan modal
+                        $('#detailPasienModal').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Terjadi kesalahan saat memuat data.",
+                            icon: "error"
+                        });
                     }
                 });
             });

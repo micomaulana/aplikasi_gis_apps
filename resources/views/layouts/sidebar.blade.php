@@ -109,6 +109,22 @@
                         <span class="hide-menu">Laporan</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('landing_page_views') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">Landing Page</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('dashboard_masyarakat') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">Dashboard</span>
+                    </a>
+                </li>
                 <li class="nav-small-cap">
                     <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-6"
                         class="fs-6"></iconify-icon>

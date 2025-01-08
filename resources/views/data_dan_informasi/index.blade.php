@@ -5,12 +5,13 @@
         <div class="header">
             <i class="fas fa-info-circle"></i> Data dan Informasi
         </div>
-        <div class="mb-3">
-            <select class="form-select" aria-label="Select year" id="yearSelect">
-            </select>
-        </div>
+
         <div class="card p-4 mb-4">
             <form id="form_data_statistic">
+                {{-- <div class="mb-3">
+                    <select class="form-select" name="year_created" aria-label="Select year" id="yearSelect">
+                    </select>
+                </div> --}}
                 <h5 class="card-title">Input data statistik</h5>
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -58,8 +59,11 @@
 
 
         <<div class="card p-4 mb-4">
+
             <h5 class="card-title d-flex justify-content-between align-items-center">
                 <span>Preview data</span>
+                <select class="form-select" aria-label="Select year" id="yearSelect" style="width: 350px;">
+                </select>
                 <a class="btn btn-success publish_data" style="margin-right: 10px;">Publish Data</a>
             </h5>
             <table class="table table-bordered">
@@ -129,6 +133,13 @@
                             placeholder="Masukkan jumlah desa">
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="overview-card">
+                        <label for="tahun" class="form-label">Tahun</label>
+                        <input type="number" name="tahun" id="jumlah" class="form-control"
+                            placeholder="Masukkan tahun">
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary d-flex ms-auto">publikasikan data</button>
         </div>
@@ -137,6 +148,14 @@
 
     <script>
         $(document).ready(function() {
+            // Year selection setup
+            var currentYear = new Date().getFullYear();
+            var startYear = 2000;
+            var yearSelect = $('#yearSelect');
+
+            for (var year = currentYear; year >= startYear; year--) {
+                yearSelect.append(new Option(year, year));
+            }
             $("#form-publish").hide();
 
             // Form submission for statistics data
@@ -180,44 +199,29 @@
             // Overview calculation
             $('.publish_data').click(function() {
                 $("#form-publish").show();
+                var selectedValue = $('#yearSelect').val();
 
-                let totalKasus = 0;
-                let totalPenduduk = 0;
-                let totalDesaRawan = 0;
-                let jumlahDesa = 0;
 
-                const rows = $('.table tbody tr');
-                jumlahDesa = rows.length;
-
-                rows.each(function() {
-                    const columns = $(this).find('td');
-
-                    const kasus = parseInt(columns.eq(1).text()) || 0;
-                    const penduduk = parseInt(columns.eq(3).text()) || 0;
-
-                    totalKasus += kasus;
-                    totalPenduduk += penduduk;
-
-                    if (columns.eq(2).text().trim().toLowerCase() === 'tinggi') {
-                        totalDesaRawan++;
+                $.ajax({
+                    url: '/get-data-statistik-form-by-year/' +
+                        selectedValue, // The route where you want to send the GET request
+                    type: 'GET',
+                    success: function(response) {
+                        // Set values to overview form
+                        $('input[name="total_kasus"]').val(response.data.total_kasus);
+                        $('input[name="total_penduduk"]').val(response.data.jumlah_penduduk);
+                        $('input[name="total_desa_rawan"]').val(response.data.jumlah_desa_rawan);
+                        $('input[name="jumlah_desa"]').val(response.data.jumlah_desa);
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.log(error);
                     }
                 });
 
-                // Set values to overview form
-                $('input[name="total_kasus"]').val(totalKasus);
-                $('input[name="total_penduduk"]').val(totalPenduduk);
-                $('input[name="total_desa_rawan"]').val(totalDesaRawan);
-                $('input[name="jumlah_desa"]').val(jumlahDesa);
+
             });
-
-            // Year selection setup
-            var currentYear = new Date().getFullYear();
-            var startYear = 2000;
-            var yearSelect = $('#yearSelect');
-
-            for (var year = currentYear; year >= startYear; year--) {
-                yearSelect.append(new Option(year, year));
-            }
 
             // Form publish submission - Modified version
             $("#form-publish").on('submit', function(e) {

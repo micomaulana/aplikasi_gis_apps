@@ -507,7 +507,7 @@
             padding: 20px;
             border-radius: 15px;
         }
-        
+
 
         .sidebar {
             background-color: #2c3e50;

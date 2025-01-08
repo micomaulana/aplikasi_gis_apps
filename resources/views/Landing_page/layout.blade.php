@@ -413,7 +413,7 @@
             max-width: 1200px;
             margin-left: 0;
         }
-
+        
 
         .sidebar {
             background-color: #7a92b8;
@@ -507,88 +507,6 @@
             padding: 20px;
             border-radius: 15px;
         }
-        
-
-        .sidebar {
-            background-color: #2c3e50;
-            height: 100vh;
-            padding-top: 20px;
-        }
-
-        .sidebar .nav-link {
-            color: white;
-            margin: 10px 0;
-            text-align: center;
-        }
-
-        .sidebar .nav-link:hover {
-            background-color: #34495e;
-        }
-
-        .content {
-            padding: 20px;
-        }
-
-        .dashboard-header {
-            background-color: #e3f2fd;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-header h1 {
-            font-size: 24px;
-            margin: 0;
-        }
-
-        .card {
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .card img {
-            border-radius: 10px;
-        }
-
-        .info-box {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .info-box h5 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .info-box p {
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .stats-box {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .stats-box .stat {
-            text-align: center;
-        }
-
-        .stats-box .stat h6 {
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .stats-box .stat p {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0;
-        }
     </style>
 </head>
 
@@ -601,7 +519,6 @@
         <!--  Sidebar End -->
         <!--  Main wrapper -->
         <div class="body-wrapper">
-            @include('layouts.topheader')
             <!--  Header Start -->
             <!--  Header End -->
             @yield('content')

@@ -211,4 +211,12 @@ class PasienController extends Controller
             'month' => $current_month
         ], 200);
     }
+
+    public function get_pasien_detail($idpasien){
+        $pasien = Pasien::where('id','=',$idpasien)->with('desa')->first();
+        return response()->json([
+            'status' => 'success',
+            'data' => $pasien
+        ],200);
+    }
 }
