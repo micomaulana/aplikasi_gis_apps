@@ -71,4 +71,7 @@ Route::get('get-data-statistik-form-by-year/{year}',[OverviewStatistikPublishCon
 Route::get('get-pasien-detail/{idpasien}',[PasienController::class,'get_pasien_detail']);
 route::get("landing_page",[DesaController::class, 'landing_page'])->name('landing_page_views');
 route::get("dashboard_masyarakat",[DesaController::class, 'dashboard_masyarakat'])->name('dashboard_masyarakat');
+route::get("faq_masyarakat",[DesaController::class, 'faq_masyarakat'])->name('faq_masyarakat');
+Route::get('/get_data_chart_landing', [DesaController::class, 'getDataChartLanding']);
+Route::get('/getPasien/{iddesa}', [DesaController::class, 'getPasien'])->name('getPasien');
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

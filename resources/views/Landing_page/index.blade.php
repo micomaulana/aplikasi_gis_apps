@@ -2,9 +2,6 @@
 @section('content')
     <div class="container-fluid mt-5">
         <div class="card custom-card shadow-card">
-            <div class="card-header">
-                Landing Page
-            </div>
             <div class="content">
                 <div class="header">
                     <img alt="Puskesmas Karya Maju building with a signboard" height="300"
@@ -27,22 +24,16 @@
                                 masih menjadi salah satu isu kesehatan masyarakat di Indonesia, dan angka penyebarannya di
                                 Indonesia termasuk yang tertinggi di antara negara-negara Asia Tenggara.
                             </p>
-                            <a class="btn" href="#">
+                            <a class="btn" href="https://www.alodokter.com/demam-berdarah">
                                 Baca Lebih Lanjut
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="chart-card card">
-                    <h5>
-                        Progress Kasus DBD 3 tahun terakhir
-                    </h5>
-                    <img alt="Line chart showing the progress of DBD cases over the last 3 years" height="300"
-                        src="https://storage.googleapis.com/a1aa/image/4ex81er3Ehp3VE2A20e9spXAx6XG2uVWy6wqJyUDs5oee4XgC.jpg"
-                        width="600" />
-                    <p>
-                        Data diambil dari arsip Puskesmas Karya Maju (2024).
-                    </p>
+                    <h5>Progress Kasus DBD 3 tahun terakhir</h5>
+                    <div id="dbd-cases-chart" style="height: 320px;"></div>
+                    <p>Data diambil dari arsip Puskesmas Karya Maju (2024).</p>
                 </div>
                 <div class="important-info row">
                     <div class="col-md-4">
@@ -59,7 +50,7 @@
                                 <br />
                                 Muncul bintik merah
                             </p>
-                            <a class="btn" href="#">
+                            <a class="btn" href="https://www.alodokter.com/demam-berdarah">
                                 Baca Lebih Lanjut
                             </a>
                         </div>
@@ -78,7 +69,7 @@
                                 <br />
                                 Pakai lotion anti nyamuk
                             </p>
-                            <a class="btn" href="#">
+                            <a class="btn" href="https://www.alodokter.com/demam-berdarah">
                                 Baca Lebih Lanjut
                             </a>
                         </div>
@@ -97,7 +88,7 @@
                                 <br />
                                 Lemas dan mengantuk
                             </p>
-                            <a class="btn" href="#">
+                            <a class="btn" href="https://www.alodokter.com/demam-berdarah">
                                 Baca Lebih Lanjut
                             </a>
                         </div>
@@ -126,4 +117,41 @@
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.0/apexcharts.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var chartOptions = {
+                series: [{
+                    name: "Total Tindakan",
+                    data: @json($series), // Data Y-axis (jumlah pasien)
+                }],
+                chart: {
+                    type: "bar", // Ubah tipe chart menjadi bar
+                    height: 320,
+                },
+                xaxis: {
+                    categories: @json($categories), // Data X-axis (tahun)
+                    title: {
+                        text: 'Tahun', // Label untuk sumbu X
+                    },
+                },
+                colors: ["#00E396"], // Warna bar
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4, // Sudut bar yang lebih lembut
+                        columnWidth: '50%', // Lebar kolom
+                    }
+                },
+                tooltip: {
+                    theme: "dark",
+                },
+            };
+
+            var chart = new ApexCharts(
+                document.querySelector("#dbd-cases-chart"), // ID elemen
+                chartOptions
+            );
+            chart.render();
+        });
+    </script>
 @endsection

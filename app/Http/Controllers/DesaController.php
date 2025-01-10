@@ -85,25 +85,28 @@ class DesaController extends Controller
     public function maps()
     {
         // $desas = Desa::all();
-        $desas = DB::table('pasiens')
-            ->join('desas', 'pasiens.id_desa', '=', 'desas.id')
-            ->select([
-                'pasiens.id',
-                'pasiens.nama as nama_pasien',
-                'pasiens.alamat',
-                'pasiens.usia',
-                'pasiens.provinsi',
-                'pasiens.kab_kota',
-                'pasiens.tempat_lahir',
-                'pasiens.tanggal_lahir',
-                'pasiens.jenis_kelamin',
-                'desas.nama as nama_desa',
-                'desas.latitude',
-                'desas.longitude'
-            ])
+        $desas = DB::table('desas')
             ->get();
-        // dd($desas);
-        return view('desa.maps', compact('desas'));
+        $desa_loc = DB::table('desas')->select('longitude','latitude')->latest()->first();
+        return view('desa.maps', compact('desas','desa_loc'));
+    }
+    public function getPasien($iddesa)
+    {
+        try {
+            $pasien = Pasien::where('id_desa', '=', $iddesa)->with('desa')->get();
+            $count = $pasien->count();
+            return response()->json([
+                'status' => true,
+                'data' => $pasien,
+                'count' => $count
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
     }
     public function data_informasi_view()
     {
@@ -308,15 +311,58 @@ class DesaController extends Controller
 
 
         // dd($groupedData);
-        return view('validasi_kapus.index', compact('dokters', 'laporanfoggings','jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
+        return view('validasi_kapus.index', compact('dokters', 'laporanfoggings', 'jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
     }
-    public function landing_page() 
+    public function landing_page()
     {
-        return view ('Landing_page.index');
+        $data = DB::table('pasiens')
+            ->select(DB::raw('tahun_terdata as year, COUNT(nama) as count'))
+            ->groupBy('tahun_terdata')
+            ->orderBy('tahun_terdata', 'asc')
+            ->get();
+
+        // Debug data
+        // dd($data);
+
+        $categories = $data->pluck('year')->toArray(); // Tahun (x-axis)
+        $series = $data->pluck('count')->toArray();   // Jumlah pasien (y-axis)
+
+        return view('Landing_page.index', compact('categories', 'series'));
     }
-    public function dashboard_masyarakat() 
+
+
+    public function dashboard_masyarakat()
     {
-        return view ('Dashboard_masyarakat.index');
+        return view('Dashboard_masyarakat.index');
     }
-    
+    public function faq_masyarakat()
+    {
+        return view('faq_masyarakat.index');
+    }
+    public function getDataChartLanding()
+    {
+        try {
+            // Ambil data pasien berdasarkan tahun terdata
+            $data = Pasien::selectRaw('tahun_terdata, COUNT(*) as jumlah')
+                ->groupBy('tahun_terdata')
+                ->orderBy('tahun_terdata', 'ASC')
+                ->get();
+
+            // Format data untuk chart
+            $labels = $data->pluck('tahun_terdata')->toArray();
+            $values = $data->pluck('jumlah')->toArray();
+
+            return response()->json([
+                'data_chart' => [
+                    'labels' => $labels,
+                    'values' => $values,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

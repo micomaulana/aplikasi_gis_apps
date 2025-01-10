@@ -507,7 +507,7 @@
             padding: 20px;
             border-radius: 15px;
         }
-        
+
 
         .sidebar {
             background-color: #2c3e50;
@@ -588,6 +588,42 @@
             font-size: 18px;
             font-weight: bold;
             margin: 0;
+        }
+
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .faq-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-header img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .faq-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-info {
+            background-color: #e8eaf6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
         }
     </style>
 </head>
