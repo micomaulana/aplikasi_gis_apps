@@ -2,7 +2,9 @@
 @section('content')
     <div class="container-fluid">
         <div class="pull-right">
-            <a class="btn btn-success" href=" {{ route('pasiens.create') }}"> create new </a>
+            @can('pasien-create')
+                <a class="btn btn-success" href=" {{ route('pasiens.create') }}"> create new </a>
+            @endcan
         </div>
 
         @if ($message = Session::get('success'))
@@ -27,7 +29,7 @@
                     {{-- <th>diagnosis_lab</th> --}}
                     {{-- <th>diagnosis_klinis</th> --}}
                     {{-- <th>status_akhir</th> --}}
-                       {{-- <th>no_hp</th> --}}
+                    {{-- <th>no_hp</th> --}}
                     {{-- <th>tahun_terdata</th> --}}
                     <th width="280px">Action</th>
                 </tr>

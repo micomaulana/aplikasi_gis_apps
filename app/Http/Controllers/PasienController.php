@@ -6,9 +6,17 @@ use App\Models\Desa;
 use App\Models\Pasien;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PasienController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:pasien-list|pasien-create|pasien-edit|pasien-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:pasien-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:pasien-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:pasien-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -50,12 +58,20 @@ class PasienController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <form action="' . route('pasiens.destroy', $row->id) . '" method="POST">
-                        <a class="btn btn-info" href="' . route('pasiens.show', $row->id) . '">Show</a>
-                        <a class="btn btn-primary" href="' . route('pasiens.edit', $row->id) . '">Edit</a>
-                        ' . csrf_field() . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>';
+    <form action="' . route('pasiens.destroy', $row->id) . '" method="POST">
+        <a class="btn btn-info" href="' . route('pasiens.show', $row->id) . '">Show</a>';
+
+                    if (Auth::user()->can('pasien-edit')) {
+                        $btn .= '<a class="btn btn-primary" href="' . route('pasiens.edit', $row->id) . '">Edit</a>';
+                    }
+
+                    if (Auth::user()->can('pasien-delete')) {
+                        $btn .= csrf_field() . method_field('DELETE') . '
+        <button type="submit" class="btn btn-danger">Delete</button>';
+                    }
+
+                    $btn .= '
+                </form>';
                     return $btn;
                 })->addColumn('nama_desa', function ($row) {
                     return $row->desa->nama;
@@ -122,7 +138,7 @@ class PasienController extends Controller
     public function edit(Pasien $pasien)
     {
         $data_desas = Desa::all();
-        return view('pasien.edit', compact('data_desas','pasien'));
+        return view('pasien.edit', compact('data_desas', 'pasien'));
     }
 
     /**
@@ -201,7 +217,7 @@ class PasienController extends Controller
         $tanggal = Carbon::now()->startOfMonth()->format('Y-m-d');
         $current_month = Carbon::now()->format('F Y');
         $desas = Desa::whereHas('pasien', function ($query) use ($tanggal) {
-            $query->where('created_at','>=',$tanggal);
+            $query->where('created_at', '>=', $tanggal);
         })->withCount('pasien')->get();
 
         return response()->json([
@@ -212,11 +228,12 @@ class PasienController extends Controller
         ], 200);
     }
 
-    public function get_pasien_detail($idpasien){
-        $pasien = Pasien::where('id','=',$idpasien)->with('desa')->first();
+    public function get_pasien_detail($idpasien)
+    {
+        $pasien = Pasien::where('id', '=', $idpasien)->with('desa')->first();
         return response()->json([
             'status' => 'success',
             'data' => $pasien
-        ],200);
+        ], 200);
     }
 }

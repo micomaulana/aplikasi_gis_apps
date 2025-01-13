@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\DB;
 
 class DesaController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:desa-list|desa-create|desa-edit|desa-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:desa-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:desa-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:desa-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -87,8 +94,8 @@ class DesaController extends Controller
         // $desas = Desa::all();
         $desas = DB::table('desas')
             ->get();
-        $desa_loc = DB::table('desas')->select('longitude','latitude')->latest()->first();
-        return view('desa.maps', compact('desas','desa_loc'));
+        $desa_loc = DB::table('desas')->select('longitude', 'latitude')->latest()->first();
+        return view('desa.maps', compact('desas', 'desa_loc'));
     }
     public function getPasien($iddesa)
     {

@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 class StatistikController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:informasi-list|informasi-create|informasi-edit|inforrmasi-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:informasi-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:informasi-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:informasi-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,6 +37,7 @@ class StatistikController extends Controller
      */
     public function store(Request $request)
     {
+
         try {
             $request->validate([
                 'id_desa' => 'required',
@@ -38,7 +46,7 @@ class StatistikController extends Controller
                 'jumlah_penduduk' => 'required',
                 'tanggal_fogging' => 'required',
             ]);
- 
+
 
             Statistik::create($request->all());
             return response()->json([
@@ -69,7 +77,7 @@ class StatistikController extends Controller
     {
         $desas = Desa::all();
         $statistik = Statistik::findOrFail($id);
-        return view('data_dan_informasi.edit', compact('desas','statistik'));
+        return view('data_dan_informasi.edit', compact('desas', 'statistik'));
     }
 
     /**
@@ -90,6 +98,5 @@ class StatistikController extends Controller
         $statistik = Statistik::findOrFail($id);
         $statistik->delete();
         return redirect()->back()->with('success', 'update data berhasil');
-
     }
 }

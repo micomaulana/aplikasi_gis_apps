@@ -36,107 +36,159 @@
                         <span class="hide-menu">Desa</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('pasiens.index') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Pasien</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('dokters.index') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Dokter</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('maps') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:bookmark-square-minimalistic-bold-duotone"
-                                class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Peta</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('data_informasi_view') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Informasi</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('data_informasi_views') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">lihat data dan informasi</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('validasi_kapus') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">validasi kapus</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('validasi_admin') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">validasi pasien</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('laporan_masyarakat') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">laporan masyarakat</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('laporan_view') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Laporan</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('landing_page_views') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Landing Page</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('dashboard_masyarakat') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('faq_masyarakat') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">FAQ</span>
-                    </a>
-                </li>
+                @can('pasien-list')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('pasiens.index') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Pasien</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('dokter-list')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('dokters.index') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Dokter</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('maps')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('maps') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:bookmark-square-minimalistic-bold-duotone"
+                                    class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Peta</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('informasi-create')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('data_informasi_view') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Informasi</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('informasi-list')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('data_informasi_views') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">lihat data dan informasi</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('validasi-kepala_puskesmas')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('validasi_kapus') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">validasi kapus</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('validasi-admin')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('validasi_admin') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">validasi pasien</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('laporankondisi_masyarakat')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('laporan_masyarakat') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">laporan masyarakat</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('laporandbd_admin')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('laporan_view') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Laporan</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('landingpage')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('landing_page_views') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Landing Page</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('dashboard_masyarakat')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('dashboard_masyarakat') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Dashboard</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('faq_masyarakat')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('faq_masyarakat') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">FAQ</span>
+                        </a>
+                    </li>
+                @endcan
+
                 <li class="nav-small-cap">
                     <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-6"
                         class="fs-6"></iconify-icon>
                     <span class="hide-menu">AUTH</span>
+                </li>
+                {{-- <li><a class="nav-link" href="{{ route('roles.index') }}">Manage roles</a></li> --}}
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('users.index') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">Manage Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('roles.index') }}" aria-expanded="false">
+                        <span>
+                            <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
+                        </span>
+                        <span class="hide-menu">Manage roles</span>
+                    </a>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('logout') }}" aria-expanded="false">

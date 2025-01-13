@@ -8,8 +8,10 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\LaporanFoggingController;
 use App\Http\Controllers\LaporanKasusDBDController;
 use App\Http\Controllers\OverviewStatistikPublishController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatistikController;
-use App\Models\OverviewStatistikPublish;
+use App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -74,4 +76,6 @@ route::get("dashboard_masyarakat",[DesaController::class, 'dashboard_masyarakat'
 route::get("faq_masyarakat",[DesaController::class, 'faq_masyarakat'])->name('faq_masyarakat');
 Route::get('/get_data_chart_landing', [DesaController::class, 'getDataChartLanding']);
 Route::get('/getPasien/{iddesa}', [DesaController::class, 'getPasien'])->name('getPasien');
+Route::resource('users',UserController::class);
+Route::resource('roles',RoleController::class);
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

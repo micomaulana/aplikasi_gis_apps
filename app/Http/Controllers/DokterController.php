@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class DokterController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:dokter-list|dokter-create|dokter-edit|dokter-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:dokter-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:dokter-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:dokter-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
