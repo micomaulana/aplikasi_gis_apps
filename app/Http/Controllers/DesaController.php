@@ -323,9 +323,10 @@ class DesaController extends Controller
     public function landing_page()
     {
         $data = DB::table('pasiens')
-            ->select(DB::raw('tahun_terdata as year, COUNT(nama) as count'))
-            ->groupBy('tahun_terdata')
-            ->orderBy('tahun_terdata', 'asc')
+            ->where('diagnosis_klinis', '=', 'DBD')
+            ->select(DB::raw("YEAR(tahun_terdata) as year, COUNT(nama) as count"))
+            ->groupBy(DB::raw("YEAR(tahun_terdata)"))
+            ->orderBy(DB::raw("YEAR(tahun_terdata)"), 'asc')
             ->get();
 
         // Debug data

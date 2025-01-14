@@ -30,7 +30,7 @@
                     <input type="text" class="form-control" id="alamat" name="alamat">
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label" id="label_email">Email</label>
                     <input type="text" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
@@ -83,12 +83,12 @@
                     <input type="text" class="form-control" id="status_akhir" name="status_akhir">
                 </div>
                 <div class="mb-3">
-                    <label for="no_hp" class="form-label">no hp</label>
+                    <label for="no_hp" class="form-label" id="label_no_hp">no hp</label>
                     <input type="text" class="form-control" id="no_hp" name="no_hp">
                 </div>
                 <div class="mb-3">
-                    <label for="tahun_terdata" class="form-label">Tahun terdata</label>
-                    <input type="text" class="form-control" id="tahun_terdata" name="tahun_terdata">
+                    <label for="tahun_terdata" class="form-label">Tanggal Terdata</label>
+                    <input type="date" class="form-control" id="tahun_terdata" name="tahun_terdata">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -97,7 +97,24 @@
         <script>
             $(document).ready(function() {
                 $('#select_desa').select2();
-            }); <
-            /div>
+
+                $('#usia').on('change', function() {
+                    const value_input = parseInt($(this).val());
+
+                    if(value_input < 17){
+                        $('#email').hide();
+                        $('#no_hp').hide();
+                        $('#label_no_hp').hide();
+                        $('#label_email').hide();
+                    }else{
+                        $('#email').show();
+                        $('#no_hp').show();
+                        $('#label_no_hp').show();
+                        $('#label_email').show();
+                    }
+
+                });
+
+            });
         </script>
     @endsection

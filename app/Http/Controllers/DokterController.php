@@ -6,6 +6,7 @@ use App\Models\Dokter;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DokterController extends Controller
 {
@@ -53,13 +54,23 @@ class DokterController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     // Tombol aksi untuk setiap baris data
-                    return '
-                    <a class="btn btn-info btn-sm" href="' . route('dokters.show', $row->id) . '">Show</a>
-                    <a class="btn btn-primary btn-sm" href="' . route('dokters.edit', $row->id) . '">Edit</a>
-                    <form action="' . route('dokters.destroy', $row->id) . '" method="POST" style="display:inline;">
-                        ' . csrf_field() . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                    </form>';
+                    $btn = '
+    <form action="' . route('dokters.destroy', $row->id) . '" method="POST">
+        <a class="btn btn-info btn-sm" href="' . route('dokters.show', $row->id) . '">Show</a>';
+
+                    if (Auth::user()->can('dokter-edit')) {
+                        $btn .= '<a class="btn btn-primary btn-sm" href="' . route('dokters.edit', $row->id) . '">Edit</a>';
+                    }
+
+                    if (Auth::user()->can('dokter-delete')) {
+                        $btn .= csrf_field() . method_field('DELETE') . '
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+                    }
+
+                    $btn .= '
+    </form>';
+
+                    return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);

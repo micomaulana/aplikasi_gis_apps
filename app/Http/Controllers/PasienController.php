@@ -106,7 +106,7 @@ class PasienController extends Controller
         $request->validate([
             'nama' => 'required',
             'alamat' => 'required',
-            'email' => 'required',
+            'email' => 'nullable|string',
             'usia' => 'required',
             'id_desa' => 'required',
             'provinsi' => 'required',
@@ -117,7 +117,7 @@ class PasienController extends Controller
             'diagnosis_lab' => 'required',
             'diagnosis_klinis' => 'required',
             'status_akhir' => 'required',
-            'no_hp' => 'required',
+            'no_hp' => 'nullable|string',
             'tahun_terdata' => 'required',
         ]);
         Pasien::create($request->all());
@@ -169,30 +169,63 @@ class PasienController extends Controller
                 $query->where('tahun_terdata', $request->tahun);
             }
 
-            $pasien_by_id_desa = $query->selectRaw('tahun_terdata, COUNT(*) as jumlah_pasien')
+            $query->selectRaw('tahun_terdata, COUNT(*) as jumlah_pasien')
                 ->groupBy('tahun_terdata')
-                ->get();
+                ->get(); // Get the results
 
-            $count_pasien_by_id_desa = Pasien::where('id_desa', '=', $id)->count();
+            $latestRecord = Pasien::where('id_desa', '=', $id)
+                ->orderByDesc('tahun_terdata')
+                ->first();
 
-            $jumlah_pasien_2022 = $pasien_by_id_desa->where('tahun_terdata', '2022')->first()->jumlah_pasien ?? 0;
-            $jumlah_pasien_2023 = $pasien_by_id_desa->where('tahun_terdata', '2023')->first()->jumlah_pasien ?? 0;
-            $jumlah_pasien_2024 = $pasien_by_id_desa->where('tahun_terdata', '2024')->first()->jumlah_pasien ?? 0;
+            // Extract the year and month from the latest record
+            $latestYear = \Carbon\Carbon::parse($latestRecord->tahun_terdata)->year;
+            $latestMonth = \Carbon\Carbon::parse($latestRecord->tahun_terdata)->month;
 
+            // Count the number of patients for the latest year and month
+            $count_pasien_by_id_desa = Pasien::where('id_desa', '=', $id)
+                ->whereYear('tahun_terdata', '=', $latestYear)
+                ->whereMonth('tahun_terdata', '=', $latestMonth)
+                ->count();
+            $desa = Desa::where('id','=',$id)->first();
+            // Parse the year from the request
+            // $year = \Carbon\Carbon::parse($request->tahun)->year;
+            $year = $request->tahun;
+
+            $data_tahun_chart = [];
+            $labels = [];
+
+            // Loop through the current year and the next two years (2022, 2023, 2024)
+            for ($i = 0; $i < 3; $i++) {
+                $current_year = $year + $i;  // Get the current year in the loop (2022, 2023, 2024)
+
+                // Query the count of patients for the current year
+                $jumlah_pasien_by_year = Pasien::where('id_desa', '=', $id)
+                    ->whereYear('tahun_terdata', '=', $current_year)
+                    ->count();
+
+                // Store the result in the data array
+                $data_tahun_chart[] = $jumlah_pasien_by_year;
+                $labels[] = (string)$current_year;  // Add the current year to the labels array
+            }
+
+            // Prepare data for the response
             $data = [
-                'jumlah_pasien_2022' => $jumlah_pasien_2022,
-                'jumlah_pasien_2023' => $jumlah_pasien_2023,
-                'jumlah_pasien_2024' => $jumlah_pasien_2024
+                'jumlah_pasien_by_filter' => $data_tahun_chart,  // Include the patient counts for each year
             ];
 
-            $data_tahun_chart = [
-                $jumlah_pasien_2022,
-                $jumlah_pasien_2023,
-                $jumlah_pasien_2024
-            ];
+            // Returning the response with the data and chart data
+            // return response()->json([
+            //     'status' => true,
+            //     'message' => "Request success",
+            //     'data' => $data,
+            //     'data_chart' => [
+            //         'labels' => $labels,  // ['2022', '2023', '2024']
+            //         'values' => $data_tahun_chart,  // [count for 2022, count for 2023, count for 2024]
+            //     ]
+            // ], 200);
 
             $data_chart = [
-                'labels' => ['2022', '2023', '2024'],
+                'labels' => $labels,
                 'values' => $data_tahun_chart
             ];
 
@@ -200,7 +233,9 @@ class PasienController extends Controller
                 'status' => true,
                 'message' => "request success",
                 'data' => $data,
+                'tahun' =>  $year,
                 'data_chart' => $data_chart,
+                'desa' => $desa,
                 'jumlah_pasien' => $count_pasien_by_id_desa
             ], 200);
         } catch (\Exception $e) {

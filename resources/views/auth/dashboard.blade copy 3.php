@@ -7,89 +7,80 @@
                     <i class="fas fa-exclamation-circle alert-icon"></i>
                     <div>
                         <div class="alert-heading">Peringatan! Tindakan Segera Diperlukan</div>
-                        <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
-                            telah mencapai
-                            <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
-                            <span id="month">Januari 2024</span> mohon segera memproses pengajuan fogging ke kepala
-                            puskesmas
-                        </div>
+                        <div>Jumlah kasus DBD di desa <span id="nama_desa">Karya Maju</span> telah mencapai <span
+                                id="jumlah_kasus">6</span> kasus pada bulan <span id="month">Januari 2024</span>
+                            mohon segera memproses pengajuan fogging ke kepala puskesmas</div>
                     </div>
                 </div>
-
                 <form action="{{ route('laporan_view') }}" method="get">
-                    @unless (Auth::user()->hasRole('Kepala Puskes'))
-                        <!-- Menyembunyikan tombol bagi Kepala Puskes -->
-                        <button type="submit" class="alert-button">Buat laporan fogging</button>
-                    @endunless
+                    <button type="submit" class="alert-button">Buat laporan fogging</button>
                 </form>
             </div>
         @endif
-    </div>
-
-    <div class="container mt-4">
-        @if (Auth::user()->hasRole('Kepala Puskes') || (Auth::user()->hasRole('Admin') && $jumlah_kasus_terkini >= 5))
-            <div class="card p-3">
-                <h5>Status terkini ({{ $currentYearMonth = \Carbon\Carbon::now()->format('F Y') }})</h5>
-                <div class="d-flex justify-content-between">
-                    <div class="status-card">
-                        <h5>Jumlah kasus</h5>
-                        <div class="value red" id="jumlah_pasien">{{ $jumlah_kasus_terkini }}</div>
-                    </div>
-                    <div class="status-card" id="status_card">
-                        <h5>Status</h5>
-                        <div class="value" id="status_data_pasien">Normal</div>
-                    </div>
-                    <div class="status-card">
-                        <h5>Update terakhir</h5>
-                        <div class="value blue">{{ $last_updated_times->updated_at ?? 'N\A' }}</div>
-                        {{-- <div class="value blue">12/1/2024, 1:16:12 PM</div> --}}
+        <div class="container mt-4">
+            @if (Auth::user()->hasRole('Kepala Puskes') || Auth::user()->hasRole('Admin'))
+                <div class="card p-3">
+                    <h5>Status terkini ({{ $currentYearMonth = \Carbon\Carbon::now()->format('F Y') }})</h5>
+                    <div class="d-flex justify-content-between">
+                        <div class="status-card">
+                            <h5>Jumlah kasus</h5>
+                            <div class="value red" id="jumlah_pasien">{{ $jumlah_pasien }}</div>
+                        </div>
+                        <div class="status-card" id="status_card">
+                            <h5>Status</h5>
+                            <div class="value" id="status_data_pasien">Normal</div>
+                        </div>
+                        <div class="status-card">
+                            <h5>Update terakhir</h5>
+                            <div class="value blue">{{ $last_updated_times->updated_at ?? 'N\A' }}</div>
+                            {{-- <div class="value blue">12/1/2024, 1:16:12 PM</div> --}}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <!-- Patient Stats Section -->
-                        <div class="stats-container">
-                            <h5 class="mb-3">Grafik pasien</h5>
+            @endif
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Patient Stats Section -->
+                            <div class="stats-container">
+                                <h5 class="mb-3">Grafik pasien</h5>
 
-                            <!-- Dropdown Button -->
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="dropdown mb-4">
-                                        <select class="form-select dropdown-toggle d-flex align-items-center"
-                                            name="karya_maju" id="karya_maju">
-                                            <option value="karya_maju" selected>Pilih Desa</option>
-                                            @foreach ($desa_list as $desa)
-                                                <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
-                                            @endforeach
-                                        </select>
+                                <!-- Dropdown Button -->
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="dropdown mb-4">
+                                            <select class="form-select dropdown-toggle d-flex align-items-center"
+                                                name="karya_maju" id="karya_maju">
+                                                <option value="karya_maju" selected>Pilih Desa</option>
+                                                @foreach ($desa_list as $desa)
+                                                    <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="dropdown mb-4">
+                                            <select class="form-select" name="tahun" id="tahun">
+                                                <option value="" selected>Pilih Tahun</option>
+                                                @php
+                                                    // Set the range for the years (e.g., from 2000 to the current year)
+                                                    $startYear = 2000; // You can change this to any starting year
+                                                    $currentYear = \Carbon\Carbon::now()->year;
+                                                @endphp
+
+                                                @for ($year = $startYear; $year <= $currentYear; $year++)
+                                                    <option value="{{ $year }}">{{ $year }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="dropdown mb-4">
-                                        <select class="form-select" name="tahun" id="tahun">
-                                            <option value="" selected>Pilih Tahun</option>
-                                            @php
-                                                // Set the range for the years (e.g., from 2000 to the current year)
-                                                $startYear = 2000; // You can change this to any starting year
-                                                $currentYear = \Carbon\Carbon::now()->year;
-                                            @endphp
 
-                                            @for ($year = $startYear; $year <= $currentYear; $year++)
-                                                <option value="{{ $year }}">{{ $year }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Statistics Cards -->
-                            {{-- <div class="row" id="data_per_tahun">
+                                <!-- Statistics Cards -->
+                                <div class="row" id="data_per_tahun">
                                     <!-- 2022 Stats -->
                                     <div class="col-md-4">
                                         <div class="stat-card">
@@ -131,30 +122,31 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> --}}
-                        </div>
+                                </div>
+                            </div>
 
-                        <!-- Traffic Overview Section -->
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title d-flex align-items-center gap-2 mb-4">
-                                            Traffic Overview
-                                            <span>
-                                                <iconify-icon icon="solar:question-circle-bold"
-                                                    class="fs-7 d-flex text-muted" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" data-bs-custom-class="tooltip-success"
-                                                    data-bs-title="Traffic Overview"></iconify-icon>
-                                            </span>
-                                        </h5>
-                                        <div id="traffic-overview">
+                            <!-- Traffic Overview Section -->
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title d-flex align-items-center gap-2 mb-4">
+                                                Traffic Overview
+                                                <span>
+                                                    <iconify-icon icon="solar:question-circle-bold"
+                                                        class="fs-7 d-flex text-muted" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" data-bs-custom-class="tooltip-success"
+                                                        data-bs-title="Traffic Overview"></iconify-icon>
+                                                </span>
+                                            </h5>
+                                            <div id="traffic-overview">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="card">
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -162,7 +154,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <div class="col-lg p-4 ms-3 me-3">
         <div class="card">
@@ -208,7 +199,7 @@
     <script>
         $(document).ready(function() {
             $('#status_card').hide();
-            // $('#alert-danger-custom').hide();
+            // $('#alert-danger-custom').show();
 
             $.ajax({
                 url: `/get_data_pasien_alert`,
@@ -233,6 +224,7 @@
                         //         `<span>${response.jumlah_pasien} kasus di desa ${desa.nama} dan </span>`;
 
                         // }
+                        // data.forEach(function(desa) {
                         // data.forEach(function(desa) {
                         // });
 
@@ -284,15 +276,10 @@
                             $('#tahun_2023').text(data.jumlah_pasien_by_filter[1] || '0');
                             $('#tahun_2024').text(data.jumlah_pasien_by_filter[2] || '0');
                             $("#jumlah_pasien").html(response.jumlah_pasien);
-                            // kasusHtml +=
-                            //     `<span>${response.jumlah_pasien} kasus di desa ${response.desa.nama} dan </span>`;
+                            kasusHtml +=
+                                `<span>${response.jumlah_pasien} kasus di desa ${response.desa.nama} dan </span>`;
                             $('#jumlah_kasus').html(data.jumlah_pasien_by_filter[2]);
-                            $('#nama_desa').html(response.desa.nama)
                             $('#data_per_tahun').css('display', 'flex');
-                            // if (response.jumlah_pasien >= 5) {
-                            //     $('#alert-danger-custom').show();
-
-                            // }
                             if (response.jumlah_pasien >= 5) {
                                 $('#status_data_pasien').removeClass('text-success').addClass(
                                     'text-danger');
