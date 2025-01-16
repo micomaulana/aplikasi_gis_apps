@@ -51,7 +51,38 @@
                         <option value="laki-laki">Laki-Laki</option>
                         <option value="perempuan">Perempuan</option>
                     </select>
-                </div>  
+                </div>
+                <div class="mb-3">
+                    <label for="hari" class="form-label">Hari Praktek</label>
+                    <select class="form-select" id="hari" name="hari[]" multiple required>
+                        <option value="senin">Senin</option>
+                        <option value="selasa">Selasa</option>
+                        <option value="rabu">Rabu</option>
+                        <option value="kamis">Kamis</option>
+                        <option value="jumat">Jumat</option>
+                        <option value="sabtu">Sabtu</option>
+                        <option value="minggu">Minggu</option>
+                    </select>
+                    <small class="form-text text-muted">Tekan Ctrl (Windows) atau Command (Mac) untuk memilih beberapa
+                        hari</small>
+                </div>
+                <div class="mb-3">
+                    <label for="jam" class="form-label">Jam Praktek</label>
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label small">Mulai</label>
+                            <input type="time" class="form-control" id="jam_mulai" name="jam_mulai" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label small">Selesai</label>
+                            <input type="time" class="form-control" id="jam_selesai" name="jam_selesai" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="deskripsi" class="form-label">deskripsi</label>
+                    <input type="text" class="form-control" id="deskripsi" name="deskripsi">
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>

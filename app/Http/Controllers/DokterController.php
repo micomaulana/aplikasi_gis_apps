@@ -42,7 +42,11 @@ class DokterController extends Controller
                         ->orWhere('email', 'like', $search_value)
                         ->orWhere('alamat', 'like', $search_value)
                         ->orWhere('no_hp', 'like', $search_value)
-                        ->orWhere('jenis_kelamin', 'like', $search_value);
+                        ->orWhere('jenis_kelamin', 'like', $search_value)
+                        ->orWhere('hari', 'like', $search_value)
+                        ->orWhere('jam_mulai', 'like', $search_value)
+                        ->orWhere('jam_selesai', 'like', $search_value)
+                        ->orWhere('deskripsi', 'like', $search_value);
                 });
             }
 
@@ -52,6 +56,12 @@ class DokterController extends Controller
             // Konfigurasi DataTables
             return datatables()->of($data)
                 ->addIndexColumn()
+                ->editColumn('hari', function ($row) {
+                    // Jika hari tersimpan sebagai string dengan pemisah koma
+                    $hari_array = explode(',', $row->hari);
+                    // Format ulang menjadi string yang lebih readable
+                    return ucwords(implode(', ', $hari_array));
+                })
                 ->addColumn('action', function ($row) {
                     // Tombol aksi untuk setiap baris data
                     $btn = '
@@ -109,7 +119,18 @@ class DokterController extends Controller
             'alamat' => 'required',
             'no_hp' => 'required',
             'jenis_kelamin' => 'required',
+            'hari' => 'required|array',
+            'hari.*' => 'required|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'deskripsi' => 'required',
         ]);
+
+        $request->merge([
+            'hari' => implode(',', $request->hari)
+        ]);
+
+
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
@@ -126,7 +147,7 @@ class DokterController extends Controller
      */
     public function show(Dokter $dokter)
     {
-        return view('dokter.show', compact('dokters'));
+        return view('dokter.show', compact('dokter'));
     }
 
     /**
@@ -134,17 +155,37 @@ class DokterController extends Controller
      */
     public function edit(Dokter $dokter)
     {
-
-        return view('dokter.create', compact('dokters'));
+        return view('dokter.edit', compact('dokter'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Dokter $dokter)
     {
+        $request->validate([
+            'nama' => 'required',
+            'nip' => 'required|integer',
+            'status' => 'required',
+            'email' => 'required|unique:dokter,email,' . $dokter->id,
+            'alamat' => 'required',
+            'no_hp' => 'required',
+            'jenis_kelamin' => 'required',
+            'hari' => 'required|array',
+            'hari.*' => 'required|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'deskripsi' => 'required',
+        ]);
+
+        // Gabungkan array hari menjadi string
+        $request->merge([
+            'hari' => implode(',', $request->hari)
+        ]);
+
         $dokter->update($request->all());
-        return redirect()->back()->with('success', 'update data berhasil');
+        return redirect()->route('dokters.index')->with('success', 'Data dokter berhasil diupdate');
     }
 
     /**
@@ -154,5 +195,17 @@ class DokterController extends Controller
     {
         $dokter->delete();
         return redirect()->back()->with('success', 'delete data berhasil');
+    }
+    public function getDokterBySchedule(Request $request)
+    {
+        $hari = $request->hari;
+        $jamKontrol = $request->jam;
+
+        $dokter = Dokter::where('hari', 'like', '%' . $hari . '%')
+            ->whereTime('jam_mulai', '<=', $jamKontrol)
+            ->whereTime('jam_selesai', '>=', $jamKontrol)
+            ->get();
+
+        return response()->json($dokter);
     }
 }

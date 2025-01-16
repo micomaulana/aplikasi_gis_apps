@@ -50,6 +50,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <style>
         .alert-box {
             border: 1px solid #007bff;
@@ -590,7 +593,7 @@
             margin: 0;
         }
 
-        }
+
 
         .content {
             padding: 20px;
@@ -624,6 +627,12 @@
 
         .contact-info i {
             margin-right: 10px;
+        }
+
+        .form-label {
+            text-transform: capitalize;
+            /* Untuk memastikan huruf pertama selalu kapital */
+            font-weight: bold;
         }
     </style>
 </head>

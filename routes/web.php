@@ -78,4 +78,5 @@ Route::get('/get_data_chart_landing', [DesaController::class, 'getDataChartLandi
 Route::get('/getPasien/{iddesa}', [DesaController::class, 'getPasien'])->name('getPasien');
 Route::resource('users',UserController::class);
 Route::resource('roles',RoleController::class);
+Route::get('/get-dokter-schedule', [DokterController::class, 'getDokterBySchedule'])->name('dokter.schedule');
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);

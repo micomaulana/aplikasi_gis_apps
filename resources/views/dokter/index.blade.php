@@ -25,6 +25,10 @@
                 <th>Alamat</th>
                 <th>No HP</th>
                 <th>Jenis Kelamin</th>
+                <th>hari</th>
+                <th>Jam_mulai</th>
+                <th>jam_selesai</th>
+                <th>deskripsi</th>
                 <th width="150px">Action</th>
             </tr>
         </thead>
@@ -47,6 +51,10 @@
                 { data: 'alamat', name: 'alamat' },
                 { data: 'no_hp', name: 'no_hp' },
                 { data: 'jenis_kelamin', name: 'jenis_kelamin' },
+                { data: 'hari', name: 'hari' },
+                { data: 'jam_mulai', name: 'jam_mulai' },
+                { data: 'jam_selesai', name: 'jam_selesai' },
+                { data: 'deskripsi', name: 'deskripsi' },
                 {
                     data: 'action',
                     name: 'action',

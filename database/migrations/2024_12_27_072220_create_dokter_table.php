@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string("no_hp");
             $table->string("jenis_kelamin");
             $table->string("hari");
-            $table->string("jam");
+            $table->time('jam_mulai');    // Menggunakan time untuk menyimpan jam
+            $table->time('jam_selesai');  // Menggunakan time untuk menyimpan jam
             $table->string("deskripsi")->nullable();
             $table->timestamps();
         });

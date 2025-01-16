@@ -237,23 +237,31 @@
                                 <label for="jadwalKontrol" class="form-label">Jadwal kontrol</label>
                                 <div class="input-group">
                                     <input type="date" class="form-control" id="id_lapora_kasus"
-                                        name="tanggal_control" required value="{{ old('id_lapora_kasus') }}">
-
+                                        name="tanggal_control" required>
                                     <input type="time" class="form-control" id="jadwalWaktu" name="waktu_control"
-                                        required value="{{ old('waktu_control') }}">
-
+                                        required>
                                 </div>
                             </div>
+
+                            <div class="mb-3">
+                                <label for="hari" class="form-label">Hari Kontrol</label>
+                                <select class="form-select" id="hari" name="hari[]" multiple required>
+                                    <option value="senin">Senin</option>
+                                    <option value="selasa">Selasa</option>
+                                    <option value="rabu">Rabu</option>
+                                    <option value="kamis">Kamis</option>
+                                    <option value="jumat">Jumat</option>
+                                    <option value="sabtu">Sabtu</option>
+                                    <option value="minggu">Minggu</option>
+                                </select>
+                                <small class="form-text text-muted">Tekan Ctrl (Windows) atau Command (Mac) untuk memilih
+                                    beberapa hari</small>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="dokterPJ" class="form-label">Dokter PJ</label>
                                 <select class="form-select" id="dokterPJ" name="id_dokter" required>
                                     <option selected disabled>Pilih Dokter</option>
-                                    @foreach ($dokters as $dokter)
-                                        <option value="{{ $dokter->id }}"
-                                            {{ old('id_dokter') == $dokter->id ? 'selected' : '' }}>
-                                            {{ $dokter->nama }}
-                                        </option>
-                                    @endforeach
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -326,21 +334,76 @@
                     }
                 });
             });
+
+            // Event handler untuk perubahan tanggal dan waktu kontrol
+            $('#id_lapora_kasus, #jadwalWaktu').on('change', function() {
+                var selectedDate = $('#id_lapora_kasus').val();
+                var selectedTime = $('#jadwalWaktu').val();
+
+                if (selectedDate && selectedTime) {
+                    // Konversi tanggal ke hari
+                    var days = ['minggu', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
+                    var date = new Date(selectedDate);
+                    var hari = days[date.getDay()];
+
+                    // Ajax request untuk mendapatkan dokter yang tersedia
+                    $.ajax({
+                        url: '/get-dokter-schedule',
+                        method: 'GET',
+                        data: {
+                            hari: hari,
+                            jam: selectedTime
+                        },
+                        success: function(response) {
+                            // Update dropdown dokter
+                            var dokterSelect = $('#dokterPJ');
+                            dokterSelect.empty();
+                            dokterSelect.append(
+                                '<option selected disabled>Pilih Dokter</option>');
+
+                            if (response.length > 0) {
+                                response.forEach(function(dokter) {
+                                    dokterSelect.append(
+                                        $('<option></option>')
+                                        .attr('value', dokter.id)
+                                        .text(dokter.nama + ' (' + dokter
+                                            .jam_mulai + ' - ' + dokter
+                                            .jam_selesai + ')')
+                                    );
+                                });
+                            } else {
+                                dokterSelect.append(
+                                    $('<option disabled></option>')
+                                    .text('Tidak ada dokter yang tersedia pada waktu ini')
+                                );
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Gagal memuat data dokter.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+
             // Tangkap event sebelum modal ditampilkan
             $(document).on('click', '[data-bs-target="#exampleModal"]', function() {
-                var id = $(this).data('id'); // Ambil data-id
-                var status = $(this).data('status'); // Ambil data-status
-                var dokter = $(this).data('dokter'); // Ambil data-dokter
+                var id = $(this).data('id');
+                var status = $(this).data('status');
+                var dokter = $(this).data('dokter');
 
-                // Isi data ke elemen-elemen modal
-                $('#statusKasus').val(status); // Menyimpan status pada select status
-                $('#dokterPJ').val(dokter); // Menyimpan dokter pada select dokter
-                $('#id_laporan_dbd').val(id); // Menyimpan dokter pada select dokter
+                $('#statusKasus').val(status);
+                $('#dokterPJ').val(dokter);
+                $('#id_laporan_dbd').val(id);
                 console.log("ID:", id, "Status:", status, "Dokter:", dokter);
             });
-            $(document).on('click', '[data-bs-target="#lihatModal"]', function() {
-                // var id = $(this).data('id'); // Ambil data-id
 
+            // Handle lihat modal
+            $(document).on('click', '[data-bs-target="#lihatModal"]', function() {
                 var nama = $(this).data("nama");
                 var usia = $(this).data("usia");
                 var alamat = $(this).data("alamat");
@@ -358,34 +421,26 @@
                 });
                 gejalaHtml += "</ul>";
 
-
-                console.log(hasilLab);
-
-                // var dokter = $(this).data('dokter'); // Ambil data-dokter
-
-                // Isi data ke elemen-elemen modal
-                $("#lihatNama").val(nama); // Isi input field
+                $("#lihatNama").val(nama);
                 $("#lihatUsia").val(usia);
-                $("#lihatAlamat").text(alamat); // Isi textarea
-                $("#lihatGejala").html(gejalaHtml); // Isi textarea
-                $("#lihatGejalaLain").val(gejalaLain); // Isi textarea
-                $('#lihatHasilLab').attr('href', fileUrl); // Update link href
-                // $('#dokterPJ').val(dokter); // Menyimpan dokter pada select dokter
-                // $('#id_laporan_dbd').val(id); // Menyimpan dokter pada select dokter
-                // console.log("ID:", id, "Status:", status, "Dokter:", dokter);
+                $("#lihatAlamat").text(alamat);
+                $("#lihatGejala").html(gejalaHtml);
+                $("#lihatGejalaLain").val(gejalaLain);
+                $('#lihatHasilLab').attr('href', fileUrl);
             });
 
+            // Handle form submission
             $('#LaporanForm').on('submit', function(e) {
-                e.preventDefault(); // Mencegah reload halaman
+                e.preventDefault();
                 console.log("submit form");
 
                 $id = $("#id_laporan_dbd").val();
                 $.ajax({
-                    url: '/update-laporan/' + $id, // Endpoint Laravel
+                    url: '/update-laporan/' + $id,
                     method: 'PUT',
-                    data: $(this).serialize(), // Kirim data form
+                    data: $(this).serialize(),
                     headers: {
-                        'X-CSRF-TOKEN': $('input[name="_token"]').val() // Token CSRF
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
                     },
                     success: function(response) {
                         Swal.fire({
@@ -393,12 +448,9 @@
                             text: "Data Telah Di Validasi",
                             icon: "success"
                         }).then(() => {
-                            location
-                                .reload(); // This will reload the page when OK is clicked
+                            location.reload();
                         });
                         console.log(response);
-
-
                     },
                     error: function(xhr, status, error) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
@@ -407,16 +459,14 @@
                 });
             });
 
+            // Handle lihat detail pasien
             $(document).on('click', '.btnLihatPasien', function() {
-                // Ambil ID pasien dari atribut data-id
                 var pasienId = $(this).data('id');
 
-                // Melakukan request Ajax untuk mendapatkan data pasien berdasarkan ID
                 $.ajax({
-                    url: '/get-pasien-detail/' + pasienId, // Ganti dengan URL yang sesuai
+                    url: '/get-pasien-detail/' + pasienId,
                     type: 'GET',
                     success: function(response) {
-                        // Pastikan response berisi data yang diperlukan
                         console.log(response);
 
                         $('#lihatdetailnik').val(response.data.NIK);
@@ -432,7 +482,6 @@
                         $('#lihatJenisKelamin').val(response.data.jenis_kelamin);
                         $('#lihatNoHp').val(response.data.no_hp);
 
-                        // Menampilkan modal
                         $('#detailPasienModal').modal('show');
                     },
                     error: function(xhr, status, error) {
@@ -444,6 +493,15 @@
                     }
                 });
             });
+
+            // Initialize select2 if available
+            if ($.fn.select2) {
+                $('#dokterPJ').select2({
+                    placeholder: "Pilih Dokter",
+                    allowClear: true,
+                    dropdownParent: $('#exampleModal')
+                });
+            }
         });
     </script>
 @endsection
