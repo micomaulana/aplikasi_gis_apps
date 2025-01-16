@@ -32,7 +32,7 @@
                     <h1>
                         <i class="fas fa-tachometer-alt">
                         </i>
-                        Dashboard
+                        Profil
                     </h1>
                 </div>
                 <div class="card">

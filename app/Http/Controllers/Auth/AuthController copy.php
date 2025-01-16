@@ -110,7 +110,6 @@ class AuthController extends Controller
     public function create_pasien(array $data)
     {
         return Pasien::create([
-            'NIK' => $data['NIK'],
             'nama' => $data['nama'],
             'alamat' => $data['alamat'],
             'usia' => $data['usia'],

@@ -35,6 +35,7 @@ class PasienController extends Controller
                 $search_value = '%' . $request->sSearch . '%';
                 $query_data = $query_data->where(function ($query) use ($search_value) {
                     $query->where('nama', 'like', $search_value)
+                        ->orWhere('NIK', 'like', $search_value)
                         ->orWhere('alamat', 'like', $search_value)
                         ->orWhere('email', 'like', $search_value)
                         ->orWhere('usia', 'like', $search_value)
@@ -105,6 +106,7 @@ class PasienController extends Controller
     {
         $request->validate([
             'nama' => 'required',
+            'NIK' => 'required',
             'alamat' => 'required',
             'email' => 'nullable|string',
             'usia' => 'required',
@@ -186,7 +188,7 @@ class PasienController extends Controller
                 ->whereYear('tahun_terdata', '=', $latestYear)
                 ->whereMonth('tahun_terdata', '=', $latestMonth)
                 ->count();
-            $desa = Desa::where('id','=',$id)->first();
+            $desa = Desa::where('id', '=', $id)->first();
             // Parse the year from the request
             // $year = \Carbon\Carbon::parse($request->tahun)->year;
             $year = $request->tahun;

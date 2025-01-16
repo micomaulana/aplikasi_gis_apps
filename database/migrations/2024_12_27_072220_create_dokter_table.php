@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string("alamat");
             $table->string("no_hp");
             $table->string("jenis_kelamin");
+            $table->string("hari");
+            $table->string("jam");
+            $table->string("deskripsi")->nullable();
             $table->timestamps();
         });
     }

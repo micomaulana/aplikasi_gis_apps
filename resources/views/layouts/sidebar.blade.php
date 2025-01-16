@@ -28,14 +28,16 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
                     <span class="hide-menu">MENU</span>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('desas.index') }}" aria-expanded="false">
-                        <span>
-                            <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
-                        </span>
-                        <span class="hide-menu">Desa</span>
-                    </a>
-                </li>
+                @can('desa-list')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('desas.index') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">Desa</span>
+                        </a>
+                    </li>
+                @endcan
                 @can('pasien-list')
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('pasiens.index') }}" aria-expanded="false">
@@ -141,7 +143,7 @@
                             <span>
                                 <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
-                            <span class="hide-menu">Landing Page</span>
+                            <span class="hide-menu">Detail DBD</span>
                         </a>
                     </li>
                 @endcan
@@ -152,7 +154,7 @@
                             <span>
                                 <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
-                            <span class="hide-menu">Dashboard</span>
+                            <span class="hide-menu">Profil puskesmas Karya Maju</span>
                         </a>
                     </li>
                 @endcan

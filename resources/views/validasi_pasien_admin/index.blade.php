@@ -67,10 +67,11 @@
                                 data-id="{{ $idPasien }}">
                                 <i class="fas fa-times"></i> Tolak
                             </button>
-                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailPasienModal"
-                                data-id="{{ $idPasien }}" id="btnLihatPasien">
+                            <button class="btn btn-info btn-sm btnLihatPasien" data-bs-toggle="modal"
+                                data-bs-target="#detailPasienModal" data-id="{{ $idPasien }}">
                                 <i class="bi bi-eye"></i> Lihat Detail
                             </button>
+
                         </td>
                     </tr>
                 @endforeach
@@ -129,51 +130,73 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- NIK -->
+                    <div class="mb-3">
+                        <label for="lihatdetailnik" class="form-label">NIK</label>
+                        <input type="text" class="form-control" id="lihatdetailnik" readonly>
+                    </div>
+
+                    <!-- Nama -->
                     <div class="mb-3">
                         <label for="lihatdetailnama" class="form-label">Nama</label>
                         <input type="text" class="form-control" id="lihatdetailnama" readonly>
                     </div>
-                    <div class="mb-3">
-                        <label for="lihatdetailalamat" class="form-label">Alamat</label>
-                        <textarea class="form-control" id="lihatdetailalamat" rows="2" readonly></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="lihatEmail" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatdetailusia" class="form-label">Usia</label>
-                        <input type="text" class="form-control" id="lihatdetailusia" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatNamaDesa" class="form-label">Nama Desa</label>
-                        <input type="text" class="form-control" id="lihatNamaDesa" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatProvinsi" class="form-label">Provinsi</label>
-                        <input type="text" class="form-control" id="lihatProvinsi" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatKabKota" class="form-label">Kabupaten/Kota</label>
-                        <input type="text" class="form-control" id="lihatKabKota" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatTempatLahir" class="form-label">Tempat Lahir</label>
-                        <input type="text" class="form-control" id="lihatTempatLahir" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lihatTanggalLahir" class="form-label">Tanggal Lahir</label>
-                        <input type="date" class="form-control" id="lihatTanggalLahir" readonly>
-                    </div>
+
+                    <!-- Jenis Kelamin -->
                     <div class="mb-3">
                         <label for="lihatJenisKelamin" class="form-label">Jenis Kelamin</label>
                         <input type="text" class="form-control" id="lihatJenisKelamin" readonly>
                     </div>
+
+                    <!-- Tempat Lahir -->
+                    <div class="mb-3">
+                        <label for="lihatTempatLahir" class="form-label">Tempat Lahir</label>
+                        <input type="text" class="form-control" id="lihatTempatLahir" readonly>
+                    </div>
+
+                    <!-- Tanggal Lahir -->
+                    <div class="mb-3">
+                        <label for="lihatTanggalLahir" class="form-label">Tanggal Lahir</label>
+                        <input type="date" class="form-control" id="lihatTanggalLahir" readonly>
+                    </div>
+
+                    <!-- Usia -->
+                    <div class="mb-3">
+                        <label for="lihatdetailusia" class="form-label">Usia</label>
+                        <input type="text" class="form-control" id="lihatdetailusia" readonly>
+                    </div>
+
+                    <!-- Alamat -->
+                    <div class="mb-3">
+                        <label for="lihatdetailalamat" class="form-label">Alamat</label>
+                        <textarea class="form-control" id="lihatdetailalamat" rows="2" readonly></textarea>
+                    </div>
+
+                    <!-- Nama Desa -->
+                    <div class="mb-3">
+                        <label for="lihatNamaDesa" class="form-label">Nama Desa</label>
+                        <input type="text" class="form-control" id="lihatNamaDesa" readonly>
+                    </div>
+
+                    <!-- Provinsi -->
+                    <div class="mb-3">
+                        <label for="lihatProvinsi" class="form-label">Provinsi</label>
+                        <input type="text" class="form-control" id="lihatProvinsi" readonly>
+                    </div>
+
+                    <!-- Kabupaten/Kota -->
+                    <div class="mb-3">
+                        <label for="lihatKabKota" class="form-label">Kabupaten/Kota</label>
+                        <input type="text" class="form-control" id="lihatKabKota" readonly>
+                    </div>
+
+                    <!-- No HP -->
                     <div class="mb-3">
                         <label for="lihatNoHp" class="form-label">No. HP</label>
                         <input type="text" class="form-control" id="lihatNoHp" readonly>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
@@ -317,6 +340,7 @@
             });
             $(document).on('click', '[data-bs-target="#lihatModal"]', function() {
                 // var id = $(this).data('id'); // Ambil data-id
+
                 var nama = $(this).data("nama");
                 var usia = $(this).data("usia");
                 var alamat = $(this).data("alamat");
@@ -383,7 +407,7 @@
                 });
             });
 
-            $("#btnLihatPasien").click(function() {
+            $(document).on('click', '.btnLihatPasien', function() {
                 // Ambil ID pasien dari atribut data-id
                 var pasienId = $(this).data('id');
 
@@ -394,7 +418,8 @@
                     success: function(response) {
                         // Pastikan response berisi data yang diperlukan
                         console.log(response);
-                        
+
+                        $('#lihatdetailnik').val(response.data.NIK);
                         $('#lihatdetailnama').val(response.data.nama);
                         $('#lihatdetailalamat').val(response.data.alamat);
                         $('#lihatEmail').val(response.data.email);
