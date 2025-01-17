@@ -25,12 +25,54 @@ class DesaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $desas = Desa::paginate(10);
-        return view('desa.index', compact('desas'));
-    }
+        if ($request->ajax()) {
+            // Query data desa
+            $query_data = Desa::query();
 
+            // Filter pencarian
+            if ($request->has('sSearch') && $request->sSearch !== null) {
+                $search_value = '%' . $request->sSearch . '%';
+                $query_data->where(function ($query) use ($search_value) {
+                    $query->where('nama', 'like', $search_value)
+                        ->orWhere('latitude', 'like', $search_value)
+                        ->orWhere('longitude', 'like', $search_value);
+                });
+            }
+
+            // Urutkan dan ambil data
+            $data = $query_data->orderBy('id', 'asc')->get();
+
+            // Konfigurasi DataTables
+            return datatables()->of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '
+    <form action="' . route('desas.destroy', $row->id) . '" method="POST">
+        <a class="btn btn-info btn-sm" href="' . route('desas.show', $row->id) . '">Show</a>';
+
+                    if (Auth::user()->can('desa-edit')) {
+                        $btn .= '<a class="btn btn-primary btn-sm" href="' . route('desas.edit', $row->id) . '">Edit</a>';
+                    }
+
+                    if (Auth::user()->can('desa-delete')) {
+                        $btn .= csrf_field() . method_field('DELETE') . '
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+                    }
+
+                    $btn .= '
+    </form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        // Tampilkan halaman utama
+        return view('desa.index');
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -131,7 +173,9 @@ class DesaController extends Controller
 
     public function hitung_kasus_dari_id_desa($id)
     {
-        $pasiens_count = Pasien::where('id_desa', '=', $id)->count();
+        $pasiens_count = Pasien::where('id_desa', '=', $id)
+            ->whereYear('tahun_terdata', '=', date('Y')) // Tambahkan filter tahun
+            ->count();
         return response()->json([
             'status' => true,
             'message' => "success fetch data",

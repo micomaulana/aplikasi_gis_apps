@@ -1,48 +1,33 @@
-@extends('auth.layout') @section('content')
-    <main class="login-form">
-        <div class="cotainer">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">Login</div>
+@extends('auth.layout')
+@section('content')
+    <div
+        class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-100">
+            <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6 col-xxl-3">
+                    <div class="card mb-0">
                         <div class="card-body">
-
-                            @if (session('success'))
-                            <div class="alert alert-success" role="alert"> 
-                                {{ session('success') }} 
-                            </div>
-                        @endif
-                    
-                        
-                            <form action="{{ route('login.post') }}" method="POST"> 
-                                @csrf 
-                                <div class="form-group row"> 
-                                    <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
-                                    <div class="col-md-6">
-                                         <input type="text" id="email_address" class="form-control"
-                                            name="email" required autofocus>
-                                        @if ($errors->has('email'))
-                                            <span class="text-danger">{{ $errors->first('email') }}</span>
-                                        @endif
-                                    </div>
+                            <h4 class="display-6 text-center"><b>GIS DBD</b></h4>
+                            <p class="text-center">PUSKESMAS KARYA MAJU</p>
+                            <form action="{{ route('login.post') }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp" name="email">
                                 </div>
-                                <div class="form-group row"> <label for="password"
-                                        class="col-md-4 col-form-label text-md-right">Password</label>
-                                    <div class="col-md-6"> <input type="password" id="password" class="form-control"
-                                            name="password" required>
-                                        @if ($errors->has('password'))
-                                            <span class="text-danger">{{ $errors->first('password') }}</span>
-                                        @endif
-                                    </div>
+                                <div class="mb-4">
+                                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-md-6 offset-md-4">
-                                        <div class="checkbox"> <label> <input type="checkbox" name="remember"> Remember Me
-                                            </label> </div>
-                                    </div>
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <a class="text-primary fw-bold" href="{{route('view_email_forgot_password')}}">Forgot Password ?</a>
                                 </div>
-                                <div class="col-md-6 offset-md-4"> <button type="submit" class="btn btn-primary"> Login
-                                    </button>
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign In</button>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <p class="fs-4 mb-0 fw-bold">New to SeoDash?</p>
+                                    <a class="text-primary fw-bold ms-2" href="{{ route('register') }}">Create an
+                                        account</a>
                                 </div>
                             </form>
                         </div>
@@ -50,5 +35,5 @@
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 @endsection

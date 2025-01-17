@@ -1,47 +1,85 @@
 @extends('layouts.main')
+
 @section('content')
     <div class="container-fluid">
-
-        <div class="pull-right">
-            <a class="btn btn-success" href=" {{ route('desas.create') }}"> create new </a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h4">Data Desa</h1>
+            @can('desa-create')
+                <a class="btn btn-success" href="{{ route('desas.create') }}">Create New</a>
+            @endcan
         </div>
 
         @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <table class="table">
-            <thead>
+
+        <table class="table table-bordered data-table">
+            <thead class="table-light">
                 <tr>
-                    <th>id</th>
-                    <th>nama</th>
-                    <th>action</th>
-                    {{-- <th>longitude</th> --}}
-                    {{-- <th>latitude</th> --}}
+                    <th>#</th>
+                    <th>Nama</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th width="150px">Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($desas as $desa)
-                    <tr>
-                        <td>{{ $desa->id }}</td>
-                        <td>{{ $desa->nama }}</td>
-                        <td>
-                            <form action="{{ route('desas.destroy', $desa->id) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <a type="button" class="btn btn-info" href="{{ route('desas.show', $desa->id) }}">Show</a>
-                                <a type="button" class="btn btn-warning"
-                                    href="{{ route('desas.edit', $desa->id) }}">Edit</a>
-                                <button type="submit" class="btn btn-danger">Delete</a>
-                            </form>
-                        </td>
-                        {{-- <td>{{ $desa->longitude }}</td>
-                    <td>{{ $desa->latitude }}</td> --}}
-                    </tr>
-                @endforeach
-            </tbody>
+            <tbody></tbody>
         </table>
-        {{ $desas->links() }}
     </div>
+
+    <script type="text/javascript">
+        $(function() {
+            let table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('desas.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'latitude',
+                        name: 'latitude'
+                    },
+                    {
+                        data: 'longitude',
+                        name: 'longitude'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row) {
+                            return data;
+                        }
+                    }
+                ],
+                language: {
+                    processing: "Sedang memproses...",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    zeroRecords: "Data tidak ditemukan",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    infoEmpty: "Tidak ada data tersedia",
+                    infoFiltered: "(disaring dari _MAX_ total data)",
+                    search: "Cari:",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Berikutnya",
+                        previous: "Sebelumnya"
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

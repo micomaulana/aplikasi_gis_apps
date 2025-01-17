@@ -46,7 +46,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="usia" class="form-label">Usia</label>
-                    <input type="text" class="form-control" id="usia" name="usia">
+                    <input type="text" class="form-control" id="usia" name="usia" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="alamat" class="form-label">Alamat</label>
@@ -62,11 +62,11 @@
                 </div>
                 <div class="mb-3">
                     <label for="provinsi" class="form-label">Provinsi</label>
-                    <input type="text" class="form-control" id="provinsi" name="provinsi">
+                    <input type="text" class="form-control" id="provinsi" name="provinsi" value="Sumatera Selatan" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="kab_kota" class="form-label">Kab/Kota</label>
-                    <input type="text" class="form-control" id="kab_kota" name="kab_kota">
+                    <input type="text" class="form-control" id="kab_kota" name="kab_kota" value="Musi Banyuasin" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="diagnosis_lab" class="form-label">Diagnosis Lab</label>
@@ -85,7 +85,7 @@
                     <input type="text" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
-                    <label for="no_hp" class="form-label">No HP</label>
+                    <label for="no_hp" class="form-label" id="label_no_hp">No HP</label>
                     <input type="text" class="form-control" id="no_hp" name="no_hp">
                 </div>
                 <div class="mb-3">
@@ -100,24 +100,30 @@
         <script>
             $(document).ready(function() {
                 $('#select_desa').select2();
+                $('#usia').attr('readonly');
 
-                $('#usia').on('change', function() {
-                    const value_input = parseInt($(this).val());
 
-                    if (value_input < 17) {
-                        $('#email').hide();
-                        $('#no_hp').hide();
-                        $('#label_no_hp').hide();
-                        $('#label_email').hide();
-                    } else {
-                        $('#email').show();
-                        $('#no_hp').show();
-                        $('#label_no_hp').show();
-                        $('#label_email').show();
-                    }
 
+                $('#tanggal_lahir').on('change', function() {
+                    const tanggal_lahir = $(this).val();
+                    const date = new Date(tanggal_lahir);
+                    const year = date.getFullYear();
+                    const currentYear = new Date().getFullYear();
+                    const usia = currentYear - year;
+                    $('#usia').val(usia);
+
+                    if (usia < 17) {
+                            $('#email').hide();
+                            $('#no_hp').hide();
+                            $('#label_no_hp').hide();
+                            $('#label_email').hide();
+                        } else {
+                            $('#email').show();
+                            $('#no_hp').show();
+                            $('#label_no_hp').show();
+                            $('#label_email').show();
+                        }
                 });
-
             });
         </script>
     @endsection

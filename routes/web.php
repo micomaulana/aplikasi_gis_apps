@@ -11,7 +11,9 @@ use App\Http\Controllers\OverviewStatistikPublishController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\UserController;
-
+use App\Mail\SendMailGis;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,4 +81,16 @@ Route::get('/getPasien/{iddesa}', [DesaController::class, 'getPasien'])->name('g
 Route::resource('users',UserController::class);
 Route::resource('roles',RoleController::class);
 Route::get('/get-dokter-schedule', [DokterController::class, 'getDokterBySchedule'])->name('dokter.schedule');
+Route::get('/get_data_pasien_by_desa_pie', [AuthController::class, 'getDataPasienByDesaPie']);
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);
+
+// Route::get('/forgot-password/{email}',[AuthController::class,'forgotPasssword'])->name('forgot.password');
+
+Route::get('/view_email_forgot_password',[AuthController::class,'view_email_forgot_password'])->name('view_email_forgot_password');
+// Route::get();
+Route::post('/send-email',[AuthController::class,'send_email'])->name('send_email');
+Route::get('/forgot-pasword/{email}',[AuthController::class,'page_forgot_password'])->name('forgot-pasword');
+Route::post('/update-forgot-password',[AuthController::class,'update_forgot_password'])->name('update_forgot_password');
+
+Route::get('user-profile',[AuthController::class,'user_profile'])->name('user_profile');
+Route::put('update_user_profile',[AuthController::class,'update_user_profile'])->name('update_user_profile');

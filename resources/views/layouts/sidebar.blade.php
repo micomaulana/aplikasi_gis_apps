@@ -169,14 +169,14 @@
                         </a>
                     </li>
                 @endcan
-
-                <li class="nav-small-cap">
-                    <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-6"
-                        class="fs-6"></iconify-icon>
-                    <span class="hide-menu">AUTH</span>
-                </li>
-                {{-- <li><a class="nav-link" href="{{ route('roles.index') }}">Manage roles</a></li> --}}
                 @can('user-list')
+
+                    <li class="nav-small-cap">
+                        <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-6"
+                            class="fs-6"></iconify-icon>
+                        <span class="hide-menu">AUTH</span>
+                    </li>
+                    {{-- <li><a class="nav-link" href="{{ route('roles.index') }}">Manage roles</a></li> --}}
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('users.index') }}" aria-expanded="false">
                             <span>
@@ -185,17 +185,18 @@
                             <span class="hide-menu">Manage Users</span>
                         </a>
                     </li>
+                    @can('role-list')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('roles.index') }}" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manage roles</span>
+                            </a>
+                        </li>
+                    @endcan
                 @endcan
-                @can('role-list')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('roles.index') }}" aria-expanded="false">
-                            <span>
-                                <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
-                            </span>
-                            <span class="hide-menu">Manage roles</span>
-                        </a>
-                    </li>
-                @endcan
+
             </ul>
 
 

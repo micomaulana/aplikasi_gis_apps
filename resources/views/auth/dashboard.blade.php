@@ -1,7 +1,14 @@
 @extends('layouts.main')
 @section('content')
+    <style>
+        .card-body div:nth-child(2) {
+            font-size: 12px !important;
+            font-weight: bold !important;
+            margin: 0.2rem 0 !important;
+        }
+    </style>
     <div class="container-fluid">
-        @if (Auth::user()->hasRole('Kepala Puskes') || Auth::user()->hasRole('Admin'))
+        @if (Auth::user()->hasRole('Kepala Puskes') || Auth::user()->hasRole('Admin') && $jumlah_kasus_perdesa->count_kasus >= 5 )
             <div class="alert-box" id="alert-danger-custom">
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-exclamation-circle alert-icon"></i>
@@ -58,33 +65,21 @@
                             <h5 class="mb-3">Grafik pasien</h5>
 
                             <!-- Dropdown Button -->
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="dropdown mb-4">
-                                        <select class="form-select dropdown-toggle d-flex align-items-center"
-                                            name="karya_maju" id="karya_maju">
-                                            <option value="karya_maju" selected>Pilih Desa</option>
-                                            @foreach ($desa_list as $desa)
-                                                <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="dropdown mb-4">
-                                        <select class="form-select" name="tahun" id="tahun">
-                                            <option value="" selected>Pilih Tahun</option>
-                                            @php
-                                                // Set the range for the years (e.g., from 2000 to the current year)
-                                                $startYear = 2000; // You can change this to any starting year
-                                                $currentYear = \Carbon\Carbon::now()->year;
-                                            @endphp
+                            <!-- Replace the existing dropdown section with this -->
+                            <div class="col-md-3">
+                                <div class="dropdown mb-4">
+                                    <select class="form-select" name="tahun" id="tahun">
+                                        <option value="" selected>Pilih Tahun</option>
+                                        @php
+                                            // Ubah tahun mulai dari 2022
+                                            $startYear = 2022;
+                                            $currentYear = \Carbon\Carbon::now()->year;
+                                        @endphp
 
-                                            @for ($year = $startYear; $year <= $currentYear; $year++)
-                                                <option value="{{ $year }}">{{ $year }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
+                                        @for ($year = $startYear; $year <= $currentYear; $year++)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                        @endfor
+                                    </select>
                                 </div>
                             </div>
 
@@ -140,21 +135,33 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title d-flex align-items-center gap-2 mb-4">
-                                            Traffic Overview
+                                            Sebaran Kasus per Desa
                                             <span>
                                                 <iconify-icon icon="solar:question-circle-bold"
                                                     class="fs-7 d-flex text-muted" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" data-bs-custom-class="tooltip-success"
-                                                    data-bs-title="Traffic Overview"></iconify-icon>
+                                                    data-bs-title="Distribution of cases by village"></iconify-icon>
                                             </span>
                                         </h5>
-                                        <div id="traffic-overview">
+                                        <div id="cases-by-village"></div>
+                                        <div class="mt-3 d-flex justify-content-center gap-4" id="legend-chart">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2"
+                                                    style="display:inline-block;width:10px;height:10px;background-color:#4bbf73;border-radius:2px;"></span>
+                                                <span>Aman (0 kasus)</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2"
+                                                    style="display:inline-block;width:10px;height:10px;background-color:#f0ad4e;border-radius:2px;"></span>
+                                                <span>Sedang (1-4 kasus)</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2"
+                                                    style="display:inline-block;width:10px;height:10px;background-color:#d9534f;border-radius:2px;"></span>
+                                                <span>Parah (≥5 kasus)</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="card">
                                 </div>
                             </div>
                         </div>
@@ -401,6 +408,116 @@
             $('#karya_maju, #tahun').change(function() {
                 updateData();
             });
+
+
+
+            
+            function updatePieChart() {
+                const tahun = $('#tahun').val();
+
+                $.ajax({
+                    url: `/get_data_pasien_by_desa_pie`,
+                    type: 'GET',
+                    data: {
+                        tahun: tahun
+                    },
+                    success: function(response) {
+                        if (response && response.data_chart) {
+                            // Generate colors based on values
+                            const colors = response.data_chart.values.map(value => {
+                                if (value === 0)
+                                    return '#4bbf73'; // Hijau untuk kasus 0 (Aman)
+                                if (value < 5)
+                                    return '#f0ad4e'; // Kuning untuk kasus < 5 (Sedang)
+                                return '#d9534f'; // Merah untuk kasus >= 5 (Parah)
+                            });
+
+                            let options = {
+                                series: response.data_chart.values,
+                                chart: {
+                                    type: 'pie',
+                                    height: 320,
+                                    fontFamily: "inherit",
+                                },
+                                labels: response.data_chart.labels,
+                                colors: colors,
+                                legend: {
+                                    position: 'bottom',
+                                    horizontalAlign: 'center',
+                                    fontSize: '14px',
+                                    markers: {
+                                        width: 10,
+                                        height: 10,
+                                        radius: 2
+                                    },
+                                    formatter: function(seriesName, opts) {
+                                        const value = opts.w.globals.series[opts
+                                            .seriesIndex];
+                                        let status = '';
+                                        if (value === 0) status = '(Aman)';
+                                        else if (value < 5) status = '(Sedang)';
+                                        else status = '(Parah)';
+                                        return `${seriesName} - ${value} kasus ${status}`;
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            size: '0%'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    y: {
+                                        formatter: function(value) {
+                                            let status = value === 0 ? 'Aman' :
+                                                value < 5 ? 'Sedang' : 'Parah';
+                                            let color = value === 0 ? '#4bbf73' :
+                                                value < 5 ? '#f0ad4e' : '#d9534f';
+                                            return `${value} kasus - Status: <span>${status}</span>`;
+                                        }
+                                    }
+                                },
+                                responsive: [{
+                                    breakpoint: 480,
+                                    options: {
+                                        legend: {
+                                            position: 'bottom'
+                                        }
+                                    }
+                                }]
+                            };
+
+                            if (window.casesChart) {
+                                window.casesChart.destroy();
+                            }
+
+                            window.casesChart = new ApexCharts(
+                                document.querySelector("#cases-by-village"),
+                                options
+                            );
+                            window.casesChart.render();
+
+                            // Add legend for status colors
+                            //         let statusLegend = `
+                        // `;
+
+                            //         $('#cases-by-village').after(statusLegend);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching data:", error);
+                    }
+                });
+            }
+
+            // Event listener for year change only
+            $('#tahun').change(function() {
+                updatePieChart();
+            });
+
+            // Initial load
+            updatePieChart();
         });
     </script>
 @endsection

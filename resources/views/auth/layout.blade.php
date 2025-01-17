@@ -1,73 +1,28 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-    <title>Laravel - ItSolutionStuff.com</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <style type="text/css">
-        @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SeoDash Free Bootstrap Admin Template by Adminmart</title>
+    <link rel="shortcut icon" type="image/png" href="/Seodash-assets/images/logos/seodashlogo.png" />
+    <link rel="stylesheet" href="/Seodash-assets/css/styles.min.css" />
 
-        body {
-            margin: 0;
-            font-size: .9rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #212529;
-            text-align: left;
-            background-color: #f5f8fa;
-        }
-
-        .navbar-laravel {
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .04);
-        }
-
-        .navbar-brand,
-        .nav-link,
-        .my-form,
-        .login-form {
-            font-family: Raleway, sans-serif;
-        }
-
-        .my-form {
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
-        }
-
-        .my-form .row {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .login-form {
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
-        }
-
-        .login-form .row {
-            margin-left: 0;
-            margin-right: 0;
-        }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/Seodash-assets/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
-        <div class="container"> <a class="navbar-brand" href="#">Laravel</a> <button class="navbar-toggler"
-                type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span
-                    class="navbar-toggler-icon"></span> </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto"> @guest <li class="nav-item"> <a class="nav-link"
-                                href="{{ route('login') }}">Login</a> </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">Register</a>
-                        </li>
-                    @else
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('logout') }}">Logout</a> </li> @endguest
-                </ul>
-            </div>
-        </div>
-    </nav> @yield('content')
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        @yield('content')
+    </div>
+
 </body>
 
 </html>

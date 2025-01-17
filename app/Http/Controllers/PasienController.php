@@ -31,10 +31,20 @@ class PasienController extends Controller
         if ($request->ajax()) {
             $query_data = Pasien::query();
 
+            // Year filter
+            if ($request->has('year') && !empty($request->year)) {
+                $query_data->where('diagnosis_klinis','=','DBD')->whereYear('tahun_terdata', $request->year);
+            } else {
+                // If no year selected, show data from 2022 onwards
+                $query_data->whereYear('tahun_terdata', '>=', 2022);
+            }
+
+            // Search functionality
             if ($request->sSearch) {
                 $search_value = '%' . $request->sSearch . '%';
-                $query_data = $query_data->where(function ($query) use ($search_value) {
-                    $query->where('nama', 'like', $search_value)
+                $query_data->where(function ($query) use ($search_value) {
+                    $query
+                        ->where('nama', 'like', $search_value)
                         ->orWhere('NIK', 'like', $search_value)
                         ->orWhere('alamat', 'like', $search_value)
                         ->orWhere('email', 'like', $search_value)
@@ -58,24 +68,39 @@ class PasienController extends Controller
             return datatables()->of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '
-    <form action="' . route('pasiens.destroy', $row->id) . '" method="POST">
-        <a class="btn btn-info" href="' . route('pasiens.show', $row->id) . '">Show</a>';
+                    $actions = '<div class="btn-group" role="group">';
 
+                    // Show button
+                    $actions .= '<a href="' . route('pasiens.show', $row->id) . '" 
+                                 class="btn btn-info btn-sm">
+                                 <i class="fas fa-eye"></i> Detail
+                               </a>';
+
+                    // Edit button
                     if (Auth::user()->can('pasien-edit')) {
-                        $btn .= '<a class="btn btn-primary" href="' . route('pasiens.edit', $row->id) . '">Edit</a>';
+                        $actions .= '<a href="' . route('pasiens.edit', $row->id) . '" 
+                                     class="btn btn-primary btn-sm">
+                                     <i class="fas fa-edit"></i> Edit
+                                   </a>';
                     }
 
+                    // Delete button
                     if (Auth::user()->can('pasien-delete')) {
-                        $btn .= csrf_field() . method_field('DELETE') . '
-        <button type="submit" class="btn btn-danger">Delete</button>';
+                        $actions .= '<form action="' . route('pasiens.destroy', $row->id) . '" 
+                                         method="POST" class="d-inline" 
+                                         onsubmit="return confirm(\'Apakah Anda yakin ingin menghapus data ini?\');">
+                                     ' . csrf_field() . method_field('DELETE') . '
+                                     <button type="submit" class="btn btn-danger btn-sm">
+                                         <i class="fas fa-trash"></i> Hapus
+                                     </button>
+                                   </form>';
                     }
 
-                    $btn .= '
-                </form>';
-                    return $btn;
-                })->addColumn('nama_desa', function ($row) {
-                    return $row->desa->nama;
+                    $actions .= '</div>';
+                    return $actions;
+                })
+                ->addColumn('nama_desa', function ($row) {
+                    return $row->desa->nama ?? '-';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
