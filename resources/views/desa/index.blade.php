@@ -19,10 +19,10 @@
         <table class="table table-bordered data-table">
             <thead class="table-light">
                 <tr>
-                    <th>#</th>
+                    <th>No</th>
                     <th>Nama</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
+                    {{-- <th>Latitude</th>
+                    <th>Longitude</th> --}}
                     <th width="150px">Action</th>
                 </tr>
             </thead>
@@ -46,22 +46,19 @@
                         data: 'nama',
                         name: 'nama'
                     },
-                    {
-                        data: 'latitude',
-                        name: 'latitude'
-                    },
-                    {
-                        data: 'longitude',
-                        name: 'longitude'
-                    },
+                    // {
+                    //     data: 'latitude',
+                    //     name: 'latitude'
+                    // },
+                    // {
+                    //     data: 'longitude',
+                    //     name: 'longitude'
+                    // },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false,
-                        render: function(data, type, row) {
-                            return data;
-                        }
+                        searchable: false
                     }
                 ],
                 language: {

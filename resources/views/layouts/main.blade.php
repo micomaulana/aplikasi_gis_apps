@@ -635,7 +635,27 @@
             font-weight: bold;
         }
 
-        
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .print-area,
+            .print-area * {
+                visibility: visible;
+            }
+
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
     </style>
 </head>
 

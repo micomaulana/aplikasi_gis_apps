@@ -4,9 +4,8 @@
         <div class="card custom-card shadow-card">
             <div class="content">
                 <div class="header">
-                    <img alt="Puskesmas Karya Maju building with a signboard" height="300"
-                        src="https://storage.googleapis.com/a1aa/image/e31qa6U4LDQKTK5oKa5PTyiTrSwTkkvOa3MoLUmaeHvtHfFoA.jpg"
-                        width="1200" />
+                    <img alt="Puskesmas Karya Maju building with a signboard"
+                        src="/Seodash-assets/images/Puskesmas/puskes.jpg" class="img-responsive" />
                 </div>
                 <div class="info-card card">
                     <div class="row">

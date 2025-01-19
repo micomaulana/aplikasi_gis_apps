@@ -84,8 +84,9 @@
                                     {{-- <div class="pdf-preview" style="display: none; margin-top: 10px;">
                                         <iframe src="/path/to/pdf/{{ $laporan_fogging->id }}" width="100%" height="200px" frameborder="0"></iframe>
                                     </div> --}}
-                                    <button class="btn btn-outline-secondary btn-sm"><i class="fas fa-print"></i>
-                                        Cetak</button>
+                                    <button class="btn btn-outline-secondary btn-sm print-preview">
+                                        <i class="fas fa-print"></i> Cetak
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -98,7 +99,9 @@
             <div class="card p-3">
                 <h5>Preview laporan pengajuan fogging</h5>
                 <div class="d-flex justify-content-end mb-2">
-                    <button class="btn btn-outline-secondary btn-sm me-2"><i class="fas fa-print"></i> Cetak</button>
+                    <button class="btn btn-outline-secondary btn-sm print-table" data-id="{{ $laporan_fogging->id }}">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
                     <button class="btn btn-outline-primary btn-sm" id="download-pdf"><i class="fas fa-file-pdf"></i> Unduh
                         pdf</button>
                 </div>
@@ -167,9 +170,9 @@
                     success: function(response) {
                         console.log(response);
                         const tanggal_persetujuan = formatDate(response.data
-                        .tanggal_persetujuan); 
+                            .tanggal_persetujuan);
                         const tanggal_pengajuan_laporan = formatDate(response.data
-                        .tanggal_pengajuan);  
+                            .tanggal_pengajuan);
                         $('#desa_laporan').text(response.data.desa.nama);
                         $('#jumlah_kasus_laporan').text(response.data.jumlah_kasus);
                         $('#tanggal_pengajuan_laporan').text(tanggal_pengajuan_laporan);
@@ -210,6 +213,18 @@
 
                 return `${day} ${month} ${year}`;
             }
+
+            $('.print-table').on('click', function() {
+                const id = $(this).data('id');
+                // Buka URL cetak dalam window baru
+                window.open(`/print-laporan/${id}`, '_blank');
+            });
+
+            // Function to print preview section
+            $('.print-preview').on('click', function() {
+                const id = $('#id_fogging').val();
+                window.open(`/print-laporan/${id}`, '_blank');
+            });
 
 
         });

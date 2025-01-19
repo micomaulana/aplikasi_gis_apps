@@ -42,13 +42,13 @@
                         </h5>
                         <div class="d-flex justify-content-between">
                             <img alt="Puskesmas Karya Maju building" class="img-fluid" height="100"
-                                src="https://storage.googleapis.com/a1aa/image/FXrVf2ZvFM0ZXCDW5kAcJlWrhlN3x2AlunfKHk4tdwO8feLQB.jpg"
+                                src="/Seodash-assets/images/Puskesmas/kegiatan.jpg"
                                 width="150" />
                             <img alt="Healthcare workers assisting a patient" class="img-fluid" height="100"
-                                src="https://storage.googleapis.com/a1aa/image/elh8XXuLxgUMGSziRiu4nSwCT4vPoefigt411EHJMKL1f9LQB.jpg"
+                                src="/Seodash-assets/images/Puskesmas/kegiatan2.jpg"
                                 width="150" />
                             <img alt="Community health event" class="img-fluid" height="100"
-                                src="https://storage.googleapis.com/a1aa/image/MksclO4ZA1LYL5JBXz6O5SneS6TLrxOoAMPX71RD8WWffeLQB.jpg"
+                                src="/Seodash-assets/images/Puskesmas/kegiatan3.jpg"
                                 width="150" />
                         </div>
                     </div>

@@ -413,7 +413,7 @@
             max-width: 1200px;
             margin-left: 0;
         }
-        
+
 
         .sidebar {
             background-color: #7a92b8;
@@ -506,6 +506,25 @@
             color: white;
             padding: 20px;
             border-radius: 15px;
+        }
+
+        .header img {
+            max-width: 100%;
+            /* Pastikan gambar tidak lebih besar dari container */
+            height: auto;
+            /* Mempertahankan aspek rasio gambar */
+            margin: 0 auto;
+            /* Menyelaraskan gambar di tengah jika dibutuhkan */
+            display: block;
+            /* Menghilangkan spasi bawaan */
+        }
+
+        /* Jika perlu kontrol ukuran tetap untuk layar tertentu */
+        @media (min-width: 768px) {
+            .header img {
+                max-width: 800px;
+                /* Membatasi ukuran maksimum pada layar besar */
+            }
         }
     </style>
 </head>

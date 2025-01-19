@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaporanFogging;
+use App\Models\LaporanDBD;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class LaporanFoggingController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -47,7 +48,7 @@ class LaporanFoggingController extends Controller
         ];
 
         LaporanFogging::create($data);
-        return redirect()->route('laporan_view')->with('success','laporan berhasil dibuat');
+        return redirect()->route('laporan_view')->with('success', 'laporan berhasil dibuat');
     }
 
     /**
@@ -55,12 +56,12 @@ class LaporanFoggingController extends Controller
      */
     public function show($id)
     {
-        $laporanFogging = LaporanFogging::where('id','=',$id)->with('desa')->first();
+        $laporanFogging = LaporanFogging::where('id', '=', $id)->with('desa')->first();
         return response()->json([
             'status' => true,
             'message' => "success",
             'data' => $laporanFogging
-        ],200);
+        ], 200);
     }
 
     /**
@@ -87,28 +88,43 @@ class LaporanFoggingController extends Controller
         //
     }
 
-    public function generatePDF($id){
+    public function generatePDF($id)
+    {
         $data = LaporanFogging::findOrFail($id);
         $pdf = Pdf::loadView('laporan.laporanfoggingpdf', compact('data'));  // Load a Blade view
         return $pdf->stream('laporanfogging.pdf'); // Download the PDF
     }
 
-    public function update_status_pengajuan_fogging($id,$status){
-        $laporanFogging = LaporanFogging::where('id','=',$id)->first();
+    public function update_status_pengajuan_fogging($id, $status)
+    {
+        $laporanFogging = LaporanFogging::where('id', '=', $id)->first();
         $laporanFogging->update([
             'tanggal_persetujuan' => now(),
             'status_pengajuan' => $status
         ]);
         // foreach ($laporanFogging as $key => $laporan) {
         // }
-        return redirect()->back()->with('success','status pengajuan berhasil di update');
+        return redirect()->back()->with('success', 'status pengajuan berhasil di update');
     }
 
-    public function lihat_detail_foggings($id){
-        $desa_foggings = LaporanFogging::where('id','=',$id)->with('desa.pasien')->get();
+    public function lihat_detail_foggings($id)
+    {
+        $desa_foggings = LaporanFogging::where('id', '=', $id)->with('desa.pasien')->get();
         return response()->json([
             'message' => 'success',
             'data' => $desa_foggings
-        ],200);
+        ], 200);
+    }
+
+    public function printLaporan($id)
+    {
+        $data = LaporanFogging::with('desa')->findOrFail($id);
+        return view('laporan.print', compact('data'));
+    }
+
+    public function printLaporanMasyarakat($id)
+    {
+        $laporan = LaporanFogging::with(['pasien', 'dokter'])->findOrFail($id);
+        return view('laporan_masyarakat.printMasyarakat', ['laporan' => $laporan]);
     }
 }

@@ -171,7 +171,7 @@
         </div>
     </div>
     </div>
-    <div class="col-lg p-4 ms-3 me-3">
+    {{-- <div class="col-lg p-4 ms-3 me-3">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Pasien</h5>
@@ -182,8 +182,8 @@
                                 <th scope="col" class="ps-0">Nama</th>
                                 <th scope="col">Alamat</th>
                                 <th scope="col">Tanggal Dibuat</th>
-                                {{-- <th scope="col" class="text-center">Desa</th> --}}
-                                {{-- <th scope="col" class="text-center">Kab/Kota</th> --}}
+                                <th scope="col" class="text-center">Desa</th>
+                                <th scope="col" class="text-center">Kab/Kota</th>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
@@ -200,8 +200,8 @@
                                         <a href="javascript:void(0)"
                                             class="link-primary text-dark fw-medium d-block">{{ $pasien->created_at }}</a>
                                     </td>
-                                    {{-- <td class="text-center fw-medium"></td>
-                                    <td class="text-center fw-medium">Musi Banyuasin</td> --}}
+                                    <td class="text-center fw-medium"></td>
+                                    <td class="text-center fw-medium">Musi Banyuasin</td>
                                 </tr>
                             @endforeach
 
@@ -210,7 +210,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <script>
         $(document).ready(function() {

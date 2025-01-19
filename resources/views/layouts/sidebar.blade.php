@@ -1,14 +1,14 @@
 <aside class="left-sidebar">
     <!-- Sidebar scroll-->
     <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="./index.html" class="text-nowrap logo-img">
-                <img src="/Seodash-assets/images/logos/logo-light.svg" alt="" />
-            </a>
+        <div class="brand-logo d-flex flex-column align-items-center justify-content-between text-center">
+            <h4 class="display-6 mb-1"><b>GIS DBD</b></h4>
+            <p class="mb-0">PUSKESMAS KARYA MAJU</p>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>
             </div>
         </div>
+
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
             <ul id="sidebarnav">

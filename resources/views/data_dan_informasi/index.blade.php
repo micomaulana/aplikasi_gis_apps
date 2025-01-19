@@ -199,31 +199,44 @@
             // Overview calculation
             $('.publish_data').click(function() {
                 $("#form-publish").show();
-                var selectedValue = $('#yearSelect').val();
-
-
-                $.ajax({
-                    url: '/get-data-statistik-form-by-year/' +
-                        selectedValue, // The route where you want to send the GET request
-                    type: 'GET',
-                    success: function(response) {
-                        // Set values to overview form
-                        $('input[name="total_kasus"]').val(response.data.total_kasus);
-                        $('input[name="total_penduduk"]').val(response.data.jumlah_penduduk);
-                        $('input[name="total_desa_rawan"]').val(response.data.jumlah_desa_rawan);
-                        $('input[name="jumlah_desa"]').val(response.data.jumlah_desa);
-                        console.log(response);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                        console.log(error);
-                    }
-                });
-
-
+                calculateOverview();
             });
 
-            // Form publish submission - Modified version
+            // Function to calculate overview from table data
+            function calculateOverview() {
+                let totalKasus = 0;
+                let totalPenduduk = 0;
+                let totalDesaRawan = 0;
+                let totalDesa = 0;
+
+                // Get current year
+                const selectedYear = $('#yearSelect').val();
+
+                // Iterate through table rows
+                $('.table tbody tr').each(function() {
+                    // Get values from each row
+                    const kasus = parseInt($(this).find('td:eq(1)').text()) || 0;
+                    const status = $(this).find('td:eq(2)').text().toLowerCase();
+                    const penduduk = parseInt($(this).find('td:eq(3)').text()) || 0;
+
+                    // Calculate totals
+                    totalKasus += kasus;
+                    totalPenduduk += penduduk;
+                    if (status === 'tinggi') {
+                        totalDesaRawan++;
+                    }
+                    totalDesa++;
+                });
+
+                // Set values to overview form
+                $('input[name="total_kasus"]').val(totalKasus);
+                $('input[name="total_penduduk"]').val(totalPenduduk);
+                $('input[name="total_desa_rawan"]').val(totalDesaRawan);
+                $('input[name="jumlah_desa"]').val(totalDesa);
+                $('input[name="tahun"]').val(selectedYear);
+            }
+
+            // Form publish submission
             $("#form-publish").on('submit', function(e) {
                 e.preventDefault();
 

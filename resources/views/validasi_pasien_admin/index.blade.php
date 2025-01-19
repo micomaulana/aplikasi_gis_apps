@@ -244,19 +244,11 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="hari" class="form-label">Hari Kontrol</label>
-                                <select class="form-select" id="hari" name="hari[]" multiple required>
-                                    <option value="senin">Senin</option>
-                                    <option value="selasa">Selasa</option>
-                                    <option value="rabu">Rabu</option>
-                                    <option value="kamis">Kamis</option>
-                                    <option value="jumat">Jumat</option>
-                                    <option value="sabtu">Sabtu</option>
-                                    <option value="minggu">Minggu</option>
-                                </select>
-                                <small class="form-text text-muted">Tekan Ctrl (Windows) atau Command (Mac) untuk memilih
-                                    beberapa hari</small>
+                                <label for="hariOtomatis" class="form-label">Hari Kontrol</label>
+                                <input type="text" class="form-control" id="hariOtomatis" name="hari_otomatis"
+                                    readonly>
                             </div>
+
 
                             <div class="mb-3">
                                 <label for="dokterPJ" class="form-label">Dokter PJ</label>
@@ -336,6 +328,22 @@
             });
 
             // Event handler untuk perubahan tanggal dan waktu kontrol
+            // Script untuk menampilkan hari otomatis
+            $('#id_lapora_kasus').on('change', function() {
+                var selectedDate = $(this).val();
+
+                if (selectedDate) {
+                    // Konversi tanggal ke hari
+                    var days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    var date = new Date(selectedDate);
+                    var hari = days[date.getDay()];
+
+                    // Tampilkan hari di input readonly
+                    $('#hariOtomatis').val(hari);
+                }
+            });
+
+            // Script untuk memuat daftar dokter yang tersedia
             $('#id_lapora_kasus, #jadwalWaktu').on('change', function() {
                 var selectedDate = $('#id_lapora_kasus').val();
                 var selectedTime = $('#jadwalWaktu').val();
@@ -389,6 +397,7 @@
                     });
                 }
             });
+
 
             // Tangkap event sebelum modal ditampilkan
             $(document).on('click', '[data-bs-target="#exampleModal"]', function() {

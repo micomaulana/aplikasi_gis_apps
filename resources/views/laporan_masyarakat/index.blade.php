@@ -65,7 +65,10 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Preview laporan</h6>
                 <div>
-                    <button class="btn btn-outline-primary me-2"><i class="fas fa-print"></i> Cetak</button>
+                    <button class="btn btn-outline-primary me-2"
+                        onclick="window.location.href='/printLaporanMasyarakat/' + $('#id_laporan').val()">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
                     <button class="btn btn-outline-primary unduh"><i class="fas fa-file-pdf"></i> Unduh pdf</button>
                 </div>
             </div>
@@ -74,9 +77,11 @@
                 <h6>Laporan #<span id="no_tiket"></span></h6>
                 <p>Status: <strong class="text-danger" id="status">Positif DBD</strong></p>
                 <h6>Jadwal Kontrol</h6>
-                <p><i class="fas fa-calendar-alt"></i> Tanggal Dan Waktu<br><strong id="jadwal_control">24 Maret 2024, 09:00 WIB</strong></p>
+                <p><i class="fas fa-calendar-alt"></i> Tanggal Dan Waktu<br><strong id="jadwal_control">24 Maret 2024, 09:00
+                        WIB</strong></p>
                 <p><i class="fas fa-calendar-alt"></i> Nama<br><strong id="nama_pasien"></strong></p>
-                <p><i class="fas fa-user-md"></i> Dokter Penanggung Jawab<br><strong id="dokter_pj">Dr. Syarief Ananta</strong></p>
+                <p><i class="fas fa-user-md"></i> Dokter Penanggung Jawab<br><strong id="dokter_pj">Dr. Syarief
+                        Ananta</strong></p>
                 <p><i class="fas fa-map-marker-alt"></i> Lokasi<br><strong>Puskesmas Karya Maju<br>Jl. Nusantara, Desa Karya
                         Maju</strong></p>
                 <h6>Persiapan Kontrol</h6>
@@ -113,7 +118,8 @@
                         $("#id_laporan").val(response.data.id);
                         $("#nama_pasien").html(response.data.pasien.nama);
                         $("#no_tiket").html(response.data.no_tiket);
-                        $("#status").html(response.data.status).css("text-transform", "uppercase");
+                        $("#status").html(response.data.status).css("text-transform",
+                            "uppercase");
                         $("#jadwal_control").html(response.data.jadwal_control);
                         $("#dokter_pj").html(response.data.dokter.nama);
                     },
@@ -132,9 +138,15 @@
                 $('#preview-laporan').hide();
             });
 
-            $(".unduh").click(function(){
+            $(".unduh").click(function() {
                 let id_laporan = $("#id_laporan").val();
                 window.location.href = "/generatePDFLaporan/" + id_laporan;
+            });
+
+            $('.btn-outline-primary[title="Cetak"]').click(function() {
+                let id_laporan = $("#id_laporan").val();
+                // Buka dalam window baru
+                window.open(`/printMasyarakat/${id_laporan}`, '_blank');
             });
         });
     </script>
