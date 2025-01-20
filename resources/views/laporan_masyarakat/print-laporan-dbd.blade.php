@@ -117,12 +117,12 @@
 <body onload="window.print()">
     <div class="container">
         <h1>Laporan Kasus DBD</h1>
-        <h6>Nomor Laporan: {{ $laporan->no_tiket }}</h6>
+        <h6>Nomor Laporan: {{$laporan_kasus_dbd->no_tiket }}</h6>
 
         <table class="status">
             <tr>
                 <td>Status:</td>
-                <td><span class="badge badge-danger">{{ $laporan->status }}</span></td>
+                <td><span class="badge badge-danger">{{ $laporan_kasus_dbd->status }}</span></td>
             </tr>
         </table>
 
@@ -131,15 +131,15 @@
             <table>
                 <tr>
                     <th>Nama Pasien</th>
-                    <td>{{ $laporan->pasien->nama }}</td>
+                    <td>{{ $laporan_kasus_dbd->pasien->nama }}</td>
                 </tr>
                 <tr>
                     <th>Jadwal Kontrol</th>
-                    <td>{{ $laporan->jadwal_control }}</td>
+                    <td>{{ $laporan_kasus_dbd->jadwal_control }}</td>
                 </tr>
                 <tr>
                     <th>Dokter Penanggung Jawab</th>
-                    <td>{{ $laporan->dokter->nama }}</td>
+                    <td>{{ $laporan_kasus_dbd->dokter->nama }}</td>
                 </tr>
                 <tr>
                     <th>Lokasi</th>

@@ -122,9 +122,5 @@ class LaporanFoggingController extends Controller
         return view('laporan.print', compact('data'));
     }
 
-    public function printLaporanMasyarakat($id)
-    {
-        $laporan = LaporanFogging::with(['pasien', 'dokter'])->findOrFail($id);
-        return view('laporan_masyarakat.printMasyarakat', ['laporan' => $laporan]);
-    }
+   
 }

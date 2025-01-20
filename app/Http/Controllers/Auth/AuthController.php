@@ -34,13 +34,25 @@ class AuthController extends Controller
     /** * Write code on Method * * @return response() \*/
     public function postLogin(Request $request)
     {
-        $request->validate(['email' => 'required', 'password' => 'required',]);
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // Ambil kredensial
         $credentials = $request->only('email', 'password');
+
+        // Cek login
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')->withSuccess('You have Successfully loggedin');
+            // Redirect ke dashboard jika login berhasil
+            return redirect()->intended('dashboard')->with('success', 'You have successfully logged in.');
         }
-        return redirect("login")->withSuccess('salah coy');
+
+        // Redirect kembali ke login dengan pesan error
+        return redirect("login")->withErrors(['loginError' => 'Email atau password salah.'])->withInput();
     }
+
     /** * Write code on Method * * @return response() */
 
     public function postRegistration(Request $request)

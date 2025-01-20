@@ -9,19 +9,28 @@
                         <div class="card-body">
                             <h4 class="display-6 text-center"><b>GIS DBD</b></h4>
                             <p class="text-center">PUSKESMAS KARYA MAJU</p>
+
+                            {{-- Display Error Message --}}
+                            @if ($errors->has('loginError'))
+                                <div class="alert alert-danger text-center">
+                                    {{ $errors->first('loginError') }}
+                                </div>
+                            @endif
+
                             <form action="{{ route('login.post') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" name="email">
+                                        aria-describedby="emailHelp" name="email" value="{{ old('email') }}">
                                 </div>
                                 <div class="mb-4">
                                     <label for="exampleInputPassword1" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="exampleInputPassword1" name="password">
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <a class="text-primary fw-bold" href="{{route('view_email_forgot_password')}}">Forgot Password ?</a>
+                                    <a class="text-primary fw-bold" href="{{ route('view_email_forgot_password') }}">Forgot
+                                        Password ?</a>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign In</button>
                                 <div class="d-flex align-items-center justify-content-center">

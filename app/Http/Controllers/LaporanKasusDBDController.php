@@ -68,4 +68,11 @@ class LaporanKasusDBDController extends Controller
         $pdf = Pdf::loadView('laporan_masyarakat.lapordbdpdf', compact('laporan_kasus_dbd'));  // Load a Blade view
         return $pdf->stream('laporanDBD.pdf'); // Download the PDF
     }
+
+    public function printLaporanMasyarakat($id)
+    {
+        $laporan_kasus_dbd = LaporaKasusDbd::with(['pasien', 'dokter'])->where('id','=',$id)->first();
+        // dd($laporan_kasus_dbd);
+        return view('laporan_masyarakat.print-laporan-dbd', ['laporan_kasus_dbd' => $laporan_kasus_dbd]);
+    }
 }

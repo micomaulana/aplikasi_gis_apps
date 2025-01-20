@@ -12,6 +12,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\UserController;
 use App\Mail\SendMailGis;
+use App\Models\LaporaKasusDbd;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -95,4 +96,4 @@ Route::post('/update-forgot-password',[AuthController::class,'update_forgot_pass
 Route::get('user-profile',[AuthController::class,'user_profile'])->name('user_profile');
 Route::put('update_user_profile',[AuthController::class,'update_user_profile'])->name('update_user_profile');
 Route::get('/print-laporan/{id}', [LaporanFoggingController::class, 'printLaporan'])->name('print-laporan');
-Route::get('/printLaporanMasyarakat/{id}', [LaporanFoggingController::class, 'printLaporanMasyarakat'])->name('print.laporan.masyarakat');
+Route::get('/printLaporanMasyarakat/{id}', [LaporanKasusDBDController::class, 'printLaporanMasyarakat'])->name('print.laporan.masyarakat');

@@ -146,7 +146,7 @@
             $('.btn-outline-primary[title="Cetak"]').click(function() {
                 let id_laporan = $("#id_laporan").val();
                 // Buka dalam window baru
-                window.open(`/printMasyarakat/${id_laporan}`, '_blank');
+                window.open(`/printLaporanMasyarakat/${id_laporan}`, '_blank');
             });
         });
     </script>

@@ -84,9 +84,9 @@
                                     {{-- <div class="pdf-preview" style="display: none; margin-top: 10px;">
                                         <iframe src="/path/to/pdf/{{ $laporan_fogging->id }}" width="100%" height="200px" frameborder="0"></iframe>
                                     </div> --}}
-                                    <button class="btn btn-outline-secondary btn-sm print-preview">
+                                    {{-- <button class="btn btn-outline-secondary btn-sm print-preview">
                                         <i class="fas fa-print"></i> Cetak
-                                    </button>
+                                    </button> --}}
                                 </td>
                             </tr>
                         @endforeach
