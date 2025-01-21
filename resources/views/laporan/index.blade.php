@@ -54,42 +54,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($laporan_foggings as $laporan_fogging)
-                            <tr>
-                                <td>{{ $laporan_fogging->desa->nama }}</td>
-                                <td>{{ $laporan_fogging->jumlah_kasus }}</td>
-                                <td>{{ $laporan_fogging->tanggal_pengajuan }}</td>
-                                <td>
-                                    <span
-                                        class="badge 
-                                        {{ $laporan_fogging->status_pengajuan === 'disetujui'
-                                            ? 'bg-success'
-                                            : ($laporan_fogging->status_pengajuan === 'ditolak'
-                                                ? 'bg-danger'
-                                                : ($laporan_fogging->status_pengajuan === 'waiting'
-                                                    ? 'bg-warning'
-                                                    : 'bg-secondary')) }}">
-                                        {{ $laporan_fogging->status_pengajuan }}
-                                    </span>
-                                </td>
-                                <td>
+                        @if ($laporan_foggings != null)
+                            @foreach ($laporan_foggings as $laporan_fogging)
+                                <tr>
+                                    <td>{{ $laporan_fogging->desa->nama }}</td>
+                                    <td>{{ $laporan_fogging->jumlah_kasus }}</td>
+                                    <td>{{ $laporan_fogging->tanggal_pengajuan }}</td>
+                                    <td>
+                                        <span
+                                            class="badge 
+                                   {{ $laporan_fogging->status_pengajuan === 'disetujui'
+                                       ? 'bg-success'
+                                       : ($laporan_fogging->status_pengajuan === 'ditolak'
+                                           ? 'bg-danger'
+                                           : ($laporan_fogging->status_pengajuan === 'waiting'
+                                               ? 'bg-warning'
+                                               : 'bg-secondary')) }}">
+                                            {{ $laporan_fogging->status_pengajuan }}
+                                        </span>
+                                    </td>
+                                    <td>
 
-                                    <button class="btn btn-outline-primary btn-sm lihat-preview"
-                                        data-id="{{ $laporan_fogging->id }}">
-                                        <i class="fas fa-eye"></i> Lihat
-                                    </button>
-                                    <button class="btn btn-outline-primary btn-sm hide-preview">
-                                        <i class="fas fa-eye"></i> hide
-                                    </button>
-                                    {{-- <div class="pdf-preview" style="display: none; margin-top: 10px;">
-                                        <iframe src="/path/to/pdf/{{ $laporan_fogging->id }}" width="100%" height="200px" frameborder="0"></iframe>
-                                    </div> --}}
-                                    {{-- <button class="btn btn-outline-secondary btn-sm print-preview">
-                                        <i class="fas fa-print"></i> Cetak
-                                    </button> --}}
-                                </td>
-                            </tr>
-                        @endforeach
+                                        <button class="btn btn-outline-primary btn-sm lihat-preview"
+                                            data-id="{{ $laporan_fogging->id }}">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm hide-preview">
+                                            <i class="fas fa-eye"></i> hide
+                                        </button>
+                                        {{-- <div class="pdf-preview" style="display: none; margin-top: 10px;">
+                                   <iframe src="/path/to/pdf/{{ $laporan_fogging->id }}" width="100%" height="200px" frameborder="0"></iframe>
+                               </div> --}}
+                                        {{-- <button class="btn btn-outline-secondary btn-sm print-preview">
+                                   <i class="fas fa-print"></i> Cetak
+                               </button> --}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

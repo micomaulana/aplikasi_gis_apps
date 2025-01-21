@@ -206,6 +206,7 @@ class DesaController extends Controller
 
         // Mendapatkan laporan kasus DBD dan mengelompokkan berdasarkan id_pasien
         $laporandbd = LaporaKasusDbd::with('pasien')
+            ->orderBy('created_at', 'desc') // Ganti 'created_at' dengan kolom yang sesuai
             ->get()
             ->groupBy('id_pasien');
 

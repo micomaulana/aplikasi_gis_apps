@@ -7,8 +7,17 @@
             margin: 0.2rem 0 !important;
         }
     </style>
+    <?php
+    $jumlah_kasus = '';
+    if ($jumlah_kasus_perdesa != null) {
+        $jumlah_kasus = $jumlah_kasus_perdesa->count_kasus;
+    } else {
+        $jumlah_kasus = 0;
+    }
+    
+    ?>
     <div class="container-fluid">
-        @if (Auth::user()->hasRole('Kepala Puskes') || Auth::user()->hasRole('Admin') && $jumlah_kasus_perdesa->count_kasus >= 5 )
+        @if ((Auth::user()->hasRole('Kepala Puskes') || Auth::user()->hasRole('Admin')) && $jumlah_kasus >= 5)
             <div class="alert-box" id="alert-danger-custom">
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-exclamation-circle alert-icon"></i>
@@ -34,6 +43,7 @@
     </div>
 
     <div class="container mt-4">
+
         @if (Auth::user()->hasRole('Kepala Puskes') || (Auth::user()->hasRole('Admin') && $jumlah_kasus_terkini >= 5))
             <div class="card p-3">
                 <h5>Status terkini ({{ $currentYearMonth = \Carbon\Carbon::now()->format('F Y') }})</h5>
@@ -411,7 +421,7 @@
 
 
 
-            
+
             function updatePieChart() {
                 const tahun = $('#tahun').val();
 

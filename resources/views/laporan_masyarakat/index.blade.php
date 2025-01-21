@@ -49,9 +49,9 @@
                                         style="display: none;">
                                         <i class="fas fa-eye-slash"></i> Hide
                                     </button>
-                                    <a href="" class="text-primary">
+                                    {{-- <a href="" class="text-primary">
                                         <i class="fas fa-file-pdf"></i> Unduh PDF
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach
