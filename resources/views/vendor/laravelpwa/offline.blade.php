@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
 
-    <h1>You are currently not connected to any networks.</h1>
+    <h1>Oops , Anda Tidak Terubung Ke Jaringan !! 🫣</h1>
 
 @endsection

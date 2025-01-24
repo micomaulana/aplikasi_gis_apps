@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'LaravelPWA',
+    'name' => 'GIS DBD',
     'manifest' => [
         'name' => env('APP_NAME', 'GIS DBD'),
         'short_name' => 'GDBD',

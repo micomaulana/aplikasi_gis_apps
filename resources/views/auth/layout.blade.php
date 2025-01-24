@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SeoDash Free Bootstrap Admin Template by Adminmart</title>
+    @laravelPWA
+
     <link rel="shortcut icon" type="image/png" href="/Seodash-assets/images/logos/seodashlogo.png" />
     <link rel="stylesheet" href="/Seodash-assets/css/styles.min.css" />
 

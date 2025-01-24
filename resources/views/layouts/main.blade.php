@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>SeoDash Free Bootstrap Admin Template by Adminmart</title>
+    @laravelPWA
     <link rel="shortcut icon" type="image/png" href="/Seodash-assets/images/logos/seodashlogo.png" />
     <link rel="stylesheet" href="/Seodash-assets/css/styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"

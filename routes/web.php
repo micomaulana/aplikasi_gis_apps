@@ -27,9 +27,7 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AuthController::class, 'index']);
 
 
 Route::resource('pasiens', PasienController::class);
@@ -70,30 +68,30 @@ Route::get("validasi_kapus", [DesaController::class, 'validasi_kapus'])->name('v
 Route::get("update_foggings_status/{id}/{status}", [LaporanFoggingController::class, 'update_status_pengajuan_fogging'])->name("update_status_pengajuan_fogging");
 Route::get('lihat_detail_foggings/{id}', [LaporanFoggingController::class, 'lihat_detail_foggings'])->name('lihat_detail_foggings');
 Route::get("data_informasi_views", [OverviewStatistikPublishController::class, 'data_informasi_views'])->name('data_informasi_views');
-Route::get('get-data-by-year/{year}',[OverviewStatistikPublishController::class,'getDataByYear']);
-Route::get('get-data-statistik-by-year/{year}',[OverviewStatistikPublishController::class,'getDataStatistikByYear']);
-Route::get('get-data-statistik-form-by-year/{year}',[OverviewStatistikPublishController::class,'getDataStatistikFormByYear']);
-Route::get('get-pasien-detail/{idpasien}',[PasienController::class,'get_pasien_detail']);
-route::get("landing_page",[DesaController::class, 'landing_page'])->name('landing_page_views');
-route::get("dashboard_masyarakat",[DesaController::class, 'dashboard_masyarakat'])->name('dashboard_masyarakat');
-route::get("faq_masyarakat",[DesaController::class, 'faq_masyarakat'])->name('faq_masyarakat');
+Route::get('get-data-by-year/{year}', [OverviewStatistikPublishController::class, 'getDataByYear']);
+Route::get('get-data-statistik-by-year/{year}', [OverviewStatistikPublishController::class, 'getDataStatistikByYear']);
+Route::get('get-data-statistik-form-by-year/{year}', [OverviewStatistikPublishController::class, 'getDataStatistikFormByYear']);
+Route::get('get-pasien-detail/{idpasien}', [PasienController::class, 'get_pasien_detail']);
+route::get("landing_page", [DesaController::class, 'landing_page'])->name('landing_page_views');
+route::get("dashboard_masyarakat", [DesaController::class, 'dashboard_masyarakat'])->name('dashboard_masyarakat');
+route::get("faq_masyarakat", [DesaController::class, 'faq_masyarakat'])->name('faq_masyarakat');
 Route::get('/get_data_chart_landing', [DesaController::class, 'getDataChartLanding']);
 Route::get('/getPasien/{iddesa}', [DesaController::class, 'getPasien'])->name('getPasien');
-Route::resource('users',UserController::class);
-Route::resource('roles',RoleController::class);
+Route::resource('users', UserController::class);
+Route::resource('roles', RoleController::class);
 Route::get('/get-dokter-schedule', [DokterController::class, 'getDokterBySchedule'])->name('dokter.schedule');
 Route::get('/get_data_pasien_by_desa_pie', [AuthController::class, 'getDataPasienByDesaPie']);
 // Route::post('/validasi_admin', [LaporanKasusDBDController::class, 'validasiLaporan']);
 
 // Route::get('/forgot-password/{email}',[AuthController::class,'forgotPasssword'])->name('forgot.password');
 
-Route::get('/view_email_forgot_password',[AuthController::class,'view_email_forgot_password'])->name('view_email_forgot_password');
+Route::get('/view_email_forgot_password', [AuthController::class, 'view_email_forgot_password'])->name('view_email_forgot_password');
 // Route::get();
-Route::post('/send-email',[AuthController::class,'send_email'])->name('send_email');
-Route::get('/forgot-pasword/{email}',[AuthController::class,'page_forgot_password'])->name('forgot-pasword');
-Route::post('/update-forgot-password',[AuthController::class,'update_forgot_password'])->name('update_forgot_password');
+Route::post('/send-email', [AuthController::class, 'send_email'])->name('send_email');
+Route::get('/forgot-pasword/{email}', [AuthController::class, 'page_forgot_password'])->name('forgot-pasword');
+Route::post('/update-forgot-password', [AuthController::class, 'update_forgot_password'])->name('update_forgot_password');
 
-Route::get('user-profile',[AuthController::class,'user_profile'])->name('user_profile');
-Route::put('update_user_profile',[AuthController::class,'update_user_profile'])->name('update_user_profile');
+Route::get('user-profile', [AuthController::class, 'user_profile'])->name('user_profile');
+Route::put('update_user_profile', [AuthController::class, 'update_user_profile'])->name('update_user_profile');
 Route::get('/print-laporan/{id}', [LaporanFoggingController::class, 'printLaporan'])->name('print-laporan');
 Route::get('/printLaporanMasyarakat/{id}', [LaporanKasusDBDController::class, 'printLaporanMasyarakat'])->name('print.laporan.masyarakat');
