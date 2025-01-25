@@ -5,6 +5,30 @@
             #map {
                 height: 500px;
                 width: 100%;
+                max-height: 80vh;
+                z-index: 0;
+                /* Limit the height for small screens */
+            }
+
+            .sidebar {
+                position: fixed;
+                z-index: 999;
+                /* Beri nilai lebih besar untuk sidebar */
+                width: 300px;
+                /* Atur lebar sidebar sesuai kebutuhan */
+                height: 100%;
+                background-color: white;
+                /* Warna background untuk sidebar */
+                overflow-y: auto;
+                /* Tambahkan jika sidebar memiliki konten panjang */
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            }
+
+            @media screen and (max-width: 768px) {
+                #map {
+                    height: 300px;
+                    /* Adjust height for smaller screens */
+                }
             }
 
             table {
@@ -120,7 +144,7 @@
             function initializeMap(position) {
                 let desa_location = @json($desa_loc);
                 console.log(desa_location);
-                
+
                 const userLatitude = desa_location.latitude;
                 const userLongitude = desa_location.longitude;
 

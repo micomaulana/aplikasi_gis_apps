@@ -1,4 +1,4 @@
-@extends('Landing_page.layout')
+@extends('layouts.main')
 @section('content')
     <div class="container-fluid mt-5">
         <div class="card custom-card shadow-card">

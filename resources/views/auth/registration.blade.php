@@ -7,11 +7,9 @@
                 <div class="col col-xxl-6 mt-4 mb-4">
                     <div class="card mb-0">
                         <div class="card-body">
-                            <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="/Seodash-assets/images/logos/logo-light.svg" alt="">
-                            </a>
-                            <p class="text-center">Your Social Campaigns</p>
-                            <form action="{{route('register.post')}}" method="POST">
+                            <h4 class="display-6 text-center"><b>GIS DBD</b></h4>
+                            <p class="text-center">PUSKESMAS KARYA MAJU</p>
+                            <form action="{{ route('register.post') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="exampleInputtext1" class="form-label">NIK</label>
@@ -99,7 +97,7 @@
                                 <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign Up</button>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
-                                    <a class="text-primary fw-bold ms-2" href="./authentication-login.html">Sign In</a>
+                                    <a class="text-primary fw-bold ms-2" href="{{ route('login') }}">Sign In</a>
                                 </div>
                             </form>
                         </div>
