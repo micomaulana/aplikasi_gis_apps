@@ -9,20 +9,44 @@
                 z-index: 0;
             }
 
-            .sidebar {
-                position: fixed;
-                z-index: 999;
-                width: 300px;
-                height: 100%;
-                background-color: white;
-                overflow-y: auto;
-                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            .legend {
+                padding: 10px;
+                background: white;
+                border-radius: 5px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             }
 
-            @media screen and (max-width: 768px) {
-                #map {
-                    height: 300px;
-                }
+            .legend i {
+                width: 18px;
+                height: 18px;
+                float: left;
+                margin-right: 8px;
+                opacity: 0.7;
+            }
+
+            .legend .legend-item {
+                margin-bottom: 5px;
+                clear: both;
+            }
+
+            .info-box {
+                padding: 10px;
+                background: white;
+                border-radius: 5px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                margin-bottom: 10px;
+            }
+
+            .status-tinggi {
+                background-color: #ffebee;
+            }
+
+            .status-sedang {
+                background-color: #fff3e0;
+            }
+
+            .status-rendah {
+                background-color: #e8f5e9;
             }
 
             table {
@@ -34,19 +58,36 @@
             table,
             th,
             td {
-                border: 1px solid black;
+                border: 1px solid #ddd;
             }
 
             th,
             td {
-                padding: 8px;
+                padding: 12px;
                 text-align: left;
+            }
+
+            th {
+                background-color: #f5f5f5;
+            }
+
+            .circle-icon {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 5px;
             }
         </style>
 
+        <div class="info-box">
+            <h4>Peta Sebaran Kasus DBD</h4>
+            <p>Incident Rate (IR) = (Jumlah Kasus / Jumlah Penduduk) × 100.000</p>
+        </div>
+
         <div id="map"></div>
 
-        <table id="pasienTable">
+        <table id="pasienTable" class="mt-4" style="display: none;">
             <thead>
                 <tr>
                     <th>No</th>
@@ -58,7 +99,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Data will be dynamically inserted here -->
             </tbody>
         </table>
 
@@ -90,63 +130,97 @@
                 })
             };
 
-            function getMarkerIcon(data) {
-                const patientCount = data.length;
-                if (patientCount >= 5) return markerIcons.high;
-                if (patientCount > 2) return markerIcons.medium;
-                return markerIcons.low;
+            function calculateIncidentRate(jumlahKasus, jumlahPenduduk) {
+                if (!jumlahPenduduk || jumlahPenduduk === 0) return 0;
+                if (!jumlahKasus || jumlahKasus === 0) return 0;
+
+                const ir = (jumlahKasus / jumlahPenduduk) * 100000;
+                console.log(`IR Calculation: (${jumlahKasus}/${jumlahPenduduk}) * 100000 = ${ir}`);
+                return ir;
             }
 
-            function createPatientPopupContent(pasien) {
-                return `
-                    <b>Nama Pasien:</b> ${pasien.nama}<br>
-                    <b>Alamat:</b> ${pasien.alamat}<br>
-                    <b>Usia:</b> ${pasien.usia}<br>
-                    <b>Jenis Kelamin:</b> ${pasien.jenis_kelamin}<br>
-                    <b>Nama Desa:</b> ${pasien.desa.nama}
-                `;
-            }
-
-            function createDesaPopupContent(desa) {
-                return `<b>Nama Desa:</b> ${desa.nama}<br>` +
-                    `<b>Luas Wilayah:</b> ${desa.luas} KM²<br>` +
-                    `<b>Kepadatan:</b> ${desa.kepadatan} KM²`;
-            }
-
-            async function loadDesaData(desaId, markers) {
-                try {
-                    const response = await $.ajax({
-                        url: '/getPasien/' + desaId,
-                        method: 'GET'
-                    });
-
-                    const marker = markers[desaId];
-                    if (marker) {
-                        marker.setIcon(getMarkerIcon(response.data));
-                    }
-
-                    return response.data;
-                } catch (error) {
-                    console.error('Error fetching data for desa ' + desaId + ':', error);
-                    return [];
+            function getRiskStatus(incidentRate) {
+                if (incidentRate > 75) {
+                    return {
+                        text: 'Risiko Sangat Tinggi',
+                        color: '#FF0000', // Red
+                        icon: markerIcons.high,
+                        description: 'IR > 75 per 100.000 penduduk'
+                    };
+                } else if (incidentRate >= 55) {
+                    return {
+                        text: 'Risiko Tinggi',
+                        color: '#FF4500', // Orange Red
+                        icon: markerIcons.medium,
+                        description: 'IR 55-75 per 100.000 penduduk'
+                    };
+                } else if (incidentRate >= 35) {
+                    return {
+                        text: 'Risiko Sedang',
+                        color: '#FFD700', // Gold
+                        icon: markerIcons.medium,
+                        description: 'IR 35-55 per 100.000 penduduk'
+                    };
+                } else {
+                    return {
+                        text: 'Risiko Rendah',
+                        color: '#008000', // Green
+                        icon: markerIcons.low,
+                        description: 'IR < 35 per 100.000 penduduk'
+                    };
                 }
             }
 
-            async function updateTable(pasienData) {
-                $('#pasienTable tbody').empty();
-                pasienData.forEach((pasien, index) => {
-                    const row = `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${pasien.nama}</td>
-                            <td>${pasien.alamat}</td>
-                            <td>${pasien.usia}</td>
-                            <td>${pasien.jenis_kelamin}</td>
-                            <td>${pasien.desa.nama}</td>
-                        </tr>
-                    `;
-                    $('#pasienTable tbody').append(row);
+            function createLegend(map) {
+                const legend = L.control({
+                    position: 'bottomright'
                 });
+
+                legend.onAdd = function(map) {
+                    const div = L.DomUtil.create('div', 'legend');
+                    div.innerHTML = '<h4>Status Risiko DBD</h4>';
+
+                    // Add legend items
+                    const statuses = [{
+                            ir: 75,
+                            text: 'Risiko Sangat Tinggi',
+                            color: '#FF0000',
+                            desc: 'IR > 75'
+                        },
+                        {
+                            ir: 55,
+                            text: 'Risiko Tinggi',
+                            color: '#FF4500',
+                            desc: 'IR 55-75'
+                        },
+                        {
+                            ir: 35,
+                            text: 'Risiko Sedang',
+                            color: '#FFD700',
+                            desc: 'IR 35-55'
+                        },
+                        {
+                            ir: 0,
+                            text: 'Risiko Rendah',
+                            color: '#008000',
+                            desc: 'IR < 35'
+                        }
+                    ];
+
+                    statuses.forEach(status => {
+                        div.innerHTML += `
+                <div class="legend-item">
+                    <i style="background: ${status.color}"></i>
+                    <span>${status.text}<br>
+                    <small>(${status.desc})</small></span>
+                </div>
+            `;
+                    });
+
+                    return div;
+                };
+
+                legend.addTo(map);
             }
 
             async function initializeMap() {
@@ -164,74 +238,81 @@
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
 
+                // Add legend to map
+                createLegend(map);
+
                 for (const desa of desasData) {
                     try {
-                        // Ambil data pasien terlebih dahulu
-                        const response = await fetch(`/getPasien/${desa.id}`);
-                        const pasienData = await response.json();
-                        console.log(`Data pasien untuk ${desa.nama}:`, pasienData);
+                        // Fetch both patient and statistics data
+                        const [responsePasien, responseStatistik] = await Promise.all([
+                            fetch(`/getPasien/${desa.id}`),
+                            fetch(`/getStatistik/${desa.id}`)
+                        ]);
+
+                        const pasienData = await responsePasien.json();
+                        const statistikData = await responseStatistik.json();
+
+                        if (!statistikData.data || !statistikData.data.jumlah_penduduk) {
+                            console.warn(`Data penduduk tidak tersedia untuk desa ${desa.nama}`);
+                            continue;
+                        }
 
                         const jumlahKasus = pasienData.data.length;
-
-                        // Tentukan warna berdasarkan jumlah kasus
-                        let circleColor;
-                        if (jumlahKasus >= 5) {
-                            circleColor = '#FF0000'; // Merah untuk risiko tinggi
-                        } else if (jumlahKasus >= 3) {
-                            circleColor = '#FFD700'; // Kuning untuk risiko sedang
-                        } else {
-                            circleColor = '#008000'; // Hijau untuk risiko rendah
-                        }
+                        const jumlahPenduduk = statistikData.data.jumlah_penduduk;
+                        const incidentRate = calculateIncidentRate(jumlahKasus, jumlahPenduduk);
+                        const status = getRiskStatus(incidentRate);
 
                         const lat = parseFloat(desa.latitude);
                         const lng = parseFloat(desa.longitude);
 
-                        // Tambahkan marker
+                        // Add marker
                         const marker = L.marker([lat, lng], {
-                            icon: markerIcons.default
+                            icon: status.icon
                         }).addTo(map);
 
-                        // Tambahkan circle dengan warna yang sesuai
+                        // Add circle
                         const circle = L.circle([lat, lng], {
-                            color: circleColor,
-                            fillColor: circleColor,
+                            color: status.color,
+                            fillColor: status.color,
                             fillOpacity: 0.2,
-                            radius: 1000 // 1km radius
+                            radius: 1000
                         }).addTo(map);
 
-                        // Popup untuk marker
+                        // Create popup content
                         const popupContent = `
-                <strong>Desa ${desa.nama}</strong><br>
-                Luas Wilayah: ${desa.luas} KM²<br>
-                Kepadatan: ${desa.kepadatan} orang/KM²<br>
-                Jumlah Kasus: ${jumlahKasus}<br>
-                Status: ${
-                    jumlahKasus >= 5 ? 'Risiko Tinggi' :
-                    jumlahKasus >= 3 ? 'Risiko Sedang' :
-                    'Risiko Rendah'
-                }
-            `;
+                            <div class="popup-content">
+                                <h5>${desa.nama}</h5>
+                                <table style="width:100%">
+                                    <tr>
+                                        <td>Jumlah Kasus</td>
+                                        <td>: ${jumlahKasus}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah Penduduk</td>
+                                        <td>: ${jumlahPenduduk.toLocaleString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Incident Rate</td>
+                                        <td>: ${incidentRate.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status</td>
+                                        <td>: <span style="color:${status.color}">${status.text}</span></td>
+                                    </tr>
+                                </table>
+                                <small>Klik untuk melihat detail pasien</small>
+                            </div>
+                        `;
+
                         marker.bindPopup(popupContent);
                         circle.bindPopup(popupContent);
 
-                        // Event handler untuk marker
+                        // Marker click event
                         marker.on('click', function() {
-                            // Update tabel
                             updateTable(pasienData.data);
                             $('#pasienTable').show();
-
-                            // Pindahkan view ke lokasi yang diklik
                             map.setView([lat, lng], 13);
                         });
-
-                        // Set marker icon sesuai jumlah kasus
-                        if (jumlahKasus >= 5) {
-                            marker.setIcon(markerIcons.high);
-                        } else if (jumlahKasus >= 3) {
-                            marker.setIcon(markerIcons.medium);
-                        } else {
-                            marker.setIcon(markerIcons.low);
-                        }
 
                     } catch (error) {
                         console.error(`Error processing desa ${desa.nama}:`, error);
@@ -239,31 +320,26 @@
                 }
             }
 
-
-            // Fungsi untuk mengupdate tabel
             function updateTable(pasienData) {
                 const tbody = $('#pasienTable tbody');
                 tbody.empty();
 
                 pasienData.forEach((pasien, index) => {
                     const row = `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${pasien.nama || '-'}</td>
-                <td>${pasien.alamat || '-'}</td>
-                <td>${pasien.usia || '-'}</td>
-                <td>${pasien.jenis_kelamin || '-'}</td>
-                <td>${pasien.desa?.nama || '-'}</td>
-            </tr>
-        `;
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${pasien.nama || '-'}</td>
+                            <td>${pasien.alamat || '-'}</td>
+                            <td>${pasien.usia || '-'}</td>
+                            <td>${pasien.jenis_kelamin || '-'}</td>
+                            <td>${pasien.desa?.nama || '-'}</td>
+                        </tr>
+                    `;
                     tbody.append(row);
                 });
             }
 
-            // Initialize map when document is ready
             $(document).ready(function() {
-                console.log('Initializing map...');
-                $('#pasienTable').hide();
                 initializeMap().catch(error => {
                     console.error('Error initializing map:', error);
                 });

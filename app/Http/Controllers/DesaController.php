@@ -428,4 +428,18 @@ class DesaController extends Controller
             ], 500);
         }
     }
+    // StatistikController
+    public function getStatistikByDesa($id_desa)
+    {
+        $statistik = DB::table('statistiks')
+            ->where('id_desa', $id_desa)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $statistik
+        ]);
+    }
+   
 }

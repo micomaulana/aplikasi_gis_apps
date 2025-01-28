@@ -6,12 +6,10 @@
             <i class="fas fa-info-circle"></i> Data dan Informasi
         </div>
 
+        <!-- Form Input Data -->
         <div class="card p-4 mb-4">
             <form id="form_data_statistic">
-                {{-- <div class="mb-3">
-                    <select class="form-select" name="year_created" aria-label="Select year" id="yearSelect">
-                    </select>
-                </div> --}}
+                <!-- [Previous input form content remains the same] -->
                 <h5 class="card-title">Input data statistik</h5>
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -37,8 +35,6 @@
                             <option value="tinggi">Tinggi</option>
                             <option value="rendah">Rendah</option>
                             <option value="sedang">Sedang</option>
-
-                            <!-- Add other status options as needed -->
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -57,15 +53,17 @@
             </form>
         </div>
 
-
-        <<div class="card p-4 mb-4">
-
-            <h5 class="card-title d-flex justify-content-between align-items-center">
-                <span>Preview data</span>
-                <select class="form-select" aria-label="Select year" id="yearSelect" style="width: 350px;">
-                </select>
-                <a class="btn btn-success publish_data" style="margin-right: 10px;">Publish Data</a>
-            </h5>
+        <!-- Preview Data Table -->
+        <div class="card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title m-0">Preview data</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="yearFilter" style="width: 200px;">
+                        <option value="">Semua Tahun</option>
+                    </select>
+                    <button class="btn btn-success publish_data">Publish Data</button>
+                </div>
+            </div>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -98,70 +96,95 @@
                     @endforeach
                 </tbody>
             </table>
-    </div>
+        </div>
 
-    <form action="{{ route('publish_overview_statistiks.store') }}" method="POST" id="form-publish">
-        @csrf
-        <div class="card p-4 mb-4">
-            <h5 class="card-title">Overview statistik</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="overview-card">
-                        <label for="total" class="form-label">total kasus</label>
-                        <input type="number" name="total_kasus" id="kasus" class="form-control"
-                            placeholder="Masukkan jumlah kasus">
+        <!-- Overview Form -->
+        <form action="{{ route('publish_overview_statistiks.store') }}" method="POST" id="form-publish"
+            style="display: none;">
+            @csrf
+            <div class="card p-4 mb-4">
+                <h5 class="card-title">Overview statistik</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="overview-card">
+                            <label for="total" class="form-label">total kasus</label>
+                            <input type="number" name="total_kasus" id="kasus" class="form-control"
+                                placeholder="Masukkan jumlah kasus" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="overview-card">
+                            <label for="desa_rawan" class="form-label">desa rawan</label>
+                            <input type="number" name="total_desa_rawan" id="desa_rawan" class="form-control"
+                                placeholder="Masukkan jumlah desa" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="overview-card">
+                            <label for="total" class="form-label">total penduduk</label>
+                            <input type="number" name="total_penduduk" id="total" class="form-control"
+                                placeholder="Masukkan jumlah total" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="overview-card">
+                            <label for="jumlah" class="form-label">jumlah desa</label>
+                            <input type="number" name="jumlah_desa" id="jumlah" class="form-control"
+                                placeholder="Masukkan jumlah desa" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="overview-card">
+                            <label for="tahun" class="form-label">Tahun</label>
+                            <input type="number" name="tahun" id="tahun" class="form-control"
+                                placeholder="Masukkan tahun" required>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="overview-card">
-                        <label for="desa_rawan" class="form-label">desa rawan</label>
-                        <input type="number" name="total_desa_rawan" id="desa_rawan" class="form-control"
-                            placeholder="Masukkan jumlah desa">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="overview-card">
-                        <label for="total" class="form-label">total penduduk</label>
-                        <input type="number" name="total_penduduk" id="total" class="form-control"
-                            placeholder="Masukkan jumlah total">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="overview-card">
-                        <label for="jumlah" class="form-label">jumlah desa</label>
-                        <input type="number" name="jumlah_desa" id="jumlah" class="form-control"
-                            placeholder="Masukkan jumlah desa">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="overview-card">
-                        <label for="tahun" class="form-label">Tahun</label>
-                        <input type="number" name="tahun" id="jumlah" class="form-control"
-                            placeholder="Masukkan tahun">
-                    </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-primary">Publikasikan data</button>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary d-flex ms-auto">publikasikan data</button>
-        </div>
-    </form>
+        </form>
     </div>
 
     <script>
         $(document).ready(function() {
-            // Year selection setup
-            var currentYear = new Date().getFullYear();
-            var startYear = 2000;
-            var yearSelect = $('#yearSelect');
+            // Initialize year filter
+            const startYear = 2022;
+            const currentYear = new Date().getFullYear();
+            const yearFilter = $('#yearFilter');
 
-            for (var year = currentYear; year >= startYear; year--) {
-                yearSelect.append(new Option(year, year));
+            for (let year = currentYear; year >= startYear; year--) {
+                yearFilter.append(new Option(year, year));
             }
-            $("#form-publish").hide();
+
+            // Filter table rows based on selected year
+            function filterTableByYear(selectedYear) {
+                $('.table tbody tr').each(function() {
+                    const foggingDate = $(this).find('td:eq(4)').text(); // Fogging date column
+                    const rowYear = foggingDate ? new Date(foggingDate).getFullYear() : null;
+
+                    if (!selectedYear || rowYear === parseInt(selectedYear)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Year filter change event
+            yearFilter.on('change', function() {
+                const selectedYear = $(this).val();
+                filterTableByYear(selectedYear);
+                if ($('#form-publish').is(':visible')) {
+                    calculateOverview(selectedYear);
+                }
+            });
 
             // Form submission for statistics data
             $("#form_data_statistic").submit(function(e) {
                 e.preventDefault();
-
                 let formData = $(this).serialize();
 
                 $.ajax({
@@ -199,27 +222,23 @@
             // Overview calculation
             $('.publish_data').click(function() {
                 $("#form-publish").show();
-                calculateOverview();
+                const selectedYear = $('#yearFilter').val();
+                calculateOverview(selectedYear);
             });
 
             // Function to calculate overview from table data
-            function calculateOverview() {
+            function calculateOverview(selectedYear) {
                 let totalKasus = 0;
                 let totalPenduduk = 0;
                 let totalDesaRawan = 0;
                 let totalDesa = 0;
 
-                // Get current year
-                const selectedYear = $('#yearSelect').val();
-
-                // Iterate through table rows
-                $('.table tbody tr').each(function() {
-                    // Get values from each row
+                // Iterate through visible table rows only
+                $('.table tbody tr:visible').each(function() {
                     const kasus = parseInt($(this).find('td:eq(1)').text()) || 0;
                     const status = $(this).find('td:eq(2)').text().toLowerCase();
                     const penduduk = parseInt($(this).find('td:eq(3)').text()) || 0;
 
-                    // Calculate totals
                     totalKasus += kasus;
                     totalPenduduk += penduduk;
                     if (status === 'tinggi') {
@@ -233,7 +252,7 @@
                 $('input[name="total_penduduk"]').val(totalPenduduk);
                 $('input[name="total_desa_rawan"]').val(totalDesaRawan);
                 $('input[name="jumlah_desa"]').val(totalDesa);
-                $('input[name="tahun"]').val(selectedYear);
+                $('input[name="tahun"]').val(selectedYear || new Date().getFullYear());
             }
 
             // Form publish submission

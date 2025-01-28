@@ -7,6 +7,7 @@
         </div>
         <div class="mb-3">
             <select class="form-select" aria-label="Select year" id="yearSelect">
+                <option value="">Pilih Tahun</option>
             </select>
         </div>
         <div class="card">
@@ -82,12 +83,6 @@
                     <tr>
                         <td>{{ $stat->desa->nama }}</td>
                         <td>{{ $stat->jumlah_kasus }}</td>
-                        {{-- <td class="@class([
-                            'status-tinggi-text' => strtolower($stat->status) == 'tinggi',
-                            'status-sedang-text' => strtolower($stat->status) == 'sedang',
-                            'status-rendah-text' => strtolower($stat->status) == 'rendah',
-                        ])"> --}}
-
                         @if ($stat->status == 'tinggi')
                             <td class="text-danger">{{ $stat->status }}</td>
                         @elseif($stat->status == 'rendah')
@@ -99,47 +94,55 @@
                         <td>{{ $stat->tanggal_fogging }}</td>
                     </tr>
                 @endforeach
-
             </tbody>
         </table>
     </div>
     <script>
         $(document).ready(function() {
-            $('#yearSelect').change(function() {
-                var selectedValue = $(this).val();
+            // Initialize year select
+            const startYear = 2022;
+            const currentYear = new Date().getFullYear();
+            const yearSelect = $('#yearSelect');
+
+            // Populate year options
+            for (let year = currentYear; year >= startYear; year--) {
+                yearSelect.append(new Option(year, year));
+            }
+
+            // Set current year as default selected
+            yearSelect.val(currentYear);
+
+            // Year change handler
+            yearSelect.change(function() {
+                const selectedValue = $(this).val();
+                if (!selectedValue) return;
+
+                // Update overview data
                 $.ajax({
-                    url: '/get-data-by-year/' +
-                        selectedValue, // The route where you want to send the GET request
+                    url: '/get-data-by-year/' + selectedValue,
                     type: 'GET',
                     success: function(response) {
-                        // Handle success
                         $('#total_kasus').text(response.data.total_kasus);
                         $('#jumlah_keseluruhan_desa_rawan').text(response.data
                             .jumlah_keseluruhan_desa_rawan);
                         $('#jumlah_keseluruhan_penduduk_terdampak').text(response.data
                             .jumlah_keseluruhan_penduduk_terdampak);
                         $('#jumlah_desa_terdampak').text(response.data.jumlah_desa_terdampak);
-
-                        console.log(response);
                     },
                     error: function(xhr, status, error) {
-                        // Handle error
-                        console.log(error);
+                        console.error('Error fetching overview data:', error);
                     }
                 });
 
+                // Update table data
                 $.ajax({
-                    url: '/get-data-statistik-by-year/' + selectedValue, // Endpoint
+                    url: '/get-data-statistik-by-year/' + selectedValue,
                     type: 'GET',
                     success: function(response) {
-                        // Pastikan response.data adalah array
                         const statistikData = response.data;
-
-                        // Bersihkan tabel sebelum menambahkan data baru
                         const tbody = $('table.table-bordered tbody');
                         tbody.empty();
 
-                        // Iterasi setiap item dalam array data
                         statistikData.forEach(stat => {
                             const statusClass = stat.status.toLowerCase() === 'tinggi' ?
                                 'text-danger' :
@@ -149,32 +152,25 @@
                                 'text-warning' : '';
 
                             const row = `
-                <tr>
-                    <td>${stat.desa.nama}</td>
-                    <td>${stat.jumlah_kasus}</td>
-                    <td class="${statusClass}">${stat.status}</td>
-                    <td>${stat.jumlah_penduduk}</td>
-                    <td>${stat.tanggal_fogging ?? '-'}</td>
-                </tr>
-            `;
-                            tbody.append(row); // Tambahkan row ke tabel
+                                <tr>
+                                    <td>${stat.desa.nama}</td>
+                                    <td>${stat.jumlah_kasus}</td>
+                                    <td class="${statusClass}">${stat.status}</td>
+                                    <td>${stat.jumlah_penduduk}</td>
+                                    <td>${stat.tanggal_fogging ?? '-'}</td>
+                                </tr>
+                            `;
+                            tbody.append(row);
                         });
-
-                        console.log(response); // Debugging, pastikan data benar
                     },
                     error: function(xhr, status, error) {
-                        console.log(error); // Debugging error
+                        console.error('Error fetching statistik data:', error);
                     }
                 });
-
             });
 
-            var currentYear = new Date().getFullYear(); // Mendapatkan tahun sekarang
-            var startYear = 2000; // Tahun mulai
-            var yearSelect = $('#yearSelect');
-            for (var year = currentYear; year >= startYear; year--) {
-                yearSelect.append(new Option(year, year));
-            }
+            // Trigger change event to load initial data
+            yearSelect.trigger('change');
         });
     </script>
 @endsection

@@ -97,3 +97,5 @@ Route::get('/print-laporan/{id}', [LaporanFoggingController::class, 'printLapora
 Route::get('/printLaporanMasyarakat/{id}', [LaporanKasusDBDController::class, 'printLaporanMasyarakat'])->name('print.laporan.masyarakat');
 
 Route::get('detail_laporan/{id_pasien}',[LaporanKasusDBDController::class,'detail_laporan_masyarakat'])->name('detail_laporan_masyarakat');
+Route::get('/getStatistik/{id_desa}', [DesaController::class, 'getStatistikByDesa']);
+
