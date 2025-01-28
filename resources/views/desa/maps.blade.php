@@ -78,6 +78,34 @@
                 border-radius: 50%;
                 margin-right: 5px;
             }
+
+
+            .leaflet-popup-content {
+                max-width: 250px;
+                font-size: 12px;
+                margin: 8px;
+            }
+
+            .leaflet-popup-content h5 {
+                font-size: 14px;
+                margin: 0 0 8px 0;
+            }
+
+            .leaflet-popup-content table {
+                margin: 0;
+            }
+
+            .leaflet-popup-content td {
+                padding: 2px 4px;
+                font-size: 11px;
+            }
+
+            .popup-content small {
+                display: block;
+                margin-top: 5px;
+                font-size: 10px;
+                text-align: center;
+            }
         </style>
 
         <div class="info-box">
@@ -282,17 +310,25 @@
                         const popupContent = `
                             <div class="popup-content">
                                 <h5>${desa.nama}</h5>
-                                <table style="width:100%">
+                                <table>
                                     <tr>
-                                        <td>Jumlah Kasus</td>
+                                        <td>Luas wilayah</td>
+                                        <td>: ${desa.luas} KM²</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kepadatan penduduk</td>
+                                        <td>: ${desa.kepadatan}/KM²</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah kasus</td>
                                         <td>: ${jumlahKasus}</td>
                                     </tr>
                                     <tr>
-                                        <td>Jumlah Penduduk</td>
+                                        <td>Total penduduk terdampak</td>
                                         <td>: ${jumlahPenduduk.toLocaleString()}</td>
                                     </tr>
                                     <tr>
-                                        <td>Incident Rate</td>
+                                        <td>Incident rate</td>
                                         <td>: ${incidentRate.toFixed(2)}</td>
                                     </tr>
                                     <tr>
@@ -300,7 +336,7 @@
                                         <td>: <span style="color:${status.color}">${status.text}</span></td>
                                     </tr>
                                 </table>
-                                <small>Klik untuk melihat detail pasien</small>
+                                <small>Klik untuk detail pasien</small>
                             </div>
                         `;
 
