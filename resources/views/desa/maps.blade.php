@@ -7,27 +7,21 @@
                 width: 100%;
                 max-height: 80vh;
                 z-index: 0;
-                /* Limit the height for small screens */
             }
 
             .sidebar {
                 position: fixed;
                 z-index: 999;
-                /* Beri nilai lebih besar untuk sidebar */
                 width: 300px;
-                /* Atur lebar sidebar sesuai kebutuhan */
                 height: 100%;
                 background-color: white;
-                /* Warna background untuk sidebar */
                 overflow-y: auto;
-                /* Tambahkan jika sidebar memiliki konten panjang */
                 box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             }
 
             @media screen and (max-width: 768px) {
                 #map {
                     height: 300px;
-                    /* Adjust height for smaller screens */
                 }
             }
 
@@ -69,10 +63,9 @@
         </table>
 
         <script>
-            // Define marker icons configuration
             const markerIcons = {
                 default: L.icon({
-                    iconUrl: '/marker/default.png', // Tambahkan icon default untuk desa
+                    iconUrl: '/marker/default.png',
                     iconSize: [32, 32],
                     iconAnchor: [16, 32],
                     popupAnchor: [0, -32]
@@ -97,7 +90,6 @@
                 })
             };
 
-            // Helper function to get marker icon based on count
             function getMarkerIcon(data) {
                 const patientCount = data.length;
                 if (patientCount >= 5) return markerIcons.high;
@@ -105,7 +97,6 @@
                 return markerIcons.low;
             }
 
-            // Helper function to create popup content for patients
             function createPatientPopupContent(pasien) {
                 return `
                     <b>Nama Pasien:</b> ${pasien.nama}<br>
@@ -116,115 +107,167 @@
                 `;
             }
 
-            // Helper function to create popup content for desa
             function createDesaPopupContent(desa) {
-                return `<b>Nama Desa:</b> ${desa.nama}<br>`+`<b>luas wilayah</b>:${desa.luas} KM²<br>`+`<b>Kepadatan</b>:${desa.kepadatan} KM²`;
+                return `<b>Nama Desa:</b> ${desa.nama}<br>` +
+                    `<b>Luas Wilayah:</b> ${desa.luas} KM²<br>` +
+                    `<b>Kepadatan:</b> ${desa.kepadatan} KM²`;
             }
 
-            $(document).ready(function() {
-                console.log("load jq");
-                $('#pasienTable').hide();
+            async function loadDesaData(desaId, markers) {
+                try {
+                    const response = await $.ajax({
+                        url: '/getPasien/' + desaId,
+                        method: 'GET'
+                    });
 
-                if (!navigator.geolocation) {
-                    alert("Browser Anda tidak mendukung Geolocation API.");
-                    return;
-                }
-
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        initializeMap(position);
-                    },
-                    function(error) {
-                        console.error("Geolocation gagal:", error);
-                        alert("Gagal mendapatkan lokasi Anda. Pastikan fitur lokasi diaktifkan.");
+                    const marker = markers[desaId];
+                    if (marker) {
+                        marker.setIcon(getMarkerIcon(response.data));
                     }
+
+                    return response.data;
+                } catch (error) {
+                    console.error('Error fetching data for desa ' + desaId + ':', error);
+                    return [];
+                }
+            }
+
+            async function updateTable(pasienData) {
+                $('#pasienTable tbody').empty();
+                pasienData.forEach((pasien, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${pasien.nama}</td>
+                            <td>${pasien.alamat}</td>
+                            <td>${pasien.usia}</td>
+                            <td>${pasien.jenis_kelamin}</td>
+                            <td>${pasien.desa.nama}</td>
+                        </tr>
+                    `;
+                    $('#pasienTable tbody').append(row);
+                });
+            }
+
+            async function initializeMap() {
+                const desasData = @json($desas);
+                console.log('Data Desa:', desasData);
+
+                const defaultDesa = desasData[0];
+                const map = L.map('map').setView(
+                    [parseFloat(defaultDesa.latitude), parseFloat(defaultDesa.longitude)],
+                    12
                 );
-            });
-
-            function initializeMap(position) {
-                let desa_location = @json($desa_loc);
-                console.log(desa_location);
-
-                const userLatitude = desa_location.latitude;
-                const userLongitude = desa_location.longitude;
-
-                const map = L.map('map').setView([userLatitude, userLongitude], 10);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
 
-                const desasData = @json($desas);
-                let offset = 0;
-                const markers = {}; // Object untuk menyimpan referensi marker
+                for (const desa of desasData) {
+                    try {
+                        // Ambil data pasien terlebih dahulu
+                        const response = await fetch(`/getPasien/${desa.id}`);
+                        const pasienData = await response.json();
+                        console.log(`Data pasien untuk ${desa.nama}:`, pasienData);
 
-                // Add markers for each desa
-                desasData.forEach(function(desa) {
-                    const baseLatitude = parseFloat(desa.latitude);
-                    const baseLongitude = parseFloat(desa.longitude);
+                        const jumlahKasus = pasienData.data.length;
 
-                    const latitude = baseLatitude + offset * 0.0001;
-                    const longitude = baseLongitude + offset * 0.0001;
-
-                    const marker = L.marker([latitude, longitude], {
-                        icon: markerIcons.default
-                    }).addTo(map);
-
-                    marker.bindPopup(createDesaPopupContent(desa));
-                    markers[desa.id] = marker; // Simpan referensi marker
-                    offset += 1;
-
-                    marker.on('click', function() {
-                        handleDesaMarkerClick(desa.id, map, markers);
-                    });
-                });
-            }
-
-            function handleDesaMarkerClick(desaId, map, markers) {
-                console.log("ID Desa yang dipilih: " + desaId);
-                $('#pasienTable').show();
-
-                $.ajax({
-                    url: '/getPasien/' + desaId,
-                    method: 'GET',
-                    success: function(response) {
-                        if (!response.status) {
-                            alert('No data found for the selected Desa');
-                            return;
+                        // Tentukan warna berdasarkan jumlah kasus
+                        let circleColor;
+                        if (jumlahKasus >= 5) {
+                            circleColor = '#FF0000'; // Merah untuk risiko tinggi
+                        } else if (jumlahKasus >= 3) {
+                            circleColor = '#FFD700'; // Kuning untuk risiko sedang
+                        } else {
+                            circleColor = '#008000'; // Hijau untuk risiko rendah
                         }
 
-                        $('#pasienTable tbody').empty();
+                        const lat = parseFloat(desa.latitude);
+                        const lng = parseFloat(desa.longitude);
 
-                        // Hanya update marker yang diklik
-                        const clickedMarker = markers[desaId];
-                        const markerIcon = getMarkerIcon(response.data);
+                        // Tambahkan marker
+                        const marker = L.marker([lat, lng], {
+                            icon: markerIcons.default
+                        }).addTo(map);
 
-                        if (clickedMarker) {
-                            clickedMarker.setIcon(markerIcon);
-                        }
+                        // Tambahkan circle dengan warna yang sesuai
+                        const circle = L.circle([lat, lng], {
+                            color: circleColor,
+                            fillColor: circleColor,
+                            fillOpacity: 0.2,
+                            radius: 1000 // 1km radius
+                        }).addTo(map);
 
-                        // Update table
-                        response.data.forEach((pasien, index) => {
-                            const row = `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${pasien.nama}</td>
-                                    <td>${pasien.alamat}</td>
-                                    <td>${pasien.usia}</td>
-                                    <td>${pasien.jenis_kelamin}</td>
-                                    <td>${pasien.desa.nama}</td>
-                                </tr>
-                            `;
-                            $('#pasienTable tbody').append(row);
+                        // Popup untuk marker
+                        const popupContent = `
+                <strong>Desa ${desa.nama}</strong><br>
+                Luas Wilayah: ${desa.luas} KM²<br>
+                Kepadatan: ${desa.kepadatan} orang/KM²<br>
+                Jumlah Kasus: ${jumlahKasus}<br>
+                Status: ${
+                    jumlahKasus >= 5 ? 'Risiko Tinggi' :
+                    jumlahKasus >= 3 ? 'Risiko Sedang' :
+                    'Risiko Rendah'
+                }
+            `;
+                        marker.bindPopup(popupContent);
+                        circle.bindPopup(popupContent);
+
+                        // Event handler untuk marker
+                        marker.on('click', function() {
+                            // Update tabel
+                            updateTable(pasienData.data);
+                            $('#pasienTable').show();
+
+                            // Pindahkan view ke lokasi yang diklik
+                            map.setView([lat, lng], 13);
                         });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching data:', error);
-                        alert('Failed to fetch data for Desa ' + desaId);
+
+                        // Set marker icon sesuai jumlah kasus
+                        if (jumlahKasus >= 5) {
+                            marker.setIcon(markerIcons.high);
+                        } else if (jumlahKasus >= 3) {
+                            marker.setIcon(markerIcons.medium);
+                        } else {
+                            marker.setIcon(markerIcons.low);
+                        }
+
+                    } catch (error) {
+                        console.error(`Error processing desa ${desa.nama}:`, error);
                     }
+                }
+            }
+
+
+            // Fungsi untuk mengupdate tabel
+            function updateTable(pasienData) {
+                const tbody = $('#pasienTable tbody');
+                tbody.empty();
+
+                pasienData.forEach((pasien, index) => {
+                    const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${pasien.nama || '-'}</td>
+                <td>${pasien.alamat || '-'}</td>
+                <td>${pasien.usia || '-'}</td>
+                <td>${pasien.jenis_kelamin || '-'}</td>
+                <td>${pasien.desa?.nama || '-'}</td>
+            </tr>
+        `;
+                    tbody.append(row);
                 });
             }
+
+            // Initialize map when document is ready
+            $(document).ready(function() {
+                console.log('Initializing map...');
+                $('#pasienTable').hide();
+                initializeMap().catch(error => {
+                    console.error('Error initializing map:', error);
+                });
+            });
         </script>
     </div>
 @endsection
