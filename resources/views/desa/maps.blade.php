@@ -336,7 +336,6 @@
                                         <td>: <span style="color:${status.color}">${status.text}</span></td>
                                     </tr>
                                 </table>
-                                <small>Klik untuk detail pasien</small>
                             </div>
                         `;
 
