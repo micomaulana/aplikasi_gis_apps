@@ -95,3 +95,5 @@ Route::get('user-profile', [AuthController::class, 'user_profile'])->name('user_
 Route::put('update_user_profile', [AuthController::class, 'update_user_profile'])->name('update_user_profile');
 Route::get('/print-laporan/{id}', [LaporanFoggingController::class, 'printLaporan'])->name('print-laporan');
 Route::get('/printLaporanMasyarakat/{id}', [LaporanKasusDBDController::class, 'printLaporanMasyarakat'])->name('print.laporan.masyarakat');
+
+Route::get('detail_laporan/{id_pasien}',[LaporanKasusDBDController::class,'detail_laporan_masyarakat'])->name('detail_laporan_masyarakat');

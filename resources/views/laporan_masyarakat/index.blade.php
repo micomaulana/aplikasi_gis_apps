@@ -49,6 +49,10 @@
                                         style="display: none;">
                                         <i class="fas fa-eye-slash"></i> Hide
                                     </button>
+                                    <button class="btn btn-outline-info btn-sm btn-detail"
+                                        data-id="{{ $ldbd->pasien->id }}">
+                                        <i class="fas fa-info-circle"></i> Detail
+                                    </button>
                                     {{-- <a href="" class="text-primary">
                                         <i class="fas fa-file-pdf"></i> Unduh PDF
                                     </a> --}}
@@ -127,6 +131,13 @@
                         console.error('Terjadi kesalahan:', error);
                     }
                 });
+            });
+            
+            $('.btn-detail').click(function() {
+                let id_pasien = $(this).data('id');
+
+                // Navigasi ke halaman detail
+                window.location.href = '/detail_laporan/' + id_pasien;
             });
 
             $('.btn-hide').click(function() {

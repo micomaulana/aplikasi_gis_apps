@@ -118,7 +118,7 @@
 
             // Helper function to create popup content for desa
             function createDesaPopupContent(desa) {
-                return `<b>Nama Desa:</b> ${desa.nama}<br>`;
+                return `<b>Nama Desa:</b> ${desa.nama}<br>`+`<b>luas wilayah</b>:${desa.luas} KM²<br>`+`<b>Kepadatan</b>:${desa.kepadatan} KM²`;
             }
 
             $(document).ready(function() {

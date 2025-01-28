@@ -46,7 +46,15 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="latitude" class="form-label">Latitude</label>
-                                <input type="text" class="form-control" id="latitude" name="latitude" readonly required>
+                                <input type="text" class="form-control" id="latitude" name="latitude" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="luas" class="form-label">luas wilayah</label>
+                                <input type="text" class="form-control" id="luas" name="luas" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="kepadatan" class="form-label">kepadatan penduduk</label>
+                                <input type="text" class="form-control" id="kepadatan" name="kepadatan" readonly required>
                             </div>
                         </div>
 

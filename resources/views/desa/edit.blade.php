@@ -34,6 +34,15 @@
                 <label for="latitude" class="form-label">Latitude</label>
                 <input type="text" class="form-control" id="latitude" name="latitude" value="{{$desa->latitude}}">
             </div>
+            <div class="col-md-6">
+                <label for="luas" class="form-label">luas wilayah</label>
+                <input type="text" class="form-control" id="luas" name="luas" 
+                value="{{$desa->luas}}">
+            </div>
+            <div class="col-md-6">
+                <label for="kepadatan" class="form-label">kepadatan penduduk</label>
+                <input type="text" class="form-control" id="kepadatan" name="kepadatan" value="{{$desa->kepadatan}}">
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

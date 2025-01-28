@@ -54,7 +54,8 @@
                                 data-alamat="{{ $laporanList[0]['pasien']->alamat ?? 'N/A' }}"
                                 data-file_lab="{{ $laporanList[0]['file_hasil_lab'] }}"
                                 data-gejala="{{ htmlspecialchars(json_encode($laporanList->pluck('gejala')), ENT_QUOTES, 'UTF-8') }}"
-                                data-gejala_lain="{{ $laporanList[0]['gejala_lain'] }}">
+                                data-gejala_lain="{{ $laporanList[0]['gejala_lain'] }}"
+                                data-created_at="{{ htmlspecialchars(json_encode($laporanList->pluck('created_at')), ENT_QUOTES, 'UTF-8') }}">
                                 <i class="fas fa-eye"></i> Lihat
                             </button>
 
@@ -257,11 +258,11 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="catatanMedis" class="form-label">Catatan Medis</label>
+                                {{-- <label for="catatanMedis" class="form-label">Catatan Medis</label>
                                 <textarea class="form-control" id="catatanMedis" name="catatan_medis" rows="3"
                                     placeholder="Tambahkan catatan medis..." required>{{ old('catatan_medis') }}</textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Terima Laporan</button>
+                            </div> --}}
+                                <button type="submit" class="btn btn-primary">Terima Laporan</button>
                         </form>
                     </div>
                 </div>
@@ -294,6 +295,18 @@
 
     <script>
         $(document).ready(function() {
+            function formatTimestamp(timestamp) {
+                // Membuat objek Date dari timestamp
+                var date = new Date(timestamp);
+
+                // Ekstraksi hari, bulan, dan tahun
+                var day = date.getDate(); // Mendapatkan tanggal
+                var month = date.getMonth() + 1; // Mendapatkan bulan (ditambah 1 karena index bulan dimulai dari 0)
+                var year = date.getFullYear(); // Mendapatkan tahun
+
+                // Menggabungkan dalam format d-M-Y
+                return `${day}-${month}-${year}`;
+            }
             // Set the id for the rejection modal
             $(document).on('click', '[data-bs-target="#tolakModal"]', function() {
                 var id = $(this).data('id');
@@ -420,20 +433,34 @@
                 var gejalaLain = $(this).data("gejala_lain");
                 var hasilLab = $(this).data("file_lab");
                 var fileUrl = '/uploads/laporan/' + hasilLab;
+                var created_at_data = $(this).data('created_at');
                 var parser = new DOMParser();
                 var decodedGejala = parser.parseFromString(gejalaEncoded, "text/html").body.textContent;
+                var decodedCreatedAt = parser.parseFromString(created_at_data, "text/html").body
+                    .textContent;
 
                 var gejalaArray = JSON.parse(decodedGejala);
-                var gejalaHtml = "<ul>";
-                gejalaArray.forEach(function(item) {
-                    gejalaHtml += "<li>" + item + "</li>";
-                });
-                gejalaHtml += "</ul>";
+                var createdAtArray = JSON.parse(decodedCreatedAt);
+                var htmlOutput = "";
+                if (gejalaArray.length === createdAtArray.length) {
+                    htmlOutput = "<ul>";
+                    for (var i = 0; i < gejalaArray.length; i++) {
+                        htmlOutput += "<li><strong>Tanggal:</strong> " + formatTimestamp(createdAtArray[i]) +
+                            " - <strong>Gejala:</strong> " + gejalaArray[i] + "</li>";
+                    }
+                    htmlOutput += "</ul>";
+
+                    console.log(htmlOutput); // Output HTML
+                    // You can inject the htmlOutput to your HTML container here.
+                } else {
+                    console.error("The length of gejalaArray and createdAtArray do not match.");
+                }
+
 
                 $("#lihatNama").val(nama);
                 $("#lihatUsia").val(usia);
                 $("#lihatAlamat").text(alamat);
-                $("#lihatGejala").html(gejalaHtml);
+                $("#lihatGejala").html(htmlOutput);
                 $("#lihatGejalaLain").val(gejalaLain);
                 $('#lihatHasilLab').attr('href', fileUrl);
             });

@@ -26,7 +26,7 @@
                         <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
                             telah mencapai
                             <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
-                            <span id="month">Januari 2024</span> mohon segera memproses pengajuan fogging ke kepala
+                            <span id="month"></span> mohon segera memproses pengajuan fogging ke kepala
                             puskesmas
                         </div>
                     </div>

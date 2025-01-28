@@ -23,6 +23,8 @@
                     <th>Nama</th>
                     {{-- <th>Latitude</th>
                     <th>Longitude</th> --}}
+                    <th>luas wilayah</th>
+                    <th>kepadatan penduduk</th>
                     <th width="150px">Action</th>
                 </tr>
             </thead>
@@ -54,6 +56,15 @@
                     //     data: 'longitude',
                     //     name: 'longitude'
                     // },
+
+                    {
+                        data: 'luas',
+                        name: 'luas'
+                    },
+                    {
+                        data: 'kepadatan',
+                        name: 'kepadatan'
+                    },
                     {
                         data: 'action',
                         name: 'action',

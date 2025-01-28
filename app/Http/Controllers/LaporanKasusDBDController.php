@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LaporaKasusDbd;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LaporanKasusDBDController extends Controller
 {
@@ -71,8 +72,22 @@ class LaporanKasusDBDController extends Controller
 
     public function printLaporanMasyarakat($id)
     {
-        $laporan_kasus_dbd = LaporaKasusDbd::with(['pasien', 'dokter'])->where('id','=',$id)->first();
+        $laporan_kasus_dbd = LaporaKasusDbd::with(['pasien', 'dokter'])->where('id', '=', $id)->first();
         // dd($laporan_kasus_dbd);
         return view('laporan_masyarakat.print-laporan-dbd', ['laporan_kasus_dbd' => $laporan_kasus_dbd]);
+    }
+
+    public function detail_laporan_masyarakat($id_pasien)
+    {
+        $detaillaporanbyidpasien = LaporaKasusDbd::select(
+            DB::raw("DATE(created_at) as tanggal"), // Mengambil tanggal dari created_at
+            DB::raw("YEAR(created_at) as tahun"),   // Mengambil tahun dari created_at
+            'id_pasien',
+            DB::raw("GROUP_CONCAT(gejala_yang_dialami SEPARATOR ', ') as gejala") // Menggabungkan gejala
+        )
+            ->where('id_pasien', '=', $id_pasien)
+            ->groupBy('tanggal', 'tahun', 'id_pasien')
+            ->get();
+        return view('laporan_masyarakat.detail-laporan', compact('detaillaporanbyidpasien'));
     }
 }

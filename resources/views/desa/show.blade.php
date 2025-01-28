@@ -3,12 +3,50 @@
     <div class="container-fluid">
         <style>
             #map {
-                height: 400px;
+                height: 500px;
                 width: 100%;
+                max-height: 80vh;
+                z-index: 0;
+                /* Limit the height for small screens */
+            }
+
+            .sidebar {
+                position: fixed;
+                z-index: 999;
+                /* Beri nilai lebih besar untuk sidebar */
+                width: 300px;
+                /* Atur lebar sidebar sesuai kebutuhan */
+                height: 100%;
+                background-color: white;
+                /* Warna background untuk sidebar */
+                overflow-y: auto;
+                /* Tambahkan jika sidebar memiliki konten panjang */
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            }
+
+            @media screen and (max-width: 768px) {
+                #map {
+                    height: 300px;
+                    /* Adjust height for smaller screens */
+                }
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
                 margin-top: 20px;
-                margin-bottom: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            table,
+            th,
+            td {
+                border: 1px solid black;
+            }
+
+            th,
+            td {
+                padding: 8px;
+                text-align: left;
             }
         </style>
 
@@ -51,6 +89,15 @@
                             <label for="latitude" class="form-label">Latitude</label>
                             <input type="text" class="form-control" id="latitude" name="latitude"
                                 value="{{ $desa->latitude }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="luas" class="form-label">luas wilayah</label>
+                            <input type="text" class="form-control" id="luas" name="luas" 
+                            value="{{ $desa->luas }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="kepadatan" class="form-label">kepadatan penduduk</label>
+                            <input type="text" class="form-control" id="kepadatan" name="kepadatan" value="{{ $desa->kepadatan }}" readonly>>
                         </div>
 
                         <div id="map"></div>

@@ -93,7 +93,7 @@ class DesaController extends Controller
         ]);
 
         Desa::create($request->all());
-        return redirect()->back()->with('success', 'insert data berhasil');
+        return redirect()->route('desas.index')->with('success', 'insert data berhasil');
     }
 
     /**
@@ -118,7 +118,7 @@ class DesaController extends Controller
     public function update(Request $request, Desa $desa)
     {
         $desa->update($request->all());
-        return redirect()->back()->with('success', 'update data berhasil');
+        return redirect()->route('desas.index')->with('success', 'update data berhasil');
     }
 
     /**
@@ -212,7 +212,10 @@ class DesaController extends Controller
 
         // Memetakan data ke format yang lebih terstruktur
         $groupedData = $laporandbd->map(function ($laporans) {
-            return $laporans->map(function ($laporan) {
+            // Urutkan laporan berdasarkan tanggal secara descending
+            $sortedLaporans = $laporans->sortByDesc('created_at');
+
+            return $sortedLaporans->map(function ($laporan) {
                 return [
                     'no_tiket' => $laporan->no_tiket,
                     'tanggal' => $laporan->created_at->format('d M Y'),
@@ -220,10 +223,12 @@ class DesaController extends Controller
                     'pasien' => $laporan->pasien, // Menyertakan data pasien
                     'gejala' => $laporan->gejala_yang_dialami,
                     'gejala_lain' => $laporan->gejala_lain,
-                    'file_hasil_lab' => $laporan->file_hasil_lab
+                    'file_hasil_lab' => $laporan->file_hasil_lab,
+                    'created_at' => $laporan->created_at
                 ];
             });
         });
+
 
         // dd($groupedData);
         return view('validasi_pasien_admin.index', compact('dokters', 'groupedData', 'jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));

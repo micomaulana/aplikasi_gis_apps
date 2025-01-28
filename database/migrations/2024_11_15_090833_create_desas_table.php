@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string("nama");
             $table->string('latitude');
             $table->string('longitude');
+            $table->double('luas');
+            $table->double('kepadatan');
             $table->timestamps();
         });
     }
