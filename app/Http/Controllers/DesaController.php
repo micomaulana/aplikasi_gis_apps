@@ -179,14 +179,18 @@ class DesaController extends Controller
     public function hitung_kasus_dari_id_desa($id)
     {
         $pasiens_count = Pasien::where('id_desa', '=', $id)
-            ->whereYear('tahun_terdata', '=', date('Y')) // Tambahkan filter tahun
+            ->where('diagnosis_klinis', '=', 'DBD')
+            ->whereYear('tahun_terdata', '=', date('Y'))
+            ->whereMonth('tahun_terdata', '=', date('m'))  // Tambahan filter bulan
             ->count();
+
         return response()->json([
             'status' => true,
             'message' => "success fetch data",
             'data' => $pasiens_count
-        ],);
+        ]);
     }
+    
     public function validasi_pasien_admin_view()
     {
         $dokters = Dokter::all();
@@ -441,5 +445,4 @@ class DesaController extends Controller
             'data' => $statistik
         ]);
     }
-   
 }

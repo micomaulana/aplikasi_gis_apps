@@ -31,30 +31,45 @@
                 <tr>
                     <th>Desa</th>
                     <th>Jumlah Kasus</th>
-                    <th>Tanggal</th>
+                    <th>Tanggal Pengajuan</th>
+                    <th>Tanggal Persetujuan</th>
                     <th>Status</th>
+                    <th>Keterangan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($laporanfoggings as $laporan)
                     <tr>
-                        <!-- Menampilkan nama desa -->
-                        <td>{{ $laporan->desa->nama }} </td>
-                        <!-- Menampilkan jumlah kasus -->
+                        <td>{{ $laporan->desa->nama }}</td>
                         <td>{{ $laporan->jumlah_kasus }}</td>
-                        <!-- Menampilkan tanggal persetujuan -->
-                        <td>{{ $laporan->tanggal_persetujuan ?? 'N/A' }}</td>
-                        <!-- Menampilkan status pengajuan -->
-                        <td>{{ $laporan->status_pengajuan ?? 'N/A' }}</td>
+                        <td>{{ $laporan->tanggal_pengajuan ? date('d-m-Y', strtotime($laporan->tanggal_pengajuan)) : 'N/A' }}
+                        </td>
+                        <td>{{ $laporan->tanggal_persetujuan ? date('d-m-Y', strtotime($laporan->tanggal_persetujuan)) : 'N/A' }}
+                        </td>
+                        <td>
+                            <span
+                                class="badge {{ $laporan->status_pengajuan == 'waiting'
+                                    ? 'bg-warning'
+                                    : ($laporan->status_pengajuan == 'disetujui'
+                                        ? 'bg-success'
+                                        : 'bg-danger') }}">
+                                {{ $laporan->status_pengajuan ?? 'N/A' }}
+                            </span>
+                        </td>
+                        <td class="keterangan-cell" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="{{ $laporan->keterangan ?? 'N/A' }}">
+                            {{ $laporan->keterangan ?? 'N/A' }}
+                        </td>
                         <td>
                             @if ($laporan->status_pengajuan == 'waiting')
                                 <a href="{{ route('update_status_pengajuan_fogging', ['id' => $laporan->id, 'status' => 'setuju']) }}"
-                                    class="btn" id="button-setuju">Setuju</a>
+                                    class="btn btn-success btn-sm">Setuju</a>
                                 <a href="{{ route('update_status_pengajuan_fogging', ['id' => $laporan->id, 'status' => 'tolak']) }}"
-                                    class="btn" id="button-tolak">Tolak</a>
+                                    class="btn btn-danger btn-sm">Tolak</a>
                             @else
-                                <a class="btn btn-info lihat_detail"  data-id="{{ $laporan->id }}">Lihat</a>
+                                <button class="btn btn-info btn-sm lihat_detail"
+                                    data-id="{{ $laporan->id }}">Lihat</button>
                             @endif
                         </td>
                     </tr>
@@ -62,111 +77,122 @@
             </tbody>
         </table>
 
-
         <div class="container mt-3" id="detail_laporan">
-            <form action="">
-                <h3>Detail Laporan</h3>
-                <button type="button" id="tutup_detail" class="btn btn-danger">Tutup</button>
-                <div class="row g-3">
-                    <!-- Input 1 -->
-                    <div class="col-md-6">
-                        <label for="input1" class="form-label">Desa</label>
-                        <input type="text" class="form-control" id="desa" name="input1">
-                    </div>
-                    <!-- Input 2 -->
-                    <div class="col-md-6">
-                        <label for="input2" class="form-label">Jumlah Kasus</label>
-                        <input type="text" class="form-control" id="jumlah_kasus" name="input2">
-                    </div>
-                    <!-- Input 3 -->
-                    <div class="col-md-6">
-                        <label for="input3" class="form-label">Tanggal Pengajuan</label>
-                        <input type="text" class="form-control" id="input3" name="input3">
-                    </div>
-                    <!-- Input 4 -->
-                    <div class="col-md-6">
-                        <label for="input4" class="form-label">Tanggal Persetujuan</label>
-                        <input type="text" class="form-control" id="input4" name="input4">
-                    </div>
-                    <!-- Input 5 -->
-                    <div class="col-md-6">
-                        <label for="input5" class="form-label">Status Pengajuan</label>
-                        <input type="text" class="form-control" id="input5" name="input5">
-                    </div>
-                    <!-- Input 6 -->
-                    <div class="col-md-6">
-                        <label for="input6" class="form-label">Jumlah Pasien</label>
-                        <input type="text" class="form-control" id="pasien_di_desa" name="input6">
-                    </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Detail Laporan</h5>
+                    <button type="button" id="tutup_detail" class="btn btn-danger btn-sm">Tutup</button>
                 </div>
-            </form>
+                <div class="card-body">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="desa" class="form-label">Desa</label>
+                                <input type="text" class="form-control" id="desa" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="jumlah_kasus" class="form-label">Jumlah Kasus</label>
+                                <input type="text" class="form-control" id="jumlah_kasus" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tanggal_pengajuan" class="form-label">Tanggal Pengajuan</label>
+                                <input type="text" class="form-control" id="tanggal_pengajuan" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tanggal_persetujuan" class="form-label">Tanggal Persetujuan</label>
+                                <input type="text" class="form-control" id="tanggal_persetujuan" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status_pengajuan" class="form-label">Status Pengajuan</label>
+                                <input type="text" class="form-control" id="status_pengajuan" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="pasien_di_desa" class="form-label">Jumlah Pasien</label>
+                                <input type="text" class="form-control" id="pasien_di_desa" readonly>
+                            </div>
+                            <div class="col-12">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <textarea class="form-control" id="keterangan" rows="3" readonly></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         $(document).ready(function() {
+            // Inisialisasi tooltip Bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
             $('#detail_laporan').hide();
+
             $('.lihat_detail').click(function() {
-                const id_laporan = $(this).data('id');  // Ambil id_desa dari input atau elemen lain
+                const id_laporan = $(this).data('id');
                 $.ajax({
                     url: '/lihat_detail_foggings/' + id_laporan,
                     method: 'GET',
                     success: function(response) {
                         $('#detail_laporan').show();
-
                         const data = response.data;
-                        console.log(data);
 
-                        // Akses data berdasarkan id_desa (misalnya data[id_desa])
                         if (data.length > 0) {
-                            // Mengambil data desa
-                            const laporan = data[
-                                0
-                            ]; // Mengambil laporan pertama karena data di-group berdasarkan id_desa
+                            const laporan = data[0];
 
-                            const desaName = laporan.desa.nama || ''; // Nama desa
-                            const jumlahKasus = laporan.jumlah_kasus || ''; // Jumlah kasus
-                            const tanggalPengajuan = formatDate(laporan.tanggal_pengajuan) ||
-                                ''; // Tanggal Pengajuan
-                            const tanggalPersetujuan = formatDate(laporan
-                                .tanggal_persetujuan) ||
-                                ''; // Tanggal Persetujuan
-                            const statusPengajuan = laporan.status_pengajuan ||
-                                ''; // Status Pengajuan
-                            const jumlahPasien = laporan.desa.pasien.length ||
-                                0; // Jumlah Pasien
-
-                            // Menampilkan data pada form
-                            $('#desa').val(desaName);
-                            $('#jumlah_kasus').val(jumlahKasus);
-                            $('#input3').val(tanggalPengajuan);
-                            $('#input4').val(tanggalPersetujuan);
-                            $('#input5').val(statusPengajuan);
-                            $('#pasien_di_desa').val(jumlahPasien);
-                        } else {
-                            console.log('Data tidak ditemukan untuk id_desa: ' + id_desa);
+                            $('#desa').val(laporan.desa.nama || '');
+                            $('#jumlah_kasus').val(laporan.jumlah_kasus || '');
+                            $('#tanggal_pengajuan').val(formatDate(laporan.tanggal_pengajuan) ||
+                                '');
+                            $('#tanggal_persetujuan').val(formatDate(laporan
+                                .tanggal_persetujuan) || '');
+                            $('#status_pengajuan').val(laporan.status_pengajuan || '');
+                            $('#pasien_di_desa').val(laporan.desa.pasien.length || 0);
+                            $('#keterangan').val(laporan.keterangan || '');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function(error) {
                         console.error('Error:', error);
                     }
                 });
             });
 
-            // Fungsi untuk format tanggal menjadi 'd m y'
             function formatDate(dateString) {
-                if (!dateString) return ''; // Jika tidak ada tanggal
+                if (!dateString) return '';
                 const date = new Date(dateString);
-                const day = String(date.getDate()).padStart(2, '0'); // Menambahkan 0 di depan jika kurang dari 10
-                const month = String(date.getMonth() + 1).padStart(2,
-                    '0'); // Bulan dimulai dari 0, jadi kita tambahkan 1
-                const year = date.getFullYear(); // Mendapatkan tahun
-
-                return `${day} ${month} ${year}`;
+                return `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
             }
+
             $('#tutup_detail').click(function() {
-                $('#detail_laporan').hide(); // Menyembunyikan detail laporan
+                $('#detail_laporan').hide();
             });
         });
     </script>
+
+    <style>
+        .custom-table td {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .keterangan-cell {
+            cursor: pointer;
+        }
+
+        /* Custom tooltip style */
+        .tooltip .tooltip-inner {
+            max-width: 350px;
+            text-align: left;
+            padding: 10px;
+            background-color: #f8f9fa;
+            color: #212529;
+            border: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+    </style>
 @endsection

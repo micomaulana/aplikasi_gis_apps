@@ -1,15 +1,14 @@
 @extends('layouts.main')
 @section('content')
-    <div class="container">
-        <div class="header d-flex align-items-center">
-            <i class="fas fa-file-alt me-2"></i>
-            <h1>Laporan</h1>
-            <select class="form-select ms-auto" style="width: 100px;">
-                <option>2024</option>
-            </select>
+    <div class="container mb-5 pt-5">
+        <div class="header d-flex align-items-center mb-4 mt-3">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-file-alt me-2"></i>
+                <h1 class="mb-0">Laporan</h1>
+            </div>
         </div>
 
-        <div class="form-section">
+        <div class="form-section mb-4">
             <div class="card p-3">
                 <h5>Form pengajuan</h5>
                 <form action="{{ route('laporan-foggings.store') }}" method="POST">
@@ -33,14 +32,14 @@
                     </div>
                     <div class="mb-3">
                         <label for="keterangan" class="form-label">Keterangan</label>
-                        <textarea id="keterangan" name= "keterangan" class="form-control"></textarea>
+                        <textarea id="keterangan" name="keterangan" class="form-control"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Ajukan ke Kepala Puskesmas</button>
                 </form>
             </div>
         </div>
 
-        <div class="status-section">
+        <div class="status-section mb-4">
             <div class="card p-3">
                 <h5>Status pengajuan fogging</h5>
                 <table class="table table-bordered">
@@ -48,7 +47,8 @@
                         <tr>
                             <th>Desa</th>
                             <th>Kasus</th>
-                            <th>Tanggal</th>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Tanggal Persetujuan</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -59,7 +59,10 @@
                                 <tr>
                                     <td>{{ $laporan_fogging->desa->nama }}</td>
                                     <td>{{ $laporan_fogging->jumlah_kasus }}</td>
-                                    <td>{{ $laporan_fogging->tanggal_pengajuan }}</td>
+                                    <td>{{ $laporan_fogging->tanggal_pengajuan ? date('d-m-Y', strtotime($laporan_fogging->tanggal_pengajuan)) : 'N/A' }}
+                                    </td>
+                                    <td>{{ $laporan_fogging->tanggal_persetujuan ? date('d-m-Y', strtotime($laporan_fogging->tanggal_persetujuan)) : 'N/A' }}
+                                    </td>
                                     <td>
                                         <span
                                             class="badge 
@@ -74,7 +77,6 @@
                                         </span>
                                     </td>
                                     <td>
-
                                         <button class="btn btn-outline-primary btn-sm lihat-preview"
                                             data-id="{{ $laporan_fogging->id }}">
                                             <i class="fas fa-eye"></i> Lihat
@@ -82,12 +84,6 @@
                                         <button class="btn btn-outline-primary btn-sm hide-preview">
                                             <i class="fas fa-eye"></i> hide
                                         </button>
-                                        {{-- <div class="pdf-preview" style="display: none; margin-top: 10px;">
-                                   <iframe src="/path/to/pdf/{{ $laporan_fogging->id }}" width="100%" height="200px" frameborder="0"></iframe>
-                               </div> --}}
-                                        {{-- <button class="btn btn-outline-secondary btn-sm print-preview">
-                                   <i class="fas fa-print"></i> Cetak
-                               </button> --}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -101,11 +97,12 @@
             <div class="card p-3">
                 <h5>Preview laporan pengajuan fogging</h5>
                 <div class="d-flex justify-content-end mb-2">
-                    <button class="btn btn-outline-secondary btn-sm print-table" data-id="{{ $laporan_fogging->id }}">
+                    <button class="btn btn-outline-secondary btn-sm print-table me-2" data-id="{{ $laporan_fogging->id }}">
                         <i class="fas fa-print"></i> Cetak
                     </button>
-                    <button class="btn btn-outline-primary btn-sm" id="download-pdf"><i class="fas fa-file-pdf"></i> Unduh
-                        pdf</button>
+                    <button class="btn btn-outline-primary btn-sm" id="download-pdf">
+                        <i class="fas fa-file-pdf"></i> Unduh pdf
+                    </button>
                 </div>
                 <div class="card-body">
                     <h6 class="text-center">Laporan pengajuan fogging</h6>
@@ -137,28 +134,25 @@
             $("#preview-section").hide();
             $(".hide-preview").hide();
 
-            // Logika untuk select desa
             $('#desa').on('change', function() {
-                var desaId = $(this).val(); // Ambil value dari select option
+                var desaId = $(this).val();
                 console.log(desaId);
 
                 if (desaId) {
                     $.ajax({
-                        url: '/get-jumlah-pasien-perdesa/' +
-                            desaId, // Endpoint untuk mengambil data
+                        url: '/get-jumlah-pasien-perdesa/' + desaId,
                         type: 'GET',
                         success: function(response) {
                             console.log(response);
                             $('#jumlahKasus').val(response.data);
                         },
                         error: function(xhr) {
-                            console.error(xhr.responseText); // Tangani error
+                            console.error(xhr.responseText);
                         }
                     });
                 }
             });
 
-            // Logika untuk tombol "Lihat"
             $('.lihat-preview').on('click', function() {
                 console.log('preview click');
                 $("#preview-section").show();
@@ -167,7 +161,7 @@
                 let id_foggings = $(this).data('id');
                 let url = "{{ route('laporan-foggings.show', ':id') }}".replace(':id', id_foggings);
                 $.ajax({
-                    url: url, // Endpoint untuk mengambil data
+                    url: url,
                     type: 'GET',
                     success: function(response) {
                         console.log(response);
@@ -184,51 +178,44 @@
                             $('#tanggal_disetujui_laporan').text("Belum Disetujui");
                         } else {
                             $('#tanggal_disetujui_laporan').text(tanggal_persetujuan)
-
                         }
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText); // Tangani error
+                        console.error(xhr.responseText);
                     }
                 });
             });
 
             $('.hide-preview').on('click', function() {
-                console.log('preview click');
                 $("#preview-section").hide();
                 $(".hide-preview").hide();
                 $(".lihat-preview").show();
             });
+
             $('#download-pdf').on('click', function() {
                 let id_fogging = $("#id_fogging").val();
                 window.location.href = "/generate-pdf/" + id_fogging;
             });
 
-            // Fungsi untuk format tanggal menjadi 'd m y'
             function formatDate(dateString) {
-                if (!dateString) return ''; // Jika tidak ada tanggal
+                if (!dateString) return '';
                 const date = new Date(dateString);
-                const day = String(date.getDate()).padStart(2, '0'); // Menambahkan 0 di depan jika kurang dari 10
-                const month = String(date.getMonth() + 1).padStart(2,
-                    '0'); // Bulan dimulai dari 0, jadi kita tambahkan 1
-                const year = date.getFullYear(); // Mendapatkan tahun
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
 
                 return `${day} ${month} ${year}`;
             }
 
             $('.print-table').on('click', function() {
                 const id = $(this).data('id');
-                // Buka URL cetak dalam window baru
                 window.open(`/print-laporan/${id}`, '_blank');
             });
 
-            // Function to print preview section
             $('.print-preview').on('click', function() {
                 const id = $('#id_fogging').val();
                 window.open(`/print-laporan/${id}`, '_blank');
             });
-
-
         });
     </script>
 @endsection
