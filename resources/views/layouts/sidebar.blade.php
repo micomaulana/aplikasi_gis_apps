@@ -32,7 +32,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('desas.index') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="mdi:map-outline" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Desa</span>
                         </a>
@@ -42,7 +42,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('pasiens.index') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Pasien</span>
                         </a>
@@ -52,7 +52,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('dokters.index') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:user-id-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Dokter</span>
                         </a>
@@ -63,8 +63,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('maps') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:bookmark-square-minimalistic-bold-duotone"
-                                    class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:map-point-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Peta</span>
                         </a>
@@ -75,7 +74,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('data_informasi_view') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:clipboard-list-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Informasi</span>
                         </a>
@@ -86,7 +85,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('data_informasi_views') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:documents-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">lihat data dan informasi</span>
                         </a>
@@ -97,7 +96,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('validasi_kapus') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:checklist-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">validasi kapus</span>
                         </a>
@@ -108,7 +107,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('validasi_admin') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:user-check-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">validasi pasien</span>
                         </a>
@@ -119,7 +118,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('laporan_masyarakat') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:file-text-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">laporan masyarakat</span>
                         </a>
@@ -130,7 +129,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('laporan_view') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:document-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Laporan</span>
                         </a>
@@ -141,7 +140,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('landing_page_views') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:virus-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Detail DBD</span>
                         </a>
@@ -152,7 +151,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('dashboard_masyarakat') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:hospital-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Profil puskesmas Karya Maju</span>
                         </a>
@@ -163,7 +162,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('faq_masyarakat') }}" aria-expanded="false">
                             <span>
-                                <iconify-icon icon="solar:text-field-focus-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:chat-round-dots-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">FAQ</span>
                         </a>
@@ -176,30 +175,37 @@
                             class="fs-6"></iconify-icon>
                         <span class="hide-menu">AUTH</span>
                     </li>
-                    {{-- <li><a class="nav-link" href="{{ route('roles.index') }}">Manage roles</a></li> --}}
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('users.index') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                            data-bs-target="#manageUsers">
                             <span>
-                                <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
+                                <iconify-icon icon="solar:users-group-two-bold-duotone" class="fs-6"></iconify-icon>
                             </span>
                             <span class="hide-menu">Manage Users</span>
                         </a>
-                    </li>
-                    @can('role-list')
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('roles.index') }}" aria-expanded="false">
-                                <span>
-                                    <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
-                                </span>
-                                <span class="hide-menu">Manage roles</span>
-                            </a>
-                        </li>
-                    @endcan
-                @endcan
+                        <ul id="manageUsers" class="collapse">
+                            <li class="sidebar-item ps-4">
+                                <a class="sidebar-link" href="{{ route('users.index') }}">
+                                    <span>
+                                        <iconify-icon icon="solar:users-group-rounded-bold-duotone"
+                                            class="fs-6"></iconify-icon>
+                                    </span>
+                                    <span class="hide-menu">List Users</span>
+                                </a>
+                            </li>
+                            @can('role-list')
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" href="{{ route('roles.index') }}" aria-expanded="false">
+                                        <span>
+                                            <iconify-icon icon="solar:shield-user-bold-duotone" class="fs-6"></iconify-icon>
+                                        </span>
+                                        <span class="hide-menu">Manage roles</span>
+                                    </a>
+                                </li>
+                            @endcan
+                        @endcan
 
-            </ul>
-
-
+                    </ul>
         </nav>
         <!-- End Sidebar navigation -->
     </div>
