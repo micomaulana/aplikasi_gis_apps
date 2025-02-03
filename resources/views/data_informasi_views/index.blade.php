@@ -96,6 +96,22 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="contact-info">
+            <h5>Ingin mendapatkan informasi lanjut?</h5>
+            <p>Hubungi kami melalui:</p>
+            <p>
+                <i class="fas fa-phone"></i>
+                Telepon: 082184911376
+            </p>
+            <p>
+                <i class="fas fa-envelope"></i>
+                Email: <a href="mailto:puskesmas-karyamaju.id">puskesmas-karyamaju.id</a>
+            </p>
+            <p>
+                <i class="fas fa-map-marker-alt"></i>
+                Alamat: Jalan Nusantara, desa Karya Maju
+            </p>
+        </div>
     </div>
     <script>
         $(document).ready(function() {

@@ -1,4 +1,4 @@
-@extends('Dashboard_masyarakat.layout')
+@extends('layouts.main')
 @section('content')
     <div class="container-fluid mt-5">
         <div class="row">
@@ -42,14 +42,11 @@
                         </h5>
                         <div class="d-flex justify-content-between">
                             <img alt="Puskesmas Karya Maju building" class="img-fluid" height="100"
-                                src="/Seodash-assets/images/Puskesmas/kegiatan.jpg"
-                                width="150" />
+                                src="/Seodash-assets/images/Puskesmas/kegiatan.jpg" width="150" />
                             <img alt="Healthcare workers assisting a patient" class="img-fluid" height="100"
-                                src="/Seodash-assets/images/Puskesmas/kegiatan2.jpg"
-                                width="150" />
+                                src="/Seodash-assets/images/Puskesmas/kegiatan2.jpg" width="150" />
                             <img alt="Community health event" class="img-fluid" height="100"
-                                src="/Seodash-assets/images/Puskesmas/kegiatan3.jpg"
-                                width="150" />
+                                src="/Seodash-assets/images/Puskesmas/kegiatan3.jpg" width="150" />
                         </div>
                     </div>
                 </div>
@@ -91,7 +88,23 @@
                     </div>
                 </div>
             </div>
-            {{-- </main> --}}
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h5>Ingin mendapatkan informasi lanjut?</h5>
+                <p>Hubungi kami melalui:</p>
+                <p>
+                    <i class="fas fa-phone"></i>
+                    Telepon: 082184911376
+                </p>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    Email: <a href="mailto:puskesmas-karyamaju.id">puskesmas-karyamaju.id</a>
+                </p>
+                <p>
+                    <i class="fas fa-map-marker-alt"></i>
+                    Alamat: Jalan Nusantara, desa Karya Maju
+                </p>
+            </div>
         </div>
     </div>
 @endsection
