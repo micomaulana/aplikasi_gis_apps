@@ -30,9 +30,9 @@
                     </div>
                 </div>
                 <div class="chart-card card">
-                    <h5>Progress Kasus DBD 3 tahun terakhir</h5>
+                    <h5>Progress Kasus DBD beberapa tahun terakhir</h5>
                     <div id="dbd-cases-chart" style="height: 320px;"></div>
-                    <p>Data diambil dari arsip Puskesmas Karya Maju (2024).</p>
+                    <p>Data diambil dari arsip Puskesmas Karya Maju.</p>
                 </div>
                 <div class="important-info row">
                     <div class="col-md-4">
