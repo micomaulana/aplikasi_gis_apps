@@ -6,13 +6,6 @@
             font-weight: bold !important;
             margin: 0.2rem 0 !important;
         }
-
-        #cases-by-village {
-            width: 100%;
-            /* Sesuaikan dengan elemen parent */
-            height: 400px;
-            /* Tetapkan tinggi */
-        }
     </style>
     <?php
     $jumlah_kasus = '';
@@ -29,9 +22,8 @@
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-exclamation-circle alert-icon"></i>
                     <div>
-
                         <div class="alert-heading">Peringatan! Tindakan Segera Diperlukan</div>
-                        <div>Jumlah kasus DBD di desa <span>{{ $jumlah_kasus_perdesa->nama_desa }}</span>
+                        <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
                             telah mencapai
                             <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
                             <span id="month"></span> mohon segera memproses pengajuan fogging ke kepala
@@ -292,7 +284,7 @@
                 // if (desaId === 'karya_maju') return; // Don't make request if default option is selected
 
                 $.ajax({
-                    url: `/get_data_pasien_by_desa/1`,
+                    url: `/get_data_pasien_by_desa/${desaId}`,
                     type: 'GET',
                     data: {
                         tahun: tahun
@@ -313,6 +305,8 @@
                             //     `<span>${response.jumlah_pasien} kasus di desa ${response.desa.nama} dan </span>`;
                             $('#jumlah_kasus').html(data.jumlah_pasien_by_filter[2]);
                             $('#nama_desa').html(response.desa.nama)
+                            console.log(response.desa.nama);
+                            
                             $('#data_per_tahun').css('display', 'flex');
                             // if (response.jumlah_pasien >= 5) {
                             //     $('#alert-danger-custom').show();

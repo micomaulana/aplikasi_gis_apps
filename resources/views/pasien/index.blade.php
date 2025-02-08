@@ -57,7 +57,7 @@
                             {{-- <th>status_akhir</th> --}}
                             {{-- <th>email</th> --}}
                             {{-- <th>no_hp</th> --}}
-                            {{-- <th>tahun_terdata</th> --}}
+                            <th>tahun_terdata</th>
                             <th width="200px">Action</th>
                         </tr>
                     </thead>
@@ -118,7 +118,7 @@
                     // { data: 'status_akhir', name: 'status_akhir' },
                     // { data: 'email', name: 'email' },
                     // { data: 'no_hp', name: 'no_hp' },
-                    // { data: 'tahun_terdata', name: 'tahun_terdata' },
+                    { data: 'tahun_terdata', name: 'tahun_terdata' },
                     {
                         data: 'action',
                         name: 'action',
