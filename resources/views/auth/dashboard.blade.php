@@ -30,6 +30,7 @@
                     <i class="fas fa-exclamation-circle alert-icon"></i>
                     <div>
                         <div class="alert-heading">Peringatan! Tindakan Segera Diperlukan</div>
+                        <input type="text" value="{{ $jumlah_kasus_perdesa->desa_id }}" id="desa_id" hidden />
                         <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
                             telah mencapai
                             <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
@@ -285,59 +286,94 @@
             });
 
             function updateData() {
-                const desaId = $('#karya_maju').val();
+                const desaId = $('#desa_id').val();
                 const tahun = $('#tahun').val();
                 let kasusHtml = "";
-                // if (desaId === 'karya_maju') return; // Don't make request if default option is selected
+                console.log('desa_id:' + desaId);
 
                 $.ajax({
                     url: `/get_data_pasien_by_desa/${desaId}`,
                     type: 'GET',
                     data: {
                         tahun: tahun
-                    }, // Add year parameterresponse
+                    },
                     success: function(response) {
                         if (response && response.data) {
                             let data = response.data;
-                            console.log(response);
+
+                            console.table(response);
 
                             $('#status_card').show();
-                            console.log(data);
 
-                            $('#tahun_2022').text(data.jumlah_pasien_by_filter[0] || '0');
+                            // Dapatkan tahun saat ini
+                            const currentYear = new Date().getFullYear();
+                            const startYear = currentYear - 5;
 
-                            $('#tahun_2023').text(data.jumlah_pasien_by_filter[1] || '0');
-                            $('#tahun_2024').text(data.jumlah_pasien_by_filter[2] || '0');
+                            // Buat container untuk statistik tahun
+                            const statsContainer = $('#data_per_tahun');
+                            statsContainer.empty();
+                            statsContainer.css('display', 'flex');
 
-                            // $("#jumlah_pasien").html(response.jumlah_pasien);
-                            // kasusHtml +=
-                            //     `<span>${response.jumlah_pasien} kasus di desa ${response.desa.nama} dan </span>`;
-                            // $('#jumlah_kasus').html(data.jumlah_pasien_by_filter[2]);
-                            $('#nama_desa').html(response.desa.nama)
-                            $('#data_per_tahun').css('display', 'flex');
-                            // if (response.jumlah_pasien >= 5) {
-                            //     $('#alert-danger-custom').show();
+                            // Ambil data kasus dari response
+                            const yearsData = data.jumlah_pasien_by_filter || [];
 
-                            // }
-                            if (data.jumlah_pasien_by_filter[yearIndex] >= 5) {
-                                $('#status_data_pasien').removeClass('text-success').addClass(
-                                    'text-danger');
-                                $('#status_data_pasien').html("Perlu Tindakan");
+                            console.log("data pasien by filter:");
+                            console.log(data.jumlah_pasien_by_filter);
+                            const data_pasien = data.jumlah_pasien_by_filter[0];
+
+                            if (data_pasien >= 5) {
+                                $('#status_data_pasien')
+                                    .removeClass('text-success')
+                                    .addClass('text-danger')
+                                    .html("Perlu Tindakan");
                                 $('#alert-danger-custom').show();
-
                             } else {
-                                $('#status_data_pasien').removeClass('text-danger').addClass(
-                                    'text-success');
-                                $('#status_data_pasien').html("Normal");
+                                $('#status_data_pasien')
+                                    .removeClass('text-danger')
+                                    .addClass('text-success')
+                                    .html("Normal");
+                                $('#alert-danger-custom').hide();
                             }
 
-                            // Update grafik
+                            // Buat statistik untuk setiap tahun
+                            for (let i = 0; i < yearsData.length; i++) {
+                                const year = startYear + i;
+                                const cases = yearsData[i] || 0;
+
+                                // Tambahkan card statistik
+                                const statCard = `
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="d-flex align-items-center">
+                                    <svg class="mosquito-icon" viewBox="0 0 24 24">
+                                        <path d="M16.5,12.5c0,0.9-0.7,1.6-1.6,1.6s-1.6-0.7-1.6-1.6c0-0.9,0.7-1.6,1.6-1.6S16.5,11.6,16.5,12.5z M19.5,12.5 c0,2.5-2,4.5-4.5,4.5s-4.5-2-4.5-4.5s2-4.5,4.5-4.5S19.5,10,19.5,12.5z M8.5,12.5c0,0.9-0.7,1.6-1.6,1.6s-1.6-0.7-1.6-1.6 c0-0.9,0.7-1.6,1.6-1.6S8.5,11.6,8.5,12.5z"/>
+                                    </svg>
+                                    <span class="stat-number" id="tahun_${year}">${cases}</span>
+                                    <span class="stat-text">kasus di tahun ${year}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                                statsContainer.append(statCard);
+                            }
+
+                            // Update nama desa
+                            $('#nama_desa').html(response.desa?.nama || '');
+
+                            // Update status berdasarkan tahun yang dipilih
+                            const selectedYearIndex = parseInt(tahun) - startYear;
+                            const selectedYearCases = yearsData[selectedYearIndex] || 0;
+                            console.log('seleceted year case:');
+                            console.log(selectedYearCases);
+
+
+
+                            // Chart logic remains unchanged
                             if (response.data_chart) {
                                 let options = {
                                     series: [{
                                         name: "Jumlah Kasus",
-                                        data: response.data_chart.values ||
-                                        [] // Data dari server
+                                        data: response.data_chart.values || []
                                     }],
                                     chart: {
                                         toolbar: {
@@ -383,8 +419,7 @@
                                         axisTicks: {
                                             show: false
                                         },
-                                        categories: response.data_chart.labels ||
-                                        [] // Labels dari server
+                                        categories: response.data_chart.labels || []
                                     },
                                     yaxis: {
                                         tickAmount: 4
@@ -398,22 +433,16 @@
                                     },
                                 };
 
-                                // Hapus grafik lama sebelum render baru
                                 if (window.trafficChart) {
                                     window.trafficChart.destroy();
                                 }
 
-                                // Render grafik baru
                                 window.trafficChart = new ApexCharts(
                                     document.querySelector("#traffic-overview"),
                                     options
                                 );
                                 window.trafficChart.render();
-                            } else {
-                                console.warn("data_chart tidak ditemukan dalam response");
                             }
-                        } else {
-                            console.warn("Response tidak valid:", response);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -428,6 +457,21 @@
                 updateData();
             });
 
+            function updateStatus(cases) {
+                if (cases >= 5) {
+                    $('#status_data_pasien')
+                        .removeClass('text-success')
+                        .addClass('text-danger')
+                        .html("Perlu Tindakan");
+                    $('#alert-danger-custom').show();
+                } else {
+                    $('#status_data_pasien')
+                        .removeClass('text-danger')
+                        .addClass('text-success')
+                        .html("Normal");
+                    $('#alert-danger-custom').hide();
+                }
+            }
 
 
 

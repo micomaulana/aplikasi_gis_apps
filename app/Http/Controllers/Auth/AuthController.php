@@ -99,14 +99,16 @@ class AuthController extends Controller
             $tahun_sekarang = Carbon::now()->year; // Mendapatkan tahun saat ini
 
             $jumlah_kasus_perdesa = DB::table('pasiens')
-                ->where('diagnosis_klinis', '=', 'DBD') // Filter berdasarkan diagnosis, jika diperlukan
                 ->join('desas', 'pasiens.id_desa', '=', 'desas.id') // Gabungkan dengan tabel 'desas' berdasarkan 'id_desa'
+                ->where('diagnosis_klinis', 'DBD') // Filter berdasarkan diagnosis
                 ->whereYear('tahun_terdata', $tahun_sekarang) // Filter berdasarkan tahun saat ini
                 ->whereMonth('tahun_terdata', $bulan_sekarang) // Filter berdasarkan bulan saat ini
-                ->select('desas.nama as nama_desa', DB::raw('COUNT(*) as count_kasus')) // Ambil nama desa dan jumlah pasien
-                ->groupBy('desas.nama') // Kelompokkan berdasarkan nama desa
+                ->select('desas.id as desa_id', 'desas.nama as nama_desa', DB::raw('COUNT(*) as count_kasus'))
+                ->groupBy('desas.id', 'desas.nama') // Pastikan GROUP BY mencakup semua kolom yang tidak dalam agregasi
                 ->orderByDesc(DB::raw('COUNT(*)')) // Urutkan berdasarkan jumlah pasien terbanyak
-                ->first(); // Ambil desa dengan jumlah pasien terbesar
+                ->limit(1) // Batasi hanya satu hasil
+                ->first();
+
             // dd($jumlah_kasus_perdesa);
             return view('auth.dashboard', compact('jumlah_pasien', 'last_updated_times', 'desa_list', 'pasiens', 'jumlah_kasus_terkini', 'jumlah_kasus_perdesa'));
         }
