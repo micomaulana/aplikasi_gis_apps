@@ -32,8 +32,12 @@
                 </div>
                 <div class="mb-3">
                     <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
-                    <input type="text" class="form-control" id="jenis_kelamin" value="{{ $pasien->jenis_kelamin }}"
-                        name="jenis_kelamin">
+                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control">
+                        <option value="laki-laki" {{ $pasien->jenis_kelamin == 'laki-laki' ? 'selected' : '' }}>Laki-Laki
+                        </option>
+                        <option value="perempuan" {{ $pasien->jenis_kelamin == 'perempuan' ? 'selected' : '' }}>Perempuan
+                        </option>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
@@ -42,12 +46,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                    <input type="text" class="form-control" id="tanggal_lahir" value="{{ $pasien->tanggal_lahir }}"
+                    <input type="date" class="form-control" id="tanggal_lahir" value="{{ $pasien->tanggal_lahir }}"
                         name="tanggal_lahir">
                 </div>
                 <div class="mb-3">
                     <label for="usia" class="form-label">Usia</label>
-                    <input type="text" class="form-control" id="usia" value="{{ $pasien->usia }}" name="usia">
+                    <input type="text" class="form-control" id="usia" value="{{ $pasien->usia }}" name="usia"
+                        readonly>
                 </div>
                 <div class="mb-3">
                     <label for="alamat" class="form-label">Alamat</label>
@@ -55,7 +60,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="id_desa" class="form-label">Nama Desa</label>
-                    <select name="id_desa" class="form-control" id="id_desa">
+                    <select name="id_desa" class="form-control" id="select_desa">
                         @foreach ($data_desas as $desa)
                             <option value="{{ $desa->id }}" {{ $desa->id == $pasien->id_desa ? 'selected' : '' }}>
                                 {{ $desa->nama }}
@@ -65,13 +70,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="provinsi" class="form-label">Provinsi</label>
-                    <input type="text" class="form-control" id="provinsi" value="{{ $pasien->provinsi }}"
-                        name="provinsi">
+                    <input type="text" class="form-control" id="provinsi" value="Sumatera Selatan" name="provinsi"
+                        readonly>
                 </div>
                 <div class="mb-3">
-                    <label for="kab_kota" class="form-label">Kabupaten/Kota</label>
-                    <input type="text" class="form-control" id="kab_kota" value="{{ $pasien->kab_kota }}"
-                        name="kab_kota">
+                    <label for="kab_kota" class="form-label">Kab/Kota</label>
+                    <input type="text" class="form-control" id="kab_kota" value="Musi Banyuasin" name="kab_kota"
+                        readonly>
                 </div>
                 <div class="mb-3">
                     <label for="diagnosis_lab" class="form-label">Diagnosis Lab</label>
@@ -89,23 +94,73 @@
                         name="status_akhir">
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label" id="label_email">Email</label>
                     <input type="text" class="form-control" id="email" value="{{ $pasien->email }}"
                         name="email">
                 </div>
                 <div class="mb-3">
-                    <label for="no_hp" class="form-label">No HP</label>
+                    <label for="no_hp" class="form-label" id="label_no_hp">No HP</label>
                     <input type="text" class="form-control" id="no_hp" value="{{ $pasien->no_hp }}"
                         name="no_hp">
                 </div>
                 <div class="mb-3">
-                    <label for="tahun_terdata" class="form-label">Tahun Terdata</label>
-                    <input type="text" class="form-control" id="tahun_terdata" value="{{ $pasien->tahun_terdata }}"
+                    <label for="tahun_terdata" class="form-label">Tanggal Terdata</label>
+                    <input type="date" class="form-control" id="tahun_terdata" value="{{ $pasien->tahun_terdata }}"
                         name="tahun_terdata">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
 
+        <script>
+            $(document).ready(function() {
+                $('#select_desa').select2();
+                $('#usia').attr('readonly', true);
+
+                // Initial check for email/phone visibility
+                const tanggal_lahir = $('#tanggal_lahir').val();
+                if (tanggal_lahir) {
+                    const date = new Date(tanggal_lahir);
+                    const year = date.getFullYear();
+                    const currentYear = new Date().getFullYear();
+                    const usia = currentYear - year;
+                    $('#usia').val(usia);
+
+                    if (usia < 17) {
+                        $('#email').hide();
+                        $('#no_hp').hide();
+                        $('#label_no_hp').hide();
+                        $('#label_email').hide();
+                    } else {
+                        $('#email').show();
+                        $('#no_hp').show();
+                        $('#label_no_hp').show();
+                        $('#label_email').show();
+                    }
+                }
+
+                // Handle date change
+                $('#tanggal_lahir').on('change', function() {
+                    const tanggal_lahir = $(this).val();
+                    const date = new Date(tanggal_lahir);
+                    const year = date.getFullYear();
+                    const currentYear = new Date().getFullYear();
+                    const usia = currentYear - year;
+                    $('#usia').val(usia);
+
+                    if (usia < 17) {
+                        $('#email').hide();
+                        $('#no_hp').hide();
+                        $('#label_no_hp').hide();
+                        $('#label_email').hide();
+                    } else {
+                        $('#email').show();
+                        $('#no_hp').show();
+                        $('#label_no_hp').show();
+                        $('#label_email').show();
+                    }
+                });
+            });
+        </script>
     </div>
 @endsection

@@ -118,7 +118,10 @@
                     // { data: 'status_akhir', name: 'status_akhir' },
                     // { data: 'email', name: 'email' },
                     // { data: 'no_hp', name: 'no_hp' },
-                    { data: 'tahun_terdata', name: 'tahun_terdata' },
+                    {
+                        data: 'tahun_terdata',
+                        name: 'tahun_terdata'
+                    },
                     {
                         data: 'action',
                         name: 'action',
@@ -127,8 +130,9 @@
                     }
                 ],
                 order: [
-                    [2, 'asc']
-                ], // Order by nama column
+                    [8,
+                    'desc'] // Mengurutkan berdasarkan kolom tahun_terdata (index 8) secara descending
+                ],
                 language: {
                     processing: "Memproses...",
                     search: "Cari:",

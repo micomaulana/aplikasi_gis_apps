@@ -29,9 +29,8 @@
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-exclamation-circle alert-icon"></i>
                     <div>
-
                         <div class="alert-heading">Peringatan! Tindakan Segera Diperlukan</div>
-                        <div>Jumlah kasus DBD di desa <span>{{ $jumlah_kasus_perdesa->nama_desa }}</span>
+                        <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
                             telah mencapai
                             <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
                             <span id="month"></span> mohon segera memproses pengajuan fogging ke kepala
@@ -292,33 +291,35 @@
                 // if (desaId === 'karya_maju') return; // Don't make request if default option is selected
 
                 $.ajax({
-                    url: `/get_data_pasien_by_desa/1`,
+                    url: `/get_data_pasien_by_desa/${desaId}`,
                     type: 'GET',
                     data: {
                         tahun: tahun
-                    }, // Add year parameter
+                    }, // Add year parameterresponse
                     success: function(response) {
                         if (response && response.data) {
                             let data = response.data;
                             console.log(response);
 
                             $('#status_card').show();
-
+                            console.log(data);
 
                             $('#tahun_2022').text(data.jumlah_pasien_by_filter[0] || '0');
+
                             $('#tahun_2023').text(data.jumlah_pasien_by_filter[1] || '0');
                             $('#tahun_2024').text(data.jumlah_pasien_by_filter[2] || '0');
-                            $("#jumlah_pasien").html(response.jumlah_pasien);
+
+                            // $("#jumlah_pasien").html(response.jumlah_pasien);
                             // kasusHtml +=
                             //     `<span>${response.jumlah_pasien} kasus di desa ${response.desa.nama} dan </span>`;
-                            $('#jumlah_kasus').html(data.jumlah_pasien_by_filter[2]);
+                            // $('#jumlah_kasus').html(data.jumlah_pasien_by_filter[2]);
                             $('#nama_desa').html(response.desa.nama)
                             $('#data_per_tahun').css('display', 'flex');
                             // if (response.jumlah_pasien >= 5) {
                             //     $('#alert-danger-custom').show();
 
                             // }
-                            if (response.jumlah_pasien >= 5) {
+                            if (data.jumlah_pasien_by_filter[yearIndex] >= 5) {
                                 $('#status_data_pasien').removeClass('text-success').addClass(
                                     'text-danger');
                                 $('#status_data_pasien').html("Perlu Tindakan");
@@ -440,6 +441,8 @@
                         tahun: tahun
                     },
                     success: function(response) {
+                        console.log("data:");
+                        console.log(response.data_chart);
                         if (response && response.data_chart) {
                             // Generate colors based on values
                             const colors = response.data_chart.values.map(value => {

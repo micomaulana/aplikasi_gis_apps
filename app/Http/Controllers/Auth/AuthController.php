@@ -164,12 +164,16 @@ class AuthController extends Controller
             // Format data for the pie chart
             $labels = $data->pluck('nama')->toArray();
             $values = $data->pluck('jumlah')->toArray();
+            $intValues = [];
+            foreach ($values as $v) {
+                $intValues[] = (int)$v;
+            }
 
             return response()->json([
                 'success' => true,
                 'data_chart' => [
                     'labels' => $labels,
-                    'values' => $values,
+                    'values' => $intValues,
                 ]
             ]);
         } catch (\Exception $e) {

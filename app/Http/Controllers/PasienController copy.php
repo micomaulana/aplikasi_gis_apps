@@ -187,65 +187,92 @@ class PasienController extends Controller
     }
 
     public function get_data_pasien_by_desa($id, Request $request)
-{
-    try {
-        $desa = Desa::where('id', '=', $id)->first();
-        
-        // Ambil tahun dari request
-        $selectedYear = (int)$request->tahun;
-        
-        // Inisialisasi array untuk data per tahun
-        $data_tahun_chart = [];
-        $labels = [];
-        
-        // Hitung jumlah pasien untuk tahun yang dipilih dan 2 tahun setelahnya
-        for ($i = 0; $i < 3; $i++) {
-            $currentYear = $selectedYear + $i;
-            
-            // Query jumlah pasien untuk tahun tersebut
-            $jumlah_pasien = Pasien::where('id_desa', '=', $id)
-                ->whereYear('tahun_terdata', '=', $currentYear)
+    {
+        try {
+            $query = Pasien::where('id_desa', '=', $id);
+
+            // Add year filter if provided
+            if ($request->has('tahun') && $request->tahun) {
+                $query->where('tahun_terdata', $request->tahun);
+            }
+
+            $query->selectRaw('tahun_terdata, COUNT(*) as jumlah_pasien')
+                ->groupBy('tahun_terdata')
+                ->get(); // Get the results
+
+            $latestRecord = Pasien::where('id_desa', '=', $id)
+                ->orderByDesc('tahun_terdata')
+                ->first();
+
+            // Extract the year and month from the latest record
+            $latestYear = \Carbon\Carbon::parse($latestRecord->tahun_terdata)->year;
+            $latestMonth = \Carbon\Carbon::parse($latestRecord->tahun_terdata)->month;
+
+            // Count the number of patients for the latest year and month
+            $count_pasien_by_id_desa = Pasien::where('id_desa', '=', $id)
+                ->whereYear('tahun_terdata', '=', $latestYear)
+                ->whereMonth('tahun_terdata', '=', $latestMonth)
                 ->count();
-            
-            $data_tahun_chart[] = $jumlah_pasien;
-            $labels[] = (string)$currentYear;
+            $desa = Desa::where('id', '=', $id)->first();
+            // Parse the year from the request
+            // $year = \Carbon\Carbon::parse($request->tahun)->year;
+            $year = $request->tahun;
+
+            $data_tahun_chart = [];
+            $labels = [];
+
+            // Loop through the current year and the next two years (2022, 2023, 2024)
+            for ($i = 0; $i < 3; $i++) {
+                $current_year = $year + $i;  // Get the current year in the loop (2022, 2023, 2024)
+
+                // Query the count of patients for the current year
+                $jumlah_pasien_by_year = Pasien::where('id_desa', '=', $id)
+                    ->whereYear('tahun_terdata', '=', $current_year)
+                    ->count();
+
+                // Store the result in the data array
+                $data_tahun_chart[] = $jumlah_pasien_by_year;
+                $labels[] = (string)$current_year;  // Add the current year to the labels array
+            }
+
+            // Prepare data for the response
+            $data = [
+                'jumlah_pasien_by_filter' => $data_tahun_chart,  // Include the patient counts for each year
+            ];
+
+            // Returning the response with the data and chart data
+            // return response()->json([
+            //     'status' => true,
+            //     'message' => "Request success",
+            //     'data' => $data,
+            //     'data_chart' => [
+            //         'labels' => $labels,  // ['2022', '2023', '2024']
+            //         'values' => $data_tahun_chart,  // [count for 2022, count for 2023, count for 2024]
+            //     ]
+            // ], 200);
+
+            $data_chart = [
+                'labels' => $labels,
+                'values' => $data_tahun_chart
+            ];
+
+            return response()->json([
+                'status' => true,
+                'message' => "request success",
+                'data' => $data,
+                'tahun' =>  $year,
+                'data_chart' => $data_chart,
+                'desa' => $desa,
+                'jumlah_pasien' => $count_pasien_by_id_desa
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => "request failed",
+                'data' => $e->getMessage()
+            ], 200);
         }
-        
-        // Ambil jumlah pasien untuk tahun yang dipilih (untuk status)
-        $jumlah_pasien_tahun_ini = Pasien::where('id_desa', '=', $id)
-            ->whereYear('tahun_terdata', '=', $selectedYear)
-            ->count();
-        
-        // Siapkan data response
-        $data = [
-            'jumlah_pasien_by_filter' => $data_tahun_chart,
-            'tahun_terpilih' => $selectedYear,
-            'jumlah_pasien_tahun_ini' => $jumlah_pasien_tahun_ini
-        ];
-        
-        $data_chart = [
-            'labels' => $labels,
-            'values' => $data_tahun_chart
-        ];
-
-        return response()->json([
-            'status' => true,
-            'message' => "request success",
-            'data' => $data,
-            'tahun' => $selectedYear,
-            'data_chart' => $data_chart,
-            'desa' => $desa,
-            'jumlah_pasien' => $jumlah_pasien_tahun_ini // Menggunakan jumlah pasien tahun yang dipilih
-        ], 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => false,
-            'message' => "request failed",
-            'error' => $e->getMessage()
-        ], 500); // Mengubah status code menjadi 500 untuk error
     }
-}
 
     public function get_data_pasien_alert()
     {
