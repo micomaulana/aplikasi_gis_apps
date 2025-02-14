@@ -59,11 +59,15 @@
                                 <i class="fas fa-eye"></i> Lihat
                             </button>
 
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                data-id="{{ $idPasien }}" data-status="{{ $laporanList[0]['status'] }}"
-                                data-dokter="Dr. Budi">
-                                <i class="fas fa-check"></i> Setuju
-                            </button>
+                            <button class="btn btn-success btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#exampleModal"
+                            data-id="{{ $idPasien }}"
+                            data-laporan-id="{{ $laporanList->first()['id'] }}" 
+                            data-status="{{ $laporanList->first()['status'] }}"
+                            data-dokter="Dr. Budi">
+                            <i class="fas fa-check"></i> Setuju
+                        </button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolakModal"
                                 data-id="{{ $idPasien }}">
                                 <i class="fas fa-times"></i> Tolak
@@ -111,7 +115,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="lihatHasilLab" class="form-label">Hasil Laboratorium</label>
-                        <a href="#" id="lihatHasilLab" target="_blank" class="form-control-link">Unduh Hasil Lab</a>
+                        <div id="hasil-lab-container">
+                            <a href="#" id="lihatHasilLab" target="_blank" class="form-control-link"
+                                style="display: none;">Unduh Hasil Lab</a>
+                            <p class="text-muted hasil-lab-empty" style="display: none;">Hasil lab belum diunggah</p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -414,15 +422,14 @@
 
             // Tangkap event sebelum modal ditampilkan
             $(document).on('click', '[data-bs-target="#exampleModal"]', function() {
-                var id = $(this).data('id');
-                var status = $(this).data('status');
-                var dokter = $(this).data('dokter');
+    var laporanId = $(this).data('laporan-id'); // Get the specific report ID
+    var status = $(this).data('status');
+    var dokter = $(this).data('dokter');
 
-                $('#statusKasus').val(status);
-                $('#dokterPJ').val(dokter);
-                $('#id_laporan_dbd').val(id);
-                console.log("ID:", id, "Status:", status, "Dokter:", dokter);
-            });
+    $('#statusKasus').val(status);
+    $('#dokterPJ').val(dokter);
+    $('#id_laporan_dbd').val(laporanId); // Use the specific report ID
+});
 
             // Handle lihat modal
             $(document).on('click', '[data-bs-target="#lihatModal"]', function() {
@@ -432,12 +439,21 @@
                 var gejalaEncoded = $(this).data("gejala");
                 var gejalaLain = $(this).data("gejala_lain");
                 var hasilLab = $(this).data("file_lab");
+                if (hasilLab) {
+                    var fileUrl = '/uploads/laporan/' + hasilLab;
+                    $('#lihatHasilLab')
+                        .attr('href', fileUrl)
+                        .show();
+                    $('.hasil-lab-empty').hide();
+                } else {
+                    $('#lihatHasilLab').hide();
+                    $('.hasil-lab-empty').show();
+                }
                 var fileUrl = '/uploads/laporan/' + hasilLab;
                 var created_at_data = $(this).data('created_at');
                 var parser = new DOMParser();
                 var decodedGejala = parser.parseFromString(gejalaEncoded, "text/html").body.textContent;
-                var decodedCreatedAt = parser.parseFromString(created_at_data, "text/html").body
-                    .textContent;
+                var decodedCreatedAt = parser.parseFromString(created_at_data, "text/html").body.textContent;
 
                 var gejalaArray = JSON.parse(decodedGejala);
                 var createdAtArray = JSON.parse(decodedCreatedAt);
@@ -445,7 +461,8 @@
                 if (gejalaArray.length === createdAtArray.length) {
                     htmlOutput = "<ul>";
                     for (var i = 0; i < gejalaArray.length; i++) {
-                        htmlOutput += "<li><strong>Tanggal:</strong> " + formatTimestamp(createdAtArray[i]) +
+                        htmlOutput += "<li><strong>Tanggal:</strong> " + formatTimestamp(createdAtArray[
+                                i]) +
                             " - <strong>Gejala:</strong> " + gejalaArray[i] + "</li>";
                     }
                     htmlOutput += "</ul>";
@@ -467,33 +484,31 @@
 
             // Handle form submission
             $('#LaporanForm').on('submit', function(e) {
-                e.preventDefault();
-                console.log("submit form");
-
-                $id = $("#id_laporan_dbd").val();
-                $.ajax({
-                    url: '/update-laporan/' + $id,
-                    method: 'PUT',
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Berhasil!",
-                            text: "Data Telah Di Validasi",
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                        console.log(response);
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan: ' + xhr.responseText);
-                        console.error(xhr, status, error);
-                    }
-                });
+    e.preventDefault();
+    
+    var laporanId = $("#id_laporan_dbd").val();
+    $.ajax({
+        url: '/update-laporan/' + laporanId, // Use the specific report ID
+        method: 'PUT',
+        data: $(this).serialize(),
+        headers: {
+            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+        },
+        success: function(response) {
+            Swal.fire({
+                title: "Berhasil!",
+                text: "Data Telah Di Validasi",
+                icon: "success"
+            }).then(() => {
+                location.reload();
             });
+        },
+        error: function(xhr, status, error) {
+            alert('Terjadi kesalahan: ' + xhr.responseText);
+            console.error(xhr, status, error);
+        }
+    });
+});
 
             // Handle lihat detail pasien
             $(document).on('click', '.btnLihatPasien', function() {

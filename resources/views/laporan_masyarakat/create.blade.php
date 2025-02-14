@@ -38,11 +38,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="usia" class="form-label">Usia</label>
-                    <input type="number" class="form-control" id="usia" name="usia" value="{{$pasien->usia}}" readonly>
+                    <input type="number" class="form-control" id="usia" name="usia" value="{{ $pasien->usia }}"
+                        readonly>
                 </div>
                 <div class="mb-3">
                     <label for="no_hp" class="form-label">No HP</label>
-                    <input type="tel" class="form-control" id="no_hp" name="no_hp" value="{{$pasien->no_hp}}" readonly>
+                    <input type="tel" class="form-control" id="no_hp" name="no_hp" value="{{ $pasien->no_hp }}"
+                        readonly>
                 </div>
                 <div class="mb-3">
                     <label for="gejala" class="form-label">Gejala yang Dialami</label><br>
@@ -64,9 +66,17 @@
                     <textarea class="form-control mt-2" id="gejala_lain" name="gejala_lain" placeholder="Gejala lain"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="hasil_lab" class="form-label">Upload Hasil Lab</label>
+                    <label for="hasil_lab" class="form-label">
+                        Upload Hasil Lab
+                        <span class="text-muted">(Opsional)</span>
+                    </label>
                     <input type="file" class="form-control" id="hasil_lab" name="file_hasil_lab"
                         accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="form-text text-muted">
+                        Anda dapat mengunggah hasil lab nanti jika belum tersedia. Format yang diterima: PDF, JPG, PNG (max
+                        2MB)
+                    </small>
+                    </div>=".pdf,.jpg,.jpeg,.png">
                 </div>
                 <button type="submit" class="btn btn-primary">Kirim Laporan</button>
             </form>

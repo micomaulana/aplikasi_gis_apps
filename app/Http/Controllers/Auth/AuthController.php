@@ -109,6 +109,8 @@ class AuthController extends Controller
                 ->limit(1) // Batasi hanya satu hasil
                 ->first();
 
+                // dd($jumlah_kasus_perdesa);
+
             // dd($jumlah_kasus_perdesa);
             return view('auth.dashboard', compact('jumlah_pasien', 'last_updated_times', 'desa_list', 'pasiens', 'jumlah_kasus_terkini', 'jumlah_kasus_perdesa'));
         }

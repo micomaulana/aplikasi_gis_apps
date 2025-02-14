@@ -10,6 +10,16 @@ class LaporaKasusDbd extends Model
     use HasFactory;
     protected $table = "laporan_kasus_dbd";
     protected $guarded = ['id'];
+    protected $fillable = [
+        'id_pasien',
+        'gejala_yang_dialami',
+        'gejala_lain',
+        'file_hasil_lab',
+        'status',
+        'no_tiket',
+        'jadwal_control',
+        'dokter_pj'
+    ];
 
     public function pasien(){
         return $this->hasOne(Pasien::class,'id','id_pasien');

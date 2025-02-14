@@ -13,7 +13,6 @@ class LaporanKasusDBDController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         try {
             $request->validate([
                 'status' => 'required',
@@ -23,25 +22,25 @@ class LaporanKasusDBDController extends Controller
                 'catatan' => 'string|nullable'
             ]);
 
+            // Cari laporan spesifik berdasarkan id
+            $laporan = LaporaKasusDbd::findOrFail($id);
+            $jadwalControl = $request->tanggal_control . ' ' . $request->waktu_control;
 
-            $laporan_kasus_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->get();
-            $jadwalControl = $request->tanggal_control . '-' . $request->waktu_control;
-            foreach ($laporan_kasus_dbd as $key => $value) {
-                $value->update([
-                    'status' => $request->status,
-                    'jadwal_control' => $jadwalControl,
-                    'dokter_pj' => $request->id_dokter,
-                ]);
-            }
+            // Update hanya satu laporan
+            $laporan->update([
+                'status' => $request->status,
+                'jadwal_control' => $jadwalControl,
+                'dokter_pj' => $request->id_dokter,
+            ]);
 
             return response()->json([
-                'message' => 'Laporan berhasil diterima!',
-                'data' => $request->all()
+                'message' => 'Laporan berhasil divalidasi!',
+                'data' => $laporan
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-            ], 200);
+            ], 500);
         }
     }
     public function validasiLaporan(Request $request)
@@ -65,9 +64,23 @@ class LaporanKasusDBDController extends Controller
     }
     public function generatePDF($id)
     {
-        $laporan_kasus_dbd = LaporaKasusDbd::findOrFail($id);
-        $pdf = Pdf::loadView('laporan_masyarakat.lapordbdpdf', compact('laporan_kasus_dbd'));  // Load a Blade view
-        return $pdf->stream('laporanDBD.pdf'); // Download the PDF
+        $laporan_kasus_dbd = LaporaKasusDbd::with(['pasien', 'dokter'])
+            ->where('id', '=', $id)
+            ->firstOrFail();
+
+        // Tambahkan pengecekan status jika diperlukan
+        // if ($laporan_kasus_dbd->status !== 'dbd' && $laporan_kasus_dbd->status !== 'suspect') {
+        //     return response()->json([
+        //         'message' => 'PDF hanya bisa digenerate untuk status DBD atau suspect',
+        //     ], 400);
+        // }
+
+        $pdf = Pdf::loadView('laporan_masyarakat.lapordbdpdf', compact('laporan_kasus_dbd'));
+
+        // Menambahkan nama file yang lebih deskriptif
+        $filename = 'Laporan_DBD_' . $laporan_kasus_dbd->no_tiket . '.pdf';
+
+        return $pdf->stream($filename);
     }
 
     public function printLaporanMasyarakat($id)

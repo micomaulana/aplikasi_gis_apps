@@ -18,10 +18,10 @@
                     <h6>Terkonfirmasi</h6>
                     <h3>{{ $jumlah_laporan_terkonfirmasi }}</h3>
                 </div>
-                <div>
+                {{-- <div>
                     <h6>Ditolak</h6>
                     <h3>{{ $jumlah_laporan_rejected }}</h3>
-                </div>
+                </div> --}}
             </div>
         </div>
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pasien');
             $table->string("gejala_yang_dialami");
             $table->string("gejala_lain");
-            $table->string("file_hasil_lab");
+            $table->string("file_hasil_lab")->nullable();
             $table->string("jadwal_control")->nullable();
             $table->string("dokter_pj")->nullable();
             $table->string("no_tiket")->nullable();

@@ -26,12 +26,19 @@
                         @foreach ($laporan_dbd as $ldbd)
                             <tr>
                                 <td>{{ $ldbd->pasien->nama }}</td>
-                                <?php
-                                $status = explode(',', $ldbd->status);
-                                ?>
                                 <td>
-                                    <span class="badge bg-success">
-                                        {{ $status[0] ?? 'N/A' }}
+                                    @php
+                                        $statusClass = match ($ldbd->status) {
+                                            'waiting' => 'bg-warning',
+                                            'dbd' => 'bg-danger',
+                                            'suspect' => 'bg-info',
+                                            'bukan' => 'bg-success',
+                                            'rejected' => 'bg-secondary',
+                                            default => 'bg-secondary',
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $statusClass }}">
+                                        {{ $ldbd->status ?? 'N/A' }}
                                     </span>
                                 </td>
                                 <td>
@@ -41,8 +48,7 @@
                                 </td>
                                 <td>
                                     <!-- Tombol untuk melihat detail dan menyembunyikan -->
-                                    <button class="btn btn-outline-primary btn-sm btn-lihat"
-                                        data-id="{{ $ldbd->pasien->id }}">
+                                    <button class="btn btn-outline-primary btn-sm btn-lihat" data-id="{{ $ldbd->id }}">
                                         <i class="fas fa-eye"></i> Lihat
                                     </button>
                                     <button class="btn btn-outline-danger btn-sm btn-hide" data-id="{{ $ldbd->pasien->id }}"
@@ -53,9 +59,6 @@
                                         data-id="{{ $ldbd->pasien->id }}">
                                         <i class="fas fa-info-circle"></i> Detail
                                     </button>
-                                    {{-- <a href="" class="text-primary">
-                                        <i class="fas fa-file-pdf"></i> Unduh PDF
-                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach
@@ -109,30 +112,53 @@
                 let id_pasien = $(this).data('id');
                 let btnHide = $(this).siblings('.btn-hide');
                 let btnLihat = $(this);
+                console.log("id pasien:");
+                console.log(id_pasien);
+
 
                 btnLihat.hide();
                 btnHide.show();
                 $('#preview-laporan').show();
 
                 $.ajax({
-                    url: '/get_laporan_dbd_by_id_pasien/' + id_pasien,
+                    url: '/get_laporan_dbd_by_id_pasien_dashboard/' + id_pasien,
                     type: 'GET',
                     success: function(response) {
+                        console.log("response:");
+                        
                         console.log(response);
-                        $("#id_laporan").val(response.data.id);
+                        // if (response.data && response.data.status === 'dbd') {
+                        //     // Store the laporan ID explicitly
+
+                        // } else {
+                        //     $(".unduh").hide();
+                        //     Swal.fire({
+                        //         title: "Informasi",
+                        //         text: "PDF laporan hanya tersedia untuk kasus yang terkonfirmasi DBD",
+                        //         icon: "info"
+                        //     });
+                        // }
+
+                        const laporanId = response.data.id;
+                        $("#id_laporan").val(laporanId);
                         $("#nama_pasien").html(response.data.pasien.nama);
                         $("#no_tiket").html(response.data.no_tiket);
                         $("#status").html(response.data.status).css("text-transform",
                             "uppercase");
                         $("#jadwal_control").html(response.data.jadwal_control);
                         $("#dokter_pj").html(response.data.dokter.nama);
+
+                        // Update the unduh button to include the ID directly
+                        $(".unduh").show()
+                            .data('laporan-id',
+                                laporanId); // Store ID in button's data attribute
                     },
                     error: function(xhr, status, error) {
                         console.error('Terjadi kesalahan:', error);
                     }
                 });
             });
-            
+
             $('.btn-detail').click(function() {
                 let id_pasien = $(this).data('id');
 
@@ -153,7 +179,6 @@
                 let id_laporan = $("#id_laporan").val();
                 window.location.href = "/generatePDFLaporan/" + id_laporan;
             });
-
             $('.btn-outline-primary[title="Cetak"]').click(function() {
                 let id_laporan = $("#id_laporan").val();
                 // Buka dalam window baru

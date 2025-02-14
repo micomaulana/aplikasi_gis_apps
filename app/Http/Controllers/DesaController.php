@@ -190,7 +190,7 @@ class DesaController extends Controller
             'data' => $pasiens_count
         ]);
     }
-    
+
     public function validasi_pasien_admin_view()
     {
         $dokters = Dokter::all();
@@ -221,15 +221,15 @@ class DesaController extends Controller
 
         // Memetakan data ke format yang lebih terstruktur
         $groupedData = $laporandbd->map(function ($laporans) {
-            // Urutkan laporan berdasarkan tanggal secara descending
             $sortedLaporans = $laporans->sortByDesc('created_at');
 
             return $sortedLaporans->map(function ($laporan) {
                 return [
+                    'id' => $laporan->id,  // Tambahkan id laporan
                     'no_tiket' => $laporan->no_tiket,
                     'tanggal' => $laporan->created_at->format('d M Y'),
                     'status' => ucfirst($laporan->status),
-                    'pasien' => $laporan->pasien, // Menyertakan data pasien
+                    'pasien' => $laporan->pasien,
                     'gejala' => $laporan->gejala_yang_dialami,
                     'gejala_lain' => $laporan->gejala_lain,
                     'file_hasil_lab' => $laporan->file_hasil_lab,
@@ -238,8 +238,6 @@ class DesaController extends Controller
             });
         });
 
-
-        // dd($groupedData);
         return view('validasi_pasien_admin.index', compact('dokters', 'groupedData', 'jumlah_laporan', 'jumlah_laporan_menunggu_validasi', 'jumlah_laporan_terkonfirmasi', 'jumlah_laporan_rejected'));
     }
 
@@ -249,17 +247,21 @@ class DesaController extends Controller
     {
         $pasien = Pasien::where('email', '=', Auth::user()->email)->first();
 
+        // Mengambil laporan terbaru untuk setiap gejala
         $laporan_dbd = LaporaKasusDbd::select(
+            'id',
             'id_pasien',
-            DB::raw('GROUP_CONCAT(gejala_yang_dialami) as gejala_yang_dialami'),
-            DB::raw('GROUP_CONCAT(gejala_lain) as gejala_lain'),
-            DB::raw('GROUP_CONCAT(file_hasil_lab) as file_hasil_lab'),
-            DB::raw('GROUP_CONCAT(status) as status')
-        )->where('id_pasien', '=', $pasien->id)
-            ->groupBy('id_pasien')
+            'gejala_yang_dialami',
+            'gejala_lain',
+            'file_hasil_lab',
+            'status',
+            'created_at'
+        )
+            ->where('id_pasien', '=', $pasien->id)
+            ->orderBy('created_at', 'desc')  // Mengurutkan berdasarkan created_at terbaru
+            ->with('pasien')  // Eager loading untuk data pasien
             ->get();
 
-        // dd($laporan_dbd);
         return view('laporan_masyarakat.index', compact('laporan_dbd'));
     }
     public function tambah_laporan()
@@ -270,57 +272,74 @@ class DesaController extends Controller
     public function simpan_laporan_masyarakat(Request $request)
     {
         $validated = $request->validate([
-            'gejala_yang_dialami' => 'required',
+            'gejala_yang_dialami' => 'required|array',
             'gejala_lain' => 'required',
-            'file_hasil_lab' => 'required|file|mimes:pdf,jpg,png|max:2048'
+            'file_hasil_lab' => 'nullable|file|mimes:pdf,jpg,png|max:2048'
         ]);
 
         $pasien = Pasien::where('email', '=', Auth::user()->email)->first();
         $tahunSekarang = Carbon::now()->year;
 
         if ($pasien) {
-            // Tangani file hasil lab
+            $fileName = null;
+
             if ($request->hasFile('file_hasil_lab')) {
                 $file = $request->file('file_hasil_lab');
-                $fileName = time() . '_' . $file->getClientOriginalName(); // Nama unik untuk file
-                $destinationPath = public_path('uploads/laporan'); // Path penyimpanan
-                $file->move($destinationPath, $fileName); // Pindahkan file
-
-                $nomorTerakhir = DB::table('laporan_kasus_dbd')
-                    ->where('no_tiket', 'like', "DBD-$tahunSekarang-%")
-                    ->orderBy('no_tiket', 'desc')
-                    ->value('no_tiket');
-
-                if ($nomorTerakhir) {
-                    $angkaTerakhir = (int) substr($nomorTerakhir, strrpos($nomorTerakhir, '-') + 1);
-                    $angkaBaru = $angkaTerakhir + 1;
-                } else {
-                    $angkaBaru = 1;
-                }
-                $nomorUrutBaru = sprintf("DBD-%s-%03d", $tahunSekarang, $angkaBaru);
-
-                for ($i = 0; $i < count($validated['gejala_yang_dialami']); $i++) {
-                    LaporaKasusDbd::create([
-                        'id_pasien' => $pasien->id,
-                        'gejala_yang_dialami' => $validated['gejala_yang_dialami'][$i],
-                        'gejala_lain' => $validated['gejala_lain'],
-                        'file_hasil_lab' => $fileName,
-                        'status' => 'waiting',
-                        'no_tiket' => $nomorUrutBaru
-                    ]);
-                }
-                return redirect()->route('laporan_masyarakat')->with('success', 'Create data success');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $destinationPath = public_path('uploads/laporan');
+                $file->move($destinationPath, $fileName);
             }
 
-            return redirect()->route('tambah_laporan')->with('fails', 'File upload failed');
+            $nomorTerakhir = DB::table('laporan_kasus_dbd')
+                ->where('no_tiket', 'like', "DBD-$tahunSekarang-%")
+                ->orderBy('no_tiket', 'desc')
+                ->value('no_tiket');
+
+            if ($nomorTerakhir) {
+                $angkaTerakhir = (int) substr($nomorTerakhir, strrpos($nomorTerakhir, '-') + 1);
+                $angkaBaru = $angkaTerakhir + 1;
+            } else {
+                $angkaBaru = 1;
+            }
+
+            $nomorUrutBaru = sprintf("DBD-%s-%03d", $tahunSekarang, $angkaBaru);
+
+            // Gabungkan array gejala menjadi string
+            $gejalaString = implode(', ', $request->gejala_yang_dialami);
+
+            // Buat satu laporan saja
+            $laporan = new LaporaKasusDbd();
+            $laporan->id_pasien = $pasien->id;
+            $laporan->gejala_yang_dialami = $gejalaString;
+            $laporan->gejala_lain = $validated['gejala_lain'];
+            $laporan->file_hasil_lab = $fileName;
+            $laporan->status = 'waiting';
+            $laporan->no_tiket = $nomorUrutBaru;
+            $laporan->save();
+
+            return redirect()->route('laporan_masyarakat')->with('success', 'Laporan berhasil disimpan');
         }
 
-        return redirect()->route('tambah_laporan')->with('fails', 'Create data fails');
+        return redirect()->route('tambah_laporan')->with('fails', 'Gagal menyimpan laporan');
     }
 
     public function get_laporan_dbd_by_id_pasien($id)
     {
         $laporan_dbd = LaporaKasusDbd::where('id_pasien', '=', $id)->with('pasien')->with('dokter')->first();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'success',
+            'data' => $laporan_dbd
+        ], 200);
+    }
+    public function get_laporan_dbd_by_id_pasien_dashboard($id)
+    {
+        $laporan_dbd = LaporaKasusDbd::where('id', '=', $id)
+            // ->where('status', '=', 'dbd')  // Hanya ambil yang status DBD
+            ->with(['pasien', 'dokter'])
+            ->orderBy('created_at', 'desc')  // Ambil yang terbaru
+            ->first();
 
         return response()->json([
             'status' => true,

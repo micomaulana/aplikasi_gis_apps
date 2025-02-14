@@ -30,7 +30,7 @@
                     <i class="fas fa-exclamation-circle alert-icon"></i>
                     <div>
                         <div class="alert-heading">Peringatan! Tindakan Segera Diperlukan</div>
-                        <input type="text" value="{{ $jumlah_kasus_perdesa->desa_id }}" id="desa_id" hidden />
+                        <input type="text" value="{{ $jumlah_kasus_perdesa->desa_id ?? ''}}" id="desa_id" hidden />
                         <div>Jumlah kasus DBD di desa <span id="nama_desa">{{ $jumlah_kasus_perdesa->nama_desa }}</span>
                             telah mencapai
                             <span id="jumlah_kasus">{{ $jumlah_kasus_perdesa->count_kasus }}</span> kasus pada bulan
