@@ -168,6 +168,16 @@
                         </a>
                     </li>
                 @endcan
+                @can('pelaporan_lab')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('pelaporan_lab') }}" aria-expanded="false">
+                            <span>
+                                <iconify-icon icon="solar:chat-round-dots-bold-duotone" class="fs-6"></iconify-icon>
+                            </span>
+                            <span class="hide-menu">pelaporan_lab</span>
+                        </a>
+                    </li>
+                @endcan
                 @can('user-list')
 
                     <li class="nav-small-cap">

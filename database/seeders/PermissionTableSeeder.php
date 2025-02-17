@@ -46,7 +46,8 @@ class PermissionTableSeeder extends Seeder
             'laporankondisi_masyarakat',
             'landingpage',
             'dashboard_masyarakat',
-            'faq_masyarakat'
+            'faq_masyarakat',
+            'pelaporan_lab'
         ];
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);

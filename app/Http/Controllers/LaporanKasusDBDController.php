@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaporaKasusDbd;
+use App\Models\LaporanKasusDBD;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -102,5 +103,41 @@ class LaporanKasusDBDController extends Controller
             ->groupBy('tanggal', 'tahun', 'id_pasien')
             ->get();
         return view('laporan_masyarakat.detail-laporan', compact('detaillaporanbyidpasien'));
+    }
+    public function update_by_lab(Request $request)
+    {
+        $request->validate([
+            'file_hasil_lab' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'required'
+        ]);
+        $file = $request->file('file_hasil_lab');
+        $id = $request->id;
+        // Tentukan nama file unik
+        // Nama file kustom
+        $filename = 'hasil_lab_' . time() . '.' . $file->getClientOriginalExtension();
+        $destinationPath = public_path('hasil_lab');
+        $file->move($destinationPath, $filename);
+
+        LaporanKasusDBD::where('id', '=', $id)->update([
+            'file_hasil_lab' => $filename,
+            'status' => $request->status
+        ]);
+
+        return redirect()->route('validasi_admin')->with('success', 'laporan updated successfully');
+    }
+
+    public function accept_lab_by_admin(Request $request,$id)
+    {
+        $laporan_kasus_dbd = LaporaKasusDbd::with(['pasien','dokter'])->where('id','=',$id)->first();
+        return response()->json([
+            'success' => true,
+            'data' => $laporan_kasus_dbd
+        ]);
+        // Tentukan nama file unik
+        // LaporanKasusDBD::where('id', '=', $id)->update([
+        //     'status' => $request->status
+        // ]);
+
+        // return redirect()->route('validasi_admin')->with('success', 'laporan updated successfully');
     }
 }

@@ -47,43 +47,35 @@
                         <td>{{ $laporanList[0]['pasien']->alamat ?? 'N/A' }}</td>
                         <td class="custom-status">{{ $laporanList[0]['status'] }}</td>
                         <td>
-                            @if (!Auth::user()->hasRole('Lab'))
-                                <!-- Tombol Lihat -->
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#lihatModal"
-                                    data-id="{{ $idPasien }}"
-                                    data-nama="{{ $laporanList[0]['pasien']->nama ?? 'N/A' }}"
-                                    data-usia="{{ $laporanList[0]['pasien']->usia ?? 'N/A' }}"
-                                    data-alamat="{{ $laporanList[0]['pasien']->alamat ?? 'N/A' }}"
-                                    data-file_lab="{{ $laporanList[0]['file_hasil_lab'] }}"
-                                    data-gejala="{{ htmlspecialchars(json_encode($laporanList->pluck('gejala')), ENT_QUOTES, 'UTF-8') }}"
-                                    data-gejala_lain="{{ $laporanList[0]['gejala_lain'] }}"
-                                    data-created_at="{{ htmlspecialchars(json_encode($laporanList->pluck('created_at')), ENT_QUOTES, 'UTF-8') }}">
-                                    <i class="fas fa-eye"></i> Lihat
-                                </button>
+                            <!-- Tombol Lihat -->
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#lihatModal"
+                                data-id="{{ $idPasien }}" data-nama="{{ $laporanList[0]['pasien']->nama ?? 'N/A' }}"
+                                data-usia="{{ $laporanList[0]['pasien']->usia ?? 'N/A' }}"
+                                data-alamat="{{ $laporanList[0]['pasien']->alamat ?? 'N/A' }}"
+                                data-file_lab="{{ $laporanList[0]['file_hasil_lab'] }}"
+                                data-gejala="{{ htmlspecialchars(json_encode($laporanList->pluck('gejala')), ENT_QUOTES, 'UTF-8') }}"
+                                data-gejala_lain="{{ $laporanList[0]['gejala_lain'] }}"
+                                data-created_at="{{ htmlspecialchars(json_encode($laporanList->pluck('created_at')), ENT_QUOTES, 'UTF-8') }}">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
 
-                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    data-id="{{ $idPasien }}" data-laporan-id="{{ $laporanList->first()['id'] }}"
-                                    data-status="{{ $laporanList->first()['status'] }}" data-dokter="Dr. Budi">
-                                    <i class="fas fa-check"></i> Setuju
-                                </button>
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolakModal"
-                                    data-id="{{ $idPasien }}">
-                                    <i class="fas fa-times"></i> Tolak
-                                </button>
-                                <button class="btn btn-info btn-sm btnLihatPasien" data-bs-toggle="modal"
-                                    data-bs-target="#detailPasienModal" data-id="{{ $idPasien }}">
-                                    <i class="bi bi-eye"></i> Lihat Detail
-                                </button>
-                                <button class="btn btn-success btn-sm btnValidasiLab" data-bs-toggle="modal"
-                                    data-bs-target="#validasiModal" data-id="{{ $idPasien }}">
-                                    <i class="bi bi-eye"></i> validasi modal
-                                </button>
-                            @else
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#hasilLabModal" data-id="{{ $idPasien }}">
-                                    <i class="fas fa-flask"></i> Hasil Lab
-                                </button>
-                            @endif
+                            <button class="btn btn-success btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#exampleModal"
+                            data-id="{{ $idPasien }}"
+                            data-laporan-id="{{ $laporanList->first()['id'] }}" 
+                            data-status="{{ $laporanList->first()['status'] }}"
+                            data-dokter="Dr. Budi">
+                            <i class="fas fa-check"></i> Setuju
+                        </button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolakModal"
+                                data-id="{{ $idPasien }}">
+                                <i class="fas fa-times"></i> Tolak
+                            </button>
+                            <button class="btn btn-info btn-sm btnLihatPasien" data-bs-toggle="modal"
+                                data-bs-target="#detailPasienModal" data-id="{{ $idPasien }}">
+                                <i class="bi bi-eye"></i> Lihat Detail
+                            </button>
 
                         </td>
                     </tr>
@@ -216,76 +208,6 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal update Lab -->
-    <div class="modal fade" id="hasilLabModal" tabindex="-1" aria-labelledby="hasilLabModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="hasilLabModalLabel">Hasil Laboratorium</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadHasilLabForm" action="{{ route('update_by_lab') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('POST')
-                        <input type="text" id="pasienIdHasilLab" name="id">
-
-                        <div class="mb-3">
-                            <label for="fileHasilLab" class="form-label">Unggah Hasil Laboratorium</label>
-                            <input type="file" class="form-control" id="fileHasilLab" name="file_hasil_lab"
-                                accept=".jpg,.jpeg,.png,.gif" required>
-                            <small class="text-muted">Format yang diizinkan: JPG, JPEG, PNG, GIF. Ukuran maksimal:
-                                2MB</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="statusLab" class="form-label">Status</label>
-                            <select class="form-select" id="statusLab" name="status" required>
-                                <option value="">Pilih Status</option>
-                                <option value="dbd">Positif DBD</option>
-                                <option value="suspect">Suspect DBD</option>
-                                <option value="bukan">Bukan DBD</option>
-                            </select>
-                        </div>
-
-                        <div id="currentHasilLab" class="mb-3" style="display: none;">
-                            <h6>Hasil Lab Saat Ini:</h6>
-                            <div id="hasilLabPreview"></div>
-                        </div>
-                        <button type="submit" class="btn btn-primary" id="btnSubmitHasilLab">Simpan</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal validasi Lab -->
-    <div class="modal fade" id="validasiModal" tabindex="-1" aria-labelledby="hasilLabModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="hasilLabModalLabel">Hasil Laboratorium</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="currentHasilLab" class="mb-3" style="display: none;">
-                        <h6>Hasil Lab Saat Ini:</h6>
-                        <img id="hasilLabPreview" src="#" alt="Preview Hasil Lab"
-                            style="max-width: 100%; height: auto;" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary" id="btnSubmitHasilLab">Simpan</button>
                 </div>
             </div>
         </div>
@@ -500,14 +422,14 @@
 
             // Tangkap event sebelum modal ditampilkan
             $(document).on('click', '[data-bs-target="#exampleModal"]', function() {
-                var laporanId = $(this).data('laporan-id'); // Get the specific report ID
-                var status = $(this).data('status');
-                var dokter = $(this).data('dokter');
+    var laporanId = $(this).data('laporan-id'); // Get the specific report ID
+    var status = $(this).data('status');
+    var dokter = $(this).data('dokter');
 
-                $('#statusKasus').val(status);
-                $('#dokterPJ').val(dokter);
-                $('#id_laporan_dbd').val(laporanId); // Use the specific report ID
-            });
+    $('#statusKasus').val(status);
+    $('#dokterPJ').val(dokter);
+    $('#id_laporan_dbd').val(laporanId); // Use the specific report ID
+});
 
             // Handle lihat modal
             $(document).on('click', '[data-bs-target="#lihatModal"]', function() {
@@ -531,8 +453,7 @@
                 var created_at_data = $(this).data('created_at');
                 var parser = new DOMParser();
                 var decodedGejala = parser.parseFromString(gejalaEncoded, "text/html").body.textContent;
-                var decodedCreatedAt = parser.parseFromString(created_at_data, "text/html").body
-                    .textContent;
+                var decodedCreatedAt = parser.parseFromString(created_at_data, "text/html").body.textContent;
 
                 var gejalaArray = JSON.parse(decodedGejala);
                 var createdAtArray = JSON.parse(decodedCreatedAt);
@@ -563,31 +484,31 @@
 
             // Handle form submission
             $('#LaporanForm').on('submit', function(e) {
-                e.preventDefault();
-
-                var laporanId = $("#id_laporan_dbd").val();
-                $.ajax({
-                    url: '/update-laporan/' + laporanId, // Use the specific report ID
-                    method: 'PUT',
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Berhasil!",
-                            text: "Data Telah Di Validasi",
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan: ' + xhr.responseText);
-                        console.error(xhr, status, error);
-                    }
-                });
+    e.preventDefault();
+    
+    var laporanId = $("#id_laporan_dbd").val();
+    $.ajax({
+        url: '/update-laporan/' + laporanId, // Use the specific report ID
+        method: 'PUT',
+        data: $(this).serialize(),
+        headers: {
+            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+        },
+        success: function(response) {
+            Swal.fire({
+                title: "Berhasil!",
+                text: "Data Telah Di Validasi",
+                icon: "success"
+            }).then(() => {
+                location.reload();
             });
+        },
+        error: function(xhr, status, error) {
+            alert('Terjadi kesalahan: ' + xhr.responseText);
+            console.error(xhr, status, error);
+        }
+    });
+});
 
             // Handle lihat detail pasien
             $(document).on('click', '.btnLihatPasien', function() {
@@ -624,39 +545,6 @@
                 });
             });
 
-            // Handle lihat validasi lab
-            $(document).on('click', '.btnValidasiLab', function() {
-                var pasienId = $(this).data('id');
-
-                console.log(pasienId);
-
-                $.ajax({
-                    url: '/accept_lab_by_admin/' + pasienId,
-                    type: 'GET',
-                    success: function(response) {
-                        console.log(response);
-
-
-                        $('#currentHasilLab').show();
-                        // Set source gambar
-                        // $('#hasilLabPreview').attr('src', '/hasil_lab/' + response.data
-                        //     .file_hasil_lab);
-                        const img = `http://127.0.0.1:8000/hasil_lab/${response.data.file_hasil_lab}`;
-                        console.log(img);
-                        
-                        $('#hasilLabPreview').attr('src',
-                            `/hasil_lab/${response.data.file_hasil_lab}`);
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            title: "Error",
-                            text: "Terjadi kesalahan saat memuat data.",
-                            icon: "error"
-                        });
-                    }
-                });
-            });
-
             // Initialize select2 if available
             if ($.fn.select2) {
                 $('#dokterPJ').select2({
@@ -665,20 +553,6 @@
                     dropdownParent: $('#exampleModal')
                 });
             }
-
-            $('#hasilLabModal').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget); // Tombol yang membuka modal
-
-                // Ambil data dari tombol
-                var itemName = button.data('name');
-                var itemId = button.data('id');
-                $('#pasienIdHasilLab').val(itemId);
-                console.log(itemId);
-                // Isi input field dengan data
-                var modal = $(this);
-                modal.find('#itemName').val(itemName);
-                modal.find('#itemId').val(itemId);
-            });
         });
     </script>
 @endsection

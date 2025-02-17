@@ -65,7 +65,7 @@
                     </div>
                     <textarea class="form-control mt-2" id="gejala_lain" name="gejala_lain" placeholder="Gejala lain"></textarea>
                 </div>
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="hasil_lab" class="form-label">
                         Upload Hasil Lab
                         <span class="text-muted">(Opsional)</span>
@@ -77,7 +77,7 @@
                         2MB)
                     </small>
                     </div>=".pdf,.jpg,.jpeg,.png">
-                </div>
+                </div> --}}
                 <button type="submit" class="btn btn-primary">Kirim Laporan</button>
             </form>
         </div>

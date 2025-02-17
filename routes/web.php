@@ -100,3 +100,6 @@ Route::get('/printLaporanMasyarakat/{id}', [LaporanKasusDBDController::class, 'p
 Route::get('detail_laporan/{id_pasien}',[LaporanKasusDBDController::class,'detail_laporan_masyarakat'])->name('detail_laporan_masyarakat');
 Route::get('/getStatistik/{id_desa}', [DesaController::class, 'getStatistikByDesa']);
 
+Route::post('update_by_lab',[LaporanKasusDBDController::class,'update_by_lab'])->name('update_by_lab');
+Route::get('accept_lab_by_admin/{id}',[LaporanKasusDBDController::class,'accept_lab_by_admin'])->name('accept_lab_by_admin');
+
